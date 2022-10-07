@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Multiple Wizards</title>
+    <!-- Bootstrap -->
+    <link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	  <link href="prettify.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class='container'>
+
+			 <!-- SECCION CENTRAL -->
+        <div ui-view class="app-body" id="view">
+            <div class="padding">
+                <div class="box">
+                  <div class="box-header b-b">
+                    <h3><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Formulario Remitax</font></font></h3>
+                  </div>
+                  <div class="box-body">
+                    <form ui-jp="parsley" id="form" novalidate="">
+
+                          <ul class="nav nav-pills clearfix m-b">
+                            <li class="nav-item"><a class="nav-link active" href="#tab1" data-toggle="tab" aria-expanded="true"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Usuario</font></font></a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab2" data-toggle="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Licencia</font></font></a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Vehiculo</font></font></a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Tiquetera</font></font></a></li>
+                            <li class="nav-item"><a class="nav-link" href="#tab3" data-toggle="tab"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Verificacion</font></font></a></li>
+                          </ul>
+                          <div class="tab-content">
+
+                            <div class="tab-pane active" id="tab1" aria-expanded="true">
+                                <div class="form-group">
+                                  <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numero de Licencia</font></font></label>
+                                  <input type="text" class="form-control" id="licenseId" required>
+                                </div>
+                                <div class="form-group">
+                                  <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Email</font></font></label>
+                                  <input type="email" class="form-control" id="emailId" required>
+                                </div>
+                                <div class="form-group">
+                                  <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Telefono</font></font></label>
+                                  <input type="number" class="form-control" placeholder="XXX XXXX XXX" required>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab2">
+                              <div class="form-group">
+                                <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numero de Cliente</font></font></label>
+                                <input type="number" class="form-control" required>
+                              </div>
+                              <div class="form-group">
+                                <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Email</font></font></label>
+                                <input type="email" class="form-control" required>
+                              </div>
+                              <div class="row m-b">
+                                <div class="col-sm-6">
+                                  <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Introducir la contraseña</font></font></label>
+                                  <input type="password" class="form-control" id="pwd" required>
+
+                                </div>
+                                <div class="col-sm-6">
+                                  <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Confirmar contraseña</font></font></label>
+                                  <input type="password" class="form-control" data-parsley-equalto="#pwd" required>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Teléfono</font></font></label>
+                                <input type="number" class="form-control" required>
+                              </div>
+                            </div>
+
+                            <ul class="pager wizard">
+                              <li class="previous first disabled" style="display:none;"><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">primero</font></font></a></li>
+                              <li class="previous disabled"><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Anterior</font></font></a></li>
+                              <li class="next last" style="display:none;"><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Último</font></font></a></li>
+                              <li class="next"><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">próximo</font></font></a></li>
+                            </ul>
+
+                          </div>
+
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <!-- ############ END SECCION CENTRAL-->
+            </div>
+
+        </div>
+
+	</div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+	  <script src="jquery.bootstrap.wizard.js"></script>
+	  <script src="prettify.js"></script>
+	<script>
+    $(document).ready(function() {
+    	  	$('#view').bootstrapWizard({onNext: function(tab, navigation, index) {
+    				if(index==1) {
+    					// Make sure we entered the name
+    					if(!$('#licenseId').val()) {
+    						alert('Ingresa numero de licencia por favor');
+    						$('#licenseId').focus();
+    						return false;
+    					}
+    					// Make sure we entered the name
+    					if(!$('#emailId').val()) {
+    						alert('Ingresa mail valido por favor');
+    						$('#emailId').focus();
+    						return false;
+    					}
+    				}
+
+    				// Set the name for the next tab
+    				$('#tab3').html('Hello, ' + $('#name').val());
+
+    			}, onTabShow: function(tab, navigation, index) {
+
+    			}});
+    		window.prettyPrint && prettyPrint()
+    	});
+	</script>
+  </body>
+</html>

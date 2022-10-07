@@ -1,0 +1,719 @@
+
+
+var socket;
+
+function CalcularR(posicion){
+
+
+    var dato_oa = $("#const_OA_" + posicion).val();
+    var dato_mn = $("#const_MN_" + posicion).val();
+    var dato_k = $("#constante_" + posicion).val();
+    var dato_ensayo = $("#Ensayo").val();
+    var tension = $("#tension_" + posicion).val();
+    var corriente = $("#corriente_" + posicion).val();
+
+
+        if(corriente != "0" && tension !="0"){
+          var resistividad = (tension/corriente)*dato_k;
+        }else{
+          var resistividad = 0;
+        }
+        $("#resistividad_" + posicion).val(resistividad);
+
+      if(dato_oa == 0 || dato_mn ==0){
+        if(dato_oa == 0){
+          alert('Por favor INGRESE un valor de OA');
+          $("#const_OA_" + posicion).focus();
+        }else{
+          alert('Por favor INGRESE un valor de MN');
+          $("#const_OA_" + posicion).focus();
+        }
+      }else{
+        ///*
+        //////////////Actualizar base de datos con nuevos valores///////////
+        var formData = new FormData();
+        formData.append("ActualizaDB_Cal", "TRUE");
+        formData.append("db_OA", dato_oa);
+        formData.append("db_MN", dato_mn);
+        formData.append("db_K", dato_k);
+        formData.append("db_tension", tension);
+        formData.append("db_Ensayo",dato_ensayo);
+        formData.append("db_corriente", corriente);
+
+        ///////////////funcion de  de escucha al php/////////////
+         var objActualizar = new XMLHttpRequest();
+
+         objActualizar.onreadystatechange = function() {
+             if(objActualizar.readyState === 4) {
+               if(objActualizar.status === 200) {
+                 //alert(objXActualizarVehiculo.responseText);
+                 //var data = JSON.parse(objActualizar.responseText);
+                 var data = JSON.parse(objActualizar.responseText); //Parsea el Json al objeto anterior.
+
+                 if(data.status == true){
+                   alert('Actualizacion de Calculo exitosa: ' + data['status']);
+                   //window.location.reload(true);
+                   Graficar(data);
+                 }else{
+                   alert('Error actualizacion: ' + data['error']);
+                 }
+
+
+               } else {
+                 alert('Error Code 111: ' +  objActualizar.status);
+                 alert('Error Message 222: ' + objActualizar.statusText);
+               }
+             }
+         }
+         ////////////////////////////////////////////////////////////////
+        objActualizar.open('POST', '../recibe.php',true);
+        objActualizar.send(formData);
+        /////////////////////////////////////////////////////////////////
+        //*/
+      }
+
+}
+
+function ActualizarR(posicion){
+
+
+    var dato_oa = $("#const_OA_" + posicion).val();
+    var dato_mn = $("#const_MN_" + posicion).val();
+    var dato_k = $("#constante_" + posicion).val();
+    var dato_ensayo = $("#Ensayo").val();
+
+      ///*
+      if(dato_k != "0" & dato_ensayo != "" ){
+
+        //alert('Actualizar datos. oa:' + dato_oa + ' mn:' + dato_mn  + ' k:' + dato_k );
+
+        /////Mandar consulta al servidor para actualizar los datos del Usuario/////////////////////
+        var formData = new FormData();
+        formData.append("ActualizaDB_Puente", "TRUE");
+        formData.append("MN", dato_mn);
+        formData.append("K", dato_k);
+        formData.append("OA", dato_oa);
+        formData.append("Ensayo",dato_ensayo);
+
+        ///////////////funcion de  de escucha al php/////////////
+         var objActualizarUsuario = new XMLHttpRequest();
+
+         objActualizarUsuario.onreadystatechange = function() {
+             if(objActualizarUsuario.readyState === 4) {
+               if(objActualizarUsuario.status === 200) {
+                 //alert(objXActualizarVehiculo.responseText);
+                 var data = JSON.parse(objActualizarUsuario.responseText);
+
+                 if(data['status'] == "TRUE"){
+                   alert('Actualizacion exitosa: ' + data['status']);
+                   $("#tension_" + posicion).val(data['tension']);
+                   $("#corriente_" + posicion).val(data['corriente']);
+                   $("#resistividad_" + posicion).val(data['resistividad']);
+                   window.location.reload(true);
+                 }else{
+                   alert('Error actualizacion: ' + data['error']);
+                 }
+
+
+               } else {
+                 alert('Error Code 111: ' +  objActualizarUsuario.status);
+                 alert('Error Message 222: ' + objActualizarUsuario.statusText);
+               }
+             }
+         }
+         ////////////////////////////////////////////////////////////////
+
+        objActualizarUsuario.open('POST', '../recibe.php',true);
+        objActualizarUsuario.send(formData);
+
+      }else{
+        if(dato_k == "0"){alert('Campo obligatorio constante k');}
+        else{alert('Seleccione un Ensayo');}
+
+      }
+      //*/
+}
+
+function change_Ensayo(){
+
+    var ensayo = $("#Ensayo").val();
+    //alert('Cargando ensayo: ' + ensayo);
+
+    if(ensayo != ""){
+        /////Mandar consulta al servidor para actualizar los datos del Usuario/////////////////////
+        var formData = new FormData();
+        formData.append("Cambio_Ensayo", ensayo);
+
+        ///////////////funcion de  de escucha al php/////////////
+         var objActualizarUsuario = new XMLHttpRequest();
+
+         objActualizarUsuario.onreadystatechange = function() {
+             if(objActualizarUsuario.readyState === 4) {
+               if(objActualizarUsuario.status === 200) {
+                 //alert(objXActualizarVehiculo.responseText);
+                 var data = JSON.parse(objActualizarUsuario.responseText);
+
+                 if(data['status'] == "TRUE"){
+                   alert('Cargando Ensayo..: ' + data['ensayo']);
+                   window.location.reload(true);
+                 }else{
+                   alert('Error actualizacion: ' + data['error']);
+                 }
+
+
+               } else {
+                 alert('Error Code 111: ' +  objActualizarUsuario.status);
+                 alert('Error Message 222: ' + objActualizarUsuario.statusText);
+               }
+             }
+         }
+
+         objActualizarUsuario.open('POST', '../recibe.php',true);
+         objActualizarUsuario.send(formData);
+         ////////////////////////////////////////////////////////////////
+     }
+}
+
+function change_MN(posicion){
+
+
+    var constante_k = 0; ///constante obtenida por el metodo de schlumberger
+
+
+    var valor = $("#const_OA_"+posicion).val();
+    const_OA = parseFloat(valor);
+    var const_MN = $("#const_MN_"+posicion).val();
+
+
+
+    if(const_MN != "0" && valor != "0"){
+
+      var ab = (const_OA*2);
+      constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
+      $("#constante_"+posicion).val(constante_k);
+      //alert("distancia oa:" + const_OA + " constante k: " + constante_k);
+    }else{
+      $("#constante_"+posicion).val(0);
+      //alert("faltan argumentos para calcular el valor de la constante");
+    }
+    //CalcularR(posicion);
+
+}
+
+function change_OA(posicion){
+
+  var constante_k = 0; ///constante obtenida por el metodo de schlumberger
+
+  var valor = $("#const_OA_"+posicion).val();
+  const_OA = parseFloat(valor);
+  var const_MN = $("#const_MN_"+posicion).val();
+
+  if(const_MN != "0" && valor != "0"){
+
+    var ab = (const_OA*2);
+    constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
+    $("#constante_"+posicion).val(constante_k);
+    //alert("distancia oa:" + const_OA + " constante k: " + constante_k);
+  }else{
+    $("#constante_"+posicion).val(0);
+    //alert("faltan argumentos para calcular el valor de la constante");
+  }
+
+}
+
+function Nuevo_Ensayo(){
+
+    var Nuevo_Ensayo  = $("#NuevoEnsayo").val();
+
+    if(Nuevo_Ensayo != ""){
+        //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo);
+        /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
+        var formData = new FormData();
+        formData.append("Nuevo_Ensayo", "TRUE");
+        formData.append("Nombre_Ensayo", Nuevo_Ensayo);
+
+        ///////////////funcion de  de escucha al php/////////////
+         var objNewEnsayo = new XMLHttpRequest();
+
+         objNewEnsayo.onreadystatechange = function() {
+             if(objNewEnsayo.readyState === 4) {
+               if(objNewEnsayo.status === 200) {
+                 //alert(objNewEnsayo.responseText);
+                 var data = JSON.parse(objNewEnsayo.responseText);
+
+                 if(data['status'] == "TRUE"){
+                   alert('Carga de Nuevo Ensayo exitosa: ' + data['status']);
+                   $("#NuevoEnsayo").val("");
+                   window.location.reload(true);
+                 }else{
+                   alert('Error actualizacion: ' + data['error']);
+                 }
+
+
+               } else {
+                 alert('Error Code 111: ' +  objNewEnsayo.status);
+                 alert('Error Message 222: ' + objNewEnsayo.statusText);
+               }
+             }
+         }
+         ////////////////////////////////////////////////////////////////
+
+        objNewEnsayo.open('POST', '../recibe.php',true);
+        objNewEnsayo.send(formData);
+
+    }else{
+      alert("Completar nombre de nuevo ensayo");
+    }
+
+}
+
+function Eliminar_Ensayo(){
+  var Ensayo  = $("#NuevoEnsayo").val();
+
+  if(Ensayo != "" && Ensayo != "Prueba"){
+
+    var select = document.getElementById("Ensayo");
+    var cont = 0;
+
+      //alert("Tratando de eliminar el ensayo: "+ Nuevo_Ensayo + ". Num select: " +  select.length);
+
+      for (var i = 0; i < select.length; i++)
+      {
+        var opt = select[i];
+        if(opt.value==Ensayo){
+          //alert("Eliminando ENSAYO:..."+Ensayo);
+          Delet_Ensayo(Ensayo);
+          cont = cont +1;
+        }
+      }
+      if(cont == 0){alert("No se encontro ensayo para eliminar");}
+
+  }else{
+    if(Ensayo == "Prueba"){alert("Imposible eliminar ensayo de Prueba");}
+    else{alert("Completar nombre de ensayo que eliminará");}
+
+  }
+
+}
+
+function Delet_Ensayo(Ensayo){
+  //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo);
+  /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
+  var formData = new FormData();
+  formData.append("Eliminar_Ensayo", "TRUE");
+  formData.append("Nombre_Ensayo", Ensayo);
+
+  ///////////////funcion de  de escucha al php/////////////
+   var objNewEnsayo = new XMLHttpRequest();
+
+   objNewEnsayo.onreadystatechange = function() {
+       if(objNewEnsayo.readyState === 4) {
+         if(objNewEnsayo.status === 200) {
+           //alert(objNewEnsayo.responseText);
+           var data = JSON.parse(objNewEnsayo.responseText);
+
+           if(data['status'] == "TRUE"){
+             alert('Eliminacion de Ensayo exitosa: ' + data['status']);
+             //$("#NuevoEnsayo").val("");
+             window.location.reload(true);
+           }else{
+             alert('Error Eliminar: ' + data['error']);
+             window.location.reload(true);
+           }
+
+
+         } else {
+           alert('Error Code 111: ' +  objNewEnsayo.status);
+           alert('Error Message 222: ' + objNewEnsayo.statusText);
+         }
+       }
+   }
+   ////////////////////////////////////////////////////////////////
+
+  objNewEnsayo.open('POST', '../recibe.php',true);
+  objNewEnsayo.send(formData);
+
+}
+
+window.onload = function() {
+
+    /////conection WebSocket/////////////////////////////////
+    //var socket = new WebSocket('ws://' + location.hostname + ':80/', ['arduino']);
+    socket = new WebSocket('ws://' + '192.168.1.1' + ':80/ws');
+
+    socket.onopen = function(e) {
+      alert("Conexión establecida con equipo SEV");
+    };
+
+    socket.onmessage = function(event) {
+      var data = event.data;
+      let arr_data = data.split('/');
+      var dispositivo_emisor = arr_data[0];
+      var dispositivo_receptor = arr_data[1];
+      var tipo_data = arr_data[2];
+      var value_data = arr_data[3];
+      //console.log(`Datos recibidos del servidor: ${event.data}`);
+      console.log(`Datos recibidos. Emisor: ` + dispositivo_emisor + ` Receptor: ` + dispositivo_receptor + ` Tipo: `+ tipo_data + ` Value: ` + value_data);
+
+      if(dispositivo_emisor == "SEV_V"){
+        if(tipo_data == "Check"){
+          var claseV = $('#buttonV').attr('class');
+          if (claseV.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonV').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonV').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(tipo_data == "Tension"){
+          
+
+          /////Mandar consulta al servidor para actualiza dato de tension en db puente/////////////////////
+            var formData = new FormData();
+            formData.append("Tension_ESPWS", "TRUE");
+            formData.append("value", value_data);
+            ///////////////funcion de  de escucha al php/////////////
+             var objTension = new XMLHttpRequest();
+    
+             objTension.onreadystatechange = function() {
+                 if(objTension.readyState === 4) {
+                   if(objTension.status === 200) {
+                     //alert(objTension.responseText);
+                     var data = JSON.parse(objTension.responseText);
+    
+                     if(data['status'] == "TRUE"){
+                       //alert('Carga de Tension en dbPuente Extoda: ' + data['status']);
+                       console.log(`Actualiza Tension: ` + value_data);
+                       $("#tension_0").val(value_data);
+                     }else{
+                       alert('Error actualizar Tension dbPuente: ' + data['error']);
+                     }
+    
+    
+                   } else {
+                     alert('Error Code 111: ' +  objTension.status);
+                     alert('Error Message 222: ' + objTension.statusText);
+                   }
+                 }
+             }
+             ////////////////////////////////////////////////////////////////
+    
+             objTension.open('POST', '../recibe.php',true);
+             objTension.send(formData);
+
+        }
+
+      }
+
+      if(dispositivo_emisor == "SEV_I"){
+        if(tipo_data == "Check"){
+          var claseI = $('#buttonI').attr('class');
+          if (claseI.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonI').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonI').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(tipo_data == "Corriente"){
+          
+          ///debemos enviar al back el dato de la corriente para la almacene en la db puente/////Mandar consulta al servidor para actualiza dato de tension en db puente/////////////////////
+            var formData = new FormData();
+            formData.append("Corriente_ESPWS", "TRUE");
+            formData.append("value", value_data);
+            ///////////////funcion de  de escucha al php/////////////
+             var objCorriente = new XMLHttpRequest();
+    
+             objCorriente.onreadystatechange = function() {
+                 if(objCorriente.readyState === 4) {
+                   if(objCorriente.status === 200) {
+                     //alert(objNewEnsayo.responseText);
+                     var data = JSON.parse(objCorriente.responseText);
+    
+                     if(data['status'] == "TRUE"){
+                       //alert('Carga de Corriente en dbPuente Extoda: ' + data['status']);
+                       console.log(`Actualiza Corriente: ` + value_data);
+                       $("#corriente_0").val(value_data);
+                       //CalcularR(0);
+                     }else{
+                       alert('Error actualizar Corriente en dbPuente: ' + data['error']);
+                     }
+    
+    
+                   } else {
+                     alert('Error Code 111: ' +  objCorriente.status);
+                     alert('Error Message 222: ' + objCorriente.statusText);
+                   }
+                 }
+             }
+             ////////////////////////////////////////////////////////////////
+    
+             objCorriente.open('POST', '../recibe.php',true);
+             objCorriente.send(formData);
+        }
+
+      }
+
+    };
+
+    socket.onclose = function(event) {
+      if (event.wasClean) {
+        alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
+      } else {
+        // ej. El proceso del servidor se detuvo o la red está caída
+        // event.code es usualmente 1006 en este caso
+        alert('[close] La conexión se cayó');
+      }
+    };
+
+    socket.onerror = function(error) {
+      //alert(`[error] ${error.message}`);
+      console.log(`[error] ${error.message}`);
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
+    var ensayo = $("#Ensayo").val();
+    var formData = new FormData();
+    formData.append("Data_Ensayo", "TRUE");
+    formData.append("Nombre_Ensayo", ensayo);
+
+    ///////////////funcion de  de escucha al php/////////////
+     var objData = new XMLHttpRequest();
+
+
+     objData.onreadystatechange = function() {
+         if(objData.readyState === 4) {
+           if(objData.status === 200) {
+             //alert(objNewEnsayo.responseText);
+             var data = JSON.parse(objData.responseText); //Parsea el Json al objeto anterior.
+             //console.log(data);
+
+             if(data.status == true){
+              // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
+               Graficar(data);
+               //window.location.reload(true);
+             }else{
+               alert('Error al pedir datos para grafico: ' + data['error']);
+             }
+
+
+           } else {
+             alert('Error Code 111: ' +  objData.status);
+             alert('Error Message 222: ' + objData.statusText);
+           }
+         }
+     }
+     ////////////////////////////////////////////////////////////////
+
+    objData.open('POST', '../recibe.php',true);
+    objData.send(formData);
+
+
+};
+
+function Graficar(dat){
+
+
+    var datat=dat.dato;
+    //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
+    var testt = JSON.parse(datat);
+
+    var color = Chart.helpers.color;
+
+    var scatterChartData = {
+      datasets: [{
+        borderColor: window.chartColors.blue,
+        //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+        backgroundColor: window.chartColors.black,
+        label: 'Resistividad',
+        type: 'scatter',
+        //stacked: true,
+        //spanGaps:true,
+        showLine: false, // disable for a single dataset
+        data: testt.data
+      }]
+    };
+
+
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    window.myScatter = Chart.Scatter(ctx, {
+
+      data: scatterChartData,
+      options: {
+
+        title: {
+          display: true,
+          text: 'Grafico de Resistividades - Logarithmic Axis'
+        },
+        scales: {
+          xAxes: [{
+            type: 'logarithmic',
+
+            ticks: {
+              userCallback: function(tick) {
+                var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
+                if (remain === 1 || remain === 2 || remain === 5) {
+                  return tick.toString() + ' m';
+                }
+                return '';
+              },
+            },
+            scaleLabel: {
+              labelString: 'Metros',
+              display: true,
+            }
+          }],
+          yAxes: [{
+            type: 'logarithmic',
+
+            ticks: {
+              userCallback: function(tick) {
+                var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
+                if (remain === 1 || remain === 2 || remain === 5) {
+                  return tick.toString() + ' ';
+                }
+                return '';
+              },
+            },
+            scaleLabel: {
+              labelString: 'Resistividad',
+              display: true
+            }
+          }]
+        }
+      }
+    });
+}
+
+function ExportarDatos(){
+
+  var Ensayo  = $("#Ensayo").val();
+
+  if(Ensayo != ""){
+      alert("Cargando nuevo ensayo.." + Ensayo);
+      /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
+      var formData = new FormData();
+      formData.append("Exportar_Datos", "TRUE");
+      formData.append("Nombre_Ensayo", Ensayo);
+
+      ///////////////funcion de  de escucha al php/////////////
+       var objNewEnsayo = new XMLHttpRequest();
+
+       objNewEnsayo.onreadystatechange = function() {
+           if(objNewEnsayo.readyState === 4) {
+             if(objNewEnsayo.status === 200) {
+
+               //alert(objNewEnsayo.responseText);
+               var data = JSON.parse(objNewEnsayo.responseText);
+
+               if(data['status'] == "TRUE"){
+                 //alert('Exportacion exitosa: ' + data['detalle']);
+
+                 //window.location.reload(true);
+                 var link = "http://localhost/SEV_1000/"+data['file'];
+                 window.open(link, '_blank'); window.focus();
+
+               }else{
+                 alert('Error exportar: ' + data['error']);
+               }
+
+
+             } else {
+               alert('Error Code 111: ' +  objNewEnsayo.status);
+               alert('Error Message 222: ' + objNewEnsayo.statusText);
+             }
+           }
+       }
+       ////////////////////////////////////////////////////////////////
+
+      objNewEnsayo.open('POST', '../recibe.php',true);
+      objNewEnsayo.send(formData);
+
+  }else{
+    alert("No se eligio un Ensayo para Exportar datos");
+  }
+
+}
+
+function ExportarGrafico(){
+
+  window.open("grafico.php", '_blank'); window.focus();
+
+}
+
+function EliminarDato(posicion){
+
+      var dato_oa = $("#const_OA_" + posicion).val();
+      var dato_mn = $("#const_MN_" + posicion).val();
+      var dato_k = $("#constante_" + posicion).val();
+      var dato_ensayo = $("#Ensayo").val();
+
+      if(dato_k != "0" & dato_ensayo != "" ){
+        //alert('Eliminar datos. oa:' + dato_oa + ' mn:' + dato_mn  + ' k:' + dato_k + ' Ensayo: ' +dato_ensayo );
+        ////Mandar consulta al servidor para actualizar los datos del Usuario/////////////////////
+        var formData = new FormData();
+        formData.append("EliminarDato", "TRUE");
+        formData.append("MN", dato_mn);
+        formData.append("K", dato_k);
+        formData.append("OA", dato_oa);
+        formData.append("Ensayo",dato_ensayo);
+
+        ///////////////funcion de  de escucha al php/////////////
+
+         var objEliminarDato = new XMLHttpRequest();
+
+         objEliminarDato.onreadystatechange = function() {
+             if(objEliminarDato.readyState === 4) {
+               if(objEliminarDato.status === 200) {
+                 //alert(objXActualizarVehiculo.responseText);
+                 var data = JSON.parse(objEliminarDato.responseText);
+
+                 if(data['status'] == "TRUE"){
+                   alert('Eliminacion exitosa: ' + data['status']);
+                   window.location.reload(true);
+                 }else{
+                   alert('Error Eliminar ');
+                 }
+
+
+               } else {
+                 alert('Error Code 111: ' +  objEliminarDato.status);
+                 alert('Error Message 222: ' + objEliminarDato.statusText);
+               }
+             }
+         }
+         ////////////////////////////////////////////////////////////////
+
+        objEliminarDato.open('POST', '../recibe.php',true);
+        objEliminarDato.send(formData);
+
+      }else{
+        if(dato_k == "0"){alert('Campo obligatorio constante k');}
+        else{alert('Seleccione un Ensayo');}
+      }
+
+}
+
+function Check_V(){
+
+  var claseV = $('#buttonV').attr('class');
+  if (claseV.includes("md-btn md-fab m-b-sm success")) {
+      $('#buttonV').removeClass('md-btn md-fab m-b-sm success');
+      $('#buttonV').addClass('md-btn md-fab m-b-sm danger');
+  }
+
+  alert("Enviamos Check_V");
+  socket.send("SEV_C/SEV_V/Check/?");
+}
+
+function Check_I(){
+
+  var claseI = $('#buttonI').attr('class');
+  if (claseI.includes("md-btn md-fab m-b-sm success")) {
+      $('#buttonI').removeClass('md-btn md-fab m-b-sm success');
+      $('#buttonI').addClass('md-btn md-fab m-b-sm danger');
+  }
+
+  alert("Enviamos Check_I");
+
+  //socket.send("SEV_I/SEV_C/Check/?");
+  socket.send("SEV_C/SEV_I/Check/?");
+}
