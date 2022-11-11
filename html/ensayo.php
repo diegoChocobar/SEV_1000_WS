@@ -74,7 +74,7 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
               <div class="padding">
                   <div class="box">
 
-                    <div class="box-header b-b" align="center">
+                    <!--div class="box-header b-b" align="center">
 
                         <div class="form-group">
                           <a class="image align-left" href="https://geofisicainstrumentos.com" target="_blank">
@@ -83,13 +83,13 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                         </div>
 
                         <div class="form-group">
-                          <h1 class="txt-white bold text-shadow align-center"><strong>CDC ELECTRONIC'S</strong></h1>
+                          <h1 class="txt-white bold text-shadow align-center"><strong>CDC ELECTRONICS</strong></h1>
                         </div>
 
-                    </div>
+                    </div-->
 
-                    <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
-                    <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
+                    <!--div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
+                    <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div-->
                     <br>
 
 
@@ -97,19 +97,32 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                         <div class="row">
                           <div class="col-sm-1" align="left">
                             <button id="buttonV" name="buttonV" class="md-btn md-fab m-b-sm success" onclick="Check_V();">
-                              <i class="fa fa-tachometer"></i>
+                              <i class="fa  fa-refresh"></i>
                               V
                             </button>
                           </div>
-                          <div class="col-sm-3" align="left">
+                          <div class="col-sm-1" align="left">
                             <button id="buttonI" name="buttonI" class="md-btn md-fab m-b-sm success" onclick="Check_I();">
-                              <i class="fa fa-tachometer"> </i>
+                              <i class="fa  fa-refresh"> </i>
                               I
                             </button>
                           </div>
 
-                          <div class="col-sm-4" align="left">
-                            <input id="NuevoEnsayo" value="" class="form-control" align="center" type="text" placeholder="Nombre de ensayo" style="width: 345px;margin: 0px 0px">
+                          <div class="col-sm-1" align="left">
+                            <button id="buttonH" name="buttonH" class="md-btn md-fab m-b-sm danger" onclick="Hold();">
+                              <i class="fa  fa-sign-in"> </i>
+                              H
+                            </button>
+                          </div>
+                          <div class="col-sm-2" align="left">
+                            <button id="buttonD" name="buttonD" class="md-btn md-fab m-b-sm danger" onclick="Disparo();">
+                              <i class="fa fa-bolt"> </i>
+                              D
+                            </button>
+                          </div>
+
+                          <div class="col-sm-3" align="left">
+                            <input id="NuevoEnsayo" value="" class="form-control" align="center" type="text" placeholder="Nombre de ensayo" style="width: 245px;margin: 0px 0px">
                           </div>
 
                           <div class="col-sm-2" align="left">
@@ -125,16 +138,17 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                           </div>
 
                         </div>
+                        <br>
                     </div>
 
                     <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
                     <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
-                    <br>
+                    
 
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="box white">
-                          <br/>
+                          
 
                           <div class="box-header">
                             <div class="row justify-content-center">
@@ -168,6 +182,12 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                   <i class="fa fa-area-chart"></i><i class="material-icons md-24"></i>
                                 </button>
                               </div>
+                              <div class="col-xs-6">
+                                <button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Analisis Capas" align="center"
+                                           onclick="AnalizarDatos();">
+                                  <i class="fa fa-bar-chart"></i><i class="material-icons md-24"></i>
+                                </button>
+                              </div>
                             </div>
                           </div>
                             <div class="table-responsive">
@@ -177,12 +197,11 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                     <th style="width:10px;">OA (m)</th>
                                     <th style="width:10px;">MN (m)</th>
                                     <th style="width:10px;">k</th>
-                                    <th style="width:10%;">Tensión (mV)</th>
-                                    <th style="width:15%;">Corriente (mA)</th>
-                                    <th style="width:15%;">r</th>
+                                    <th style="width:10%;">V (mV)</th>
+                                    <th style="width:15%;">I (mA)</th>
+                                    <th style="width:15%;">R</th>
                                     <th style="width:10%;">Calc</th>
-                                    <th style="width:15%;">Actualizar</th>
-                                    <th style="width:10%;">Eliminar</th>
+                                    <th style="width:10%;">Delet</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -235,10 +254,6 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                           <td><button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Calcular Resistividad" align="center"
                                                        onclick="CalcularR(<?php echo 0 ?>);">
                                               <i class="material-icons md-24"></i><i class="material-icons md-24"></i></button>
-                                          </td>
-                                          <td><button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Calcular Resistividad" align="center"
-                                                       onclick="ActualizarR(<?php echo 0 ?>);">
-                                              <i class="material-icons md-24"></i><i class="material-icons md-24"></i></button>
                                           </td>
 
                                           <td><button  class="btn btn-icon btn-social rounded btn-social-colored pink" title="Eliminar" align="center"
@@ -328,10 +343,6 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                           <td><button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Calcular Resistividad" align="center"
                                                        onclick="CalcularR(<?php echo $i+1 ?>);">
                                               <i class="material-icons md-24"></i><i class="material-icons md-24"></i></button>
-                                          </td>
-                                          <td><button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Calcular Resistividad" align="center"
-                                                       onclick="ActualizarR(<?php echo $i+1 ?>);">
-                                              <i class="material-icons md-24"></i><i class="material-icons md-24"></i></button>
                                           </td>
 
                                           <td><button  class="btn btn-icon btn-social rounded btn-social-colored pink" title="Eliminar" align="center"

@@ -80,83 +80,6 @@ if(isset($_POST['esp_corriente']) && isset($_POST['esp_status_i'])) {
 
 }
 
-if(isset($_POST['ActualizaDB_Puente'])) {
-
-  $data = array();
-
-  $dato_oa = strip_tags($_POST['OA']);
-  $dato_mn = strip_tags($_POST['MN']);
-  $dato_k = strip_tags($_POST['K']);
-  $dato_ensayo = strip_tags($_POST['Ensayo']);
-
-  ////////////////////OBTENEMOS V & I de la DB Puente/////////////////////////
-  ///////////////////////////////////////////////////////////////////////////
-  $result = $conn->query("SELECT * FROM `puente` WHERE `id` = '1' ");
-
-  $datos = $result->fetch_all(MYSQLI_ASSOC);
-  $datos_num = count($datos);
-
-  if($datos_num == 1){
-    $tension = $datos[0]['tension'];
-    $corriente = $datos[0]['corriente'];
-    if($tension != 0 && $corriente !=0){
-      $resistividad = ($tension / $corriente)*$dato_k;
-    }else{
-      $resistividad = 0;
-    }
-    $data['status'] = 'TRUE';
-    $data['tension'] = $tension;
-    $data['corriente'] = $corriente;
-    $data['resistividad'] = $resistividad;
-  }else{
-    $data['status'] = 'FALSE';
-    $data['error'] = 'Dato no encontrado en DB puente';
-  }
-  //////////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////// Base de datos del ensayo ///////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  if($data['status'] == 'TRUE'){
-
-    //$result = $conn->query("SELECT * FROM `Datos` WHERE `OA`='".$dato_oa."' AND `trabajo`='".$dato_ensayo."' ");
-    $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
-    $datos = $result->fetch_all(MYSQLI_ASSOC);
-    $datos_num = count($datos);
-
-    if($datos_num > 0){
-      $actualiza = $conn->query("UPDATE `datos` SET `tension`='$tension',`corriente`='$corriente',`OA`='$dato_oa',`MN`='$dato_mn',`K`='$dato_k',`resistividad`='$resistividad',`fecha`= CURRENT_TIMESTAMP WHERE `trabajo` = '".$dato_ensayo."' AND `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' ");
-
-      if($actualiza === TRUE){
-          $data['status'] = 'TRUE';
-      }else{
-          $data['status'] = 'FALSE';
-          $data['error'] = 'Update DB datos';
-      }
-    }else{
-      //$insertar = $conn->query("INSERT INTO `Datos` SET `OA`='$dato_oa',`MN`='$dato_mn',`K`='$dato_k',`fecha`= CURRENT_TIMESTAMP WHERE `id` = '1' ");
-      $insertar = $conn->query("INSERT INTO `datos`(`id`,`trabajo`,`tension`,`corriente`,`OA`,`MN`,`K`,`resistividad`,`fecha`) VALUES (NULL,'$dato_ensayo','$tension','$corriente','$dato_oa','$dato_mn','$dato_k','$resistividad',CURRENT_TIMESTAMP)");
-
-      if($insertar === TRUE){
-          $data['status'] = 'TRUE';
-          $data['detalle'] = $datos_num;
-      }else{
-          $data['status'] = 'FALSE';
-          $data['error'] = 'Insert DB datos';
-      }
-
-    }
-  }
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  echo json_encode($data, JSON_FORCE_OBJECT);
-
-
-
-
-
-}
-
 /////////Actualizacion de base de datos a partir de los datos cargados en la pagina
 ////////la funcion que dispara esta accion es la del boton calc
 if(isset($_POST['ActualizaDB_Cal'])) {
@@ -188,6 +111,7 @@ if(isset($_POST['ActualizaDB_Cal'])) {
 
         if($actualiza === TRUE){
             $data['status'] = true;
+            $data['detalle'] = "Actualizamos con exito el dato en DB";
             ////////////LOGICA PARA CARGAR ARRAY PARA GRAFICAR/////////////////
 
             $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' ORDER BY `OA` ASC ");
@@ -214,7 +138,7 @@ if(isset($_POST['ActualizaDB_Cal'])) {
 
             ///////////////////////////////////////////////////////////
         }else{
-            $data['status'] = 'FALSE';
+            $data['status'] = false;
             $data['error'] = 'Update DB datos';
         }
       }else{
@@ -222,32 +146,43 @@ if(isset($_POST['ActualizaDB_Cal'])) {
         $insertar = $conn->query("INSERT INTO `datos`(`id`,`trabajo`,`tension`,`corriente`,`OA`,`MN`,`K`,`resistividad`,`fecha`) VALUES (NULL,'$dato_ensayo','$dato_v','$dato_i','$dato_oa','$dato_mn','$dato_k','$resistividad',CURRENT_TIMESTAMP)");
 
         if($insertar === TRUE){
-            $data['status'] = 'TRUE';
-            //$data['detalle'] = $datos_num;
+            $data['status'] = true;
+            $data['detalle'] = "Dato Insertado con Exito en DB";
+            ////////////LOGICA PARA CARGAR ARRAY PARA GRAFICAR/////////////////
+
+            $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' ORDER BY `OA` ASC ");
+            $datos_d = $result_d->fetch_all(MYSQLI_ASSOC);
+            $datos_num_d = count($datos_d);
+
+            $stringdata = '{"data":[';
+
+              for ($i=0; $i < $datos_num_d ; $i++) {
+                $stringdata .= '{';
+                $stringdata .= '"x":';
+                $stringdata .= $datos_d[$i]['OA'];
+                $stringdata .= ',';
+                $stringdata .= '"y":';
+                $stringdata .= $datos_d[$i]['resistividad'];
+                if($i != $datos_num_d-1 ){
+                  $stringdata .= '},';
+                }else{
+                  $stringdata .= '}]}';
+                }
+
+              }
+              $data['dato'] = $stringdata;
+
+            ///////////////////////////////////////////////////////////
         }else{
-            $data['status'] = 'FALSE';
-            $data['error'] = 'Insert DB datos';
+            $data['status'] = false;
+            $data['error'] = 'Error al insertar dato en DB';
         }
 
       }
 
     }else {
-      $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `trabajo`='".$dato_ensayo."' ");
-      $datos = $result->fetch_all(MYSQLI_ASSOC);
-      $datos_num = count($datos);
-
-      if($datos_num > 0){
-        $borrar = $conn->query("DELETE FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
-
-        if($borrar === TRUE){
-            $data['status'] = 'TRUE';
-            $data['detalle'] = 'Dato Eliminado';
-        }else{
-            $data['status'] = 'FALSE';
-            $data['error'] = 'Delet DB datos';
-        }
-      }
-
+        $data['status'] = false;
+        $data['error'] = 'Error en ingreso de datos ( el valor de resistividad debe ser distinto de 0 )';
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -471,7 +406,32 @@ function Exportar_Datos($Nombre_Ensayo){
 
 if(isset($_POST['EliminarDato'])){
 
-  $data['status'] = 'TRUE';
+  $data = array();
+
+  $dato_oa = strip_tags($_POST['OA']);
+  $dato_mn = strip_tags($_POST['MN']);
+  $dato_ensayo = strip_tags($_POST['Ensayo']);
+
+  $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
+  $datos = $result->fetch_all(MYSQLI_ASSOC);
+  $datos_num = count($datos);
+
+  if($datos_num > 0){
+    
+    $borrar = $conn->query("DELETE FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
+    if($borrar === TRUE){
+      $data['status'] = 'TRUE';
+      $data['detalle'] = 'Dato Eliminado con exito';
+    }else{
+        $data['status'] = 'FALSE';
+        $data['error'] = 'Error al eliminar Dato de DB';
+    }
+  }
+  else{
+    //no existe el dato a eliminar
+    $data['status'] = 'FALSE';
+    $data['error'] = 'Dato no encontrado en base de datos';
+  }
   echo json_encode($data, JSON_FORCE_OBJECT);
 }
 

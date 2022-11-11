@@ -51,11 +51,12 @@ function CalcularR(posicion){
                  var data = JSON.parse(objActualizar.responseText); //Parsea el Json al objeto anterior.
 
                  if(data.status == true){
-                   alert('Actualizacion de Calculo exitosa: ' + data['status']);
+                   alert(data.detalle);
                    //window.location.reload(true);
                    Graficar(data);
                  }else{
-                   alert('Error actualizacion: ' + data['error']);
+                   //alert('Error actualizacion: ' + data['error']);
+                   alert(data.error);
                  }
 
 
@@ -342,7 +343,8 @@ window.onload = function() {
     socket = new WebSocket('ws://' + '192.168.1.1' + ':80/ws');
 
     socket.onopen = function(e) {
-      alert("Conexión establecida con equipo SEV");
+      //alert("Conexión establecida con equipo SEV");
+      console.log("Conexión establecida con equipo SEV");
     };
 
     socket.onmessage = function(event) {
@@ -430,7 +432,8 @@ window.onload = function() {
                        //alert('Carga de Corriente en dbPuente Extoda: ' + data['status']);
                        console.log(`Actualiza Corriente: ` + value_data);
                        $("#corriente_0").val(value_data);
-                       //CalcularR(0);
+                       $("#resistividad_0").val(value_data);
+                       CalcularR(0);
                      }else{
                        alert('Error actualizar Corriente en dbPuente: ' + data['error']);
                      }
@@ -667,10 +670,10 @@ function EliminarDato(posicion){
                  var data = JSON.parse(objEliminarDato.responseText);
 
                  if(data['status'] == "TRUE"){
-                   alert('Eliminacion exitosa: ' + data['status']);
+                   alert(data['detalle']);
                    window.location.reload(true);
                  }else{
-                   alert('Error Eliminar ');
+                   alert(data['error']);
                  }
 
 
@@ -717,3 +720,24 @@ function Check_I(){
   //socket.send("SEV_I/SEV_C/Check/?");
   socket.send("SEV_C/SEV_I/Check/?");
 }
+
+function Disparo(){
+
+  alert("Enviamos Disparo");
+  
+  var claseD = $('#buttonD').attr('class');
+  if (claseD.includes("md-btn md-fab m-b-sm danger")) {
+      $('#buttonD').removeClass('md-btn md-fab m-b-sm danger');
+      $('#buttonD').addClass('md-btn md-fab m-b-sm success');
+      socket.send("SEV_C/SEV_I/Disparo/ON");
+  }
+  if (claseD.includes("md-btn md-fab m-b-sm success")) {
+    $('#buttonD').removeClass('md-btn md-fab m-b-sm success');
+    $('#buttonD').addClass('md-btn md-fab m-b-sm danger');
+    socket.send("SEV_C/SEV_I/Disparo/OFF");
+  }
+
+  
+  
+}
+
