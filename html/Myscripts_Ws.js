@@ -2,6 +2,12 @@
 
 var socket;
 
+function Ajustar(){
+  alert("soy ajustar");
+  window.location.reload(false);
+  
+}
+
 function CalcularR(posicion){
 
 
