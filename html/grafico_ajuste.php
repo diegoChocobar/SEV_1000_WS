@@ -56,7 +56,7 @@ include '../conectionDB.php';
 
                   <!-- INPUT VALUE BOXES -->
 
-  <!-- Python initial values calculation => mandar a javascript (onload) => php -->
+  <!-- Python initial values calculation -->
   <?php
       $python_interp = "/home/ale/anaconda3/bin/python";
 
@@ -98,10 +98,11 @@ include '../conectionDB.php';
       // print_r($rho0);
 
   ?>
+  <!-- FIN Python initial values calculation -->
 
   <!-- Input boxes -->
   <br>
-  <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+  <form method="post">
     Número de capas 
     <input type="number" id="nlayers0" name="nlayers" value="<?php echo $nlayers0; ?>" min=0 max=5> 
     <br>
@@ -126,33 +127,62 @@ include '../conectionDB.php';
     <br>
   </form>
 
-  <!-- Python fit model calculation => mandar a javascript (onload) => php -->
+  <!-- Python fit model calculation -->
   <?php
     // prepare json with input data
-    $nlayers0 = 3;
     $data2 = [
-      "nlayers" => $nlayers0,
+      "nlayers" => $nlayers,
       "OA" => $x,
       "R" => $y,
       "rho0" => $rho0,
       "thick0" => $thick0,
     ];
 
-    // compute initial values
+    // calcular ajuste
     $compute_fit = "python/fit_VES.py";
     $command = escapeshellcmd($python_interp." ".$compute_fit." ");  
     $arguments = escapeshellarg(json_encode($data2));
     $output2 = shell_exec($command.$arguments);
     $output_decode2 = json_decode($output2, true);
-    var_dump($output_decode2);
-    $thick0 = $output_decode['thick'];
-    $rho0 = $output_decode['rho'];
+    // var_dump($output_decode2);
+    $thick = $output_decode2['thick'];
+    $rho = $output_decode2['rho'];
+    // var_dump($thick)
     // #TODO
-    // FALTA COMUNICAR LOS RESULTADOS EN $thick0 Y $rho0 A LAS CAJAS DE TEXTO DE
-    // INPUT CUANDO SE APRIETA EL BOTON "CALCULAR"
   ?>
+  <!-- FIN Python forward model curve --> 
 
-  <!-- Python forward model curve - #TODO --> 
+  <!-- Tabla de resultados -->
+  <h3>Resultados de ajuste:</h3>
+
+  <table style="width:20%">
+    <tr>
+      <th>Resistividad</th>
+      <th>Ancho de capa</th>
+    </tr>
+    <tr>
+      <td> <?php echo $rho[0]; ?> </td>
+      <td> <?php echo $thick[0]; ?> </td>
+    </tr>
+    <tr>
+      <td> <?php echo $rho[1]; ?> </td>
+      <td> <?php echo $thick[1]; ?> </td>
+    </tr>
+    <tr>
+      <td> <?php echo $rho[2]; ?> </td>
+      <td> <?php echo $thick[2]; ?> </td>
+    </tr>
+  </table>
+  <br>
+
+
+<!-- #TODO 
+ - Calculo de valores iniciales (python & php) => mandar a javascript (onload) => php
+ - Calculo de ajuste de parametros (python & php) => mandar a javascript (boton, ahora lo hace onload) => php 
+ - Automatizar número de cajas con initial values según nlayers
+ - Función (python) para ajustar sólo resistividades (capas fijas)
+-->
+
   <?php
   ?>
   
