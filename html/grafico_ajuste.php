@@ -58,7 +58,7 @@ include '../conectionDB.php';
 
   <!-- Python initial values calculation -->
   <?php
-      $python_interp = "/home/ale/anaconda3/bin/python";
+      $python_interp = "/root/anaconda3/bin/python";
 
       // query data
       $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
@@ -268,8 +268,7 @@ include '../conectionDB.php';
 
 <?php $tiempo = time(); ?>
 
-<script type="text/javascript" src="GraficScript.js?v=<?php echo $tiempo ?>"></script>
-<script type="text/javascript" src="Myscripts_Ws.js?v=<?php echo $tiempo ?>"></script>
+<script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>
 

@@ -747,3 +747,8 @@ function Disparo(){
   
 }
 
+function AnalizarDatos(){
+  //alert("entramos a analizar datos:");
+  window.open(" http://localhost/SEV_1000_WS/html/grafico_ajuste.php", '_blank'); window.focus();
+ 
+}
