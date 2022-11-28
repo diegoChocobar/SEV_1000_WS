@@ -99,17 +99,17 @@ include 'checklogin.php';
                                 <tr>
                                   <td>0 a 250 mA</td>
                                   <td>0.01 mA</td>
-                                  <td>+-0.5% lectura + 1LBS </td>
+                                  <td>+-0.5% + 1LBS </td>
                                 </tr>
                                 <tr>
                                   <td>0 a 1000 mA</td>
                                   <td>0.01 mA</td>
-                                  <td>-+0.5% lectura + 1LBS</td>
+                                  <td>-+0.5%+ 1LBS</td>
                                 </tr>
                                 <tr>
                                   <td>0 a 2000 mA</td>
                                   <td>0.1 mA</td>
-                                  <td>-+1% lectura + 1LBS </td>
+                                  <td>-+1% + 1LBS </td>
                                 </tr>
 
                                 <tr>
