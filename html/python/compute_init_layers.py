@@ -1,4 +1,4 @@
-#!/home/ale/anaconda3/bin/python
+#!/home/diego/anaconda3/bin/python
 import sys
 import numpy as np
 import json

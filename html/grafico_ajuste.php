@@ -58,7 +58,8 @@ include '../conectionDB.php';
 
   <!-- Python initial values calculation -->
   <?php
-      $python_interp = "/root/anaconda3/bin/python";
+      $python_interp = "/home/diego/anaconda3/bin/python";
+      
 
       // query data
       $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
@@ -81,7 +82,8 @@ include '../conectionDB.php';
 
       // compute initial values
       $compute_init = "python/compute_init_layers.py";
-      $command = escapeshellcmd($python_interp." ".$compute_init." ");  
+      //$compute_init = "python/hello.py";
+      $command = escapeshellcmd($python_interp." ".$compute_init." ");
       $arguments = escapeshellarg(json_encode($data));
       $output = shell_exec($command.$arguments);
       // print_r($output);
