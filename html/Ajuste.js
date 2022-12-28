@@ -165,3 +165,8 @@ function ExportarDatos(){
   }
 
 }
+
+function ReAjustar(){
+
+  alert("Entramos a ReAjustar segun los datos ingresados");
+}

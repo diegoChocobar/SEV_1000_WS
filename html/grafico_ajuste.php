@@ -5,6 +5,74 @@ $ensayo = $_SESSION['ensayo'];
 include '../checklogin.php';
 include '../conectionDB.php';
 
+/////////////// Python initial values calculation //////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+    $python_interp = "/home/diego/anaconda3/bin/python";
+          
+    // query data
+    $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
+    $datos = $result->fetch_all(MYSQLI_ASSOC);
+    $datos_num = count($datos);
+
+    // prepare json with input data
+    $nlayers0 = 3;
+    $x = array();
+    $y = array();
+    for ($i=0; $i < $datos_num ; $i++) {
+          $xidx = array_push($x, floatval($datos[$i]['OA']));
+          $yidx = array_push($y, floatval($datos[$i]['resistividad']));
+    };
+    $data = [
+      "nlayers" => $nlayers0,
+      "OA" => $x,
+      "R" => $y,
+    ];
+
+    // compute initial values
+    $compute_init = "python/compute_init_layers.py";
+    //$compute_init = "python/hello.py";
+    $command = escapeshellcmd($python_interp." ".$compute_init." ");
+    $arguments = escapeshellarg(json_encode($data));
+    $output = shell_exec($command.$arguments);
+    // print_r($output);
+    if ($output == 1) {
+      echo "python failed";
+    };
+
+    $output_decode = json_decode($output, true);
+    $nlayers = $output_decode['nlayers'];
+    $thick0 = $output_decode['thick0'];
+    $rho0 = $output_decode['rho0'];
+    // print_r($nlayers);
+    // print_r($thick0);
+    // print_r($rho0);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////Pthon fit model calculation////////////////////////////////////////////
+       // prepare json with input data
+       $data2 = [
+        "nlayers" => $nlayers,
+        "OA" => $x,
+        "R" => $y,
+        "rho0" => $rho0,
+        "thick0" => $thick0,
+      ];
+  
+      // calcular ajuste
+      $compute_fit = "python/fit_VES.py";
+      $command = escapeshellcmd($python_interp." ".$compute_fit." ");  
+      $arguments = escapeshellarg(json_encode($data2));
+      $output2 = shell_exec($command.$arguments);
+      $output_decode2 = json_decode($output2, true);
+      // var_dump($output_decode2);
+      $thick = $output_decode2['thick'];
+      $rho = $output_decode2['rho'];
+      // var_dump($thick)
+      // #TODO
+      $number_rho = count($rho);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
  ?>
 
 <!DOCTYPE html>
@@ -54,128 +122,175 @@ include '../conectionDB.php';
           <div ui-view class="app-body" id="view">
               <div class="padding">
 
-                  <!-- INPUT VALUE BOXES -->
+                <div class='row justify-content-center'>
+                  <div class='col-md-8'>
+                  <span class='input-group-addon'><h3>Calculo de Ajuste de Curva: <?php echo $ensayo; ?> </h3></span>
+                  </div>
+                </div>
 
-  <!-- Python initial values calculation -->
-  <?php
-      $python_interp = "/home/diego/anaconda3/bin/python";
-      
+                <br><br>
+                <div class="row">
+                  
+                  <div class="col-sm-6">
+                    <div class="box">
+                      <div class='col-md-6'>
+                        <h5>Datos Condiciones Iniciales</h5>
+                      </div>
 
-      // query data
-      $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
-      $datos = $result->fetch_all(MYSQLI_ASSOC);
-      $datos_num = count($datos);
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Numero de Capas: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='nlayers' id='nlayers' type='number' class='md-input' style='height: 40px' size= '20' value = '<?php echo $nlayers0; ?>' min=0 max=5 placeholder="Numero de capas a analizar">
+                          </div>
+                        </div>
+                      </div>
 
-      // prepare json with input data
-      $nlayers0 = 3;
-      $x = array();
-      $y = array();
-      for ($i=0; $i < $datos_num ; $i++) {
-            $xidx = array_push($x, floatval($datos[$i]['OA']));
-            $yidx = array_push($y, floatval($datos[$i]['resistividad']));
-      };
-      $data = [
-        "nlayers" => $nlayers0,
-        "OA" => $x,
-        "R" => $y,
-      ];
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Resistividades: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho0_1' id='rho0_1' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[0]; ?>' min=0 placeholder="R-1">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho0_2' id='rho0_2' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[1]; ?>' min=0 placeholder="R-2">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho0_3' id='rho0_3' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[2]; ?>' min=0 placeholder="R-3">
+                          </div>
+                        </div>
+                      </div>
 
-      // compute initial values
-      $compute_init = "python/compute_init_layers.py";
-      //$compute_init = "python/hello.py";
-      $command = escapeshellcmd($python_interp." ".$compute_init." ");
-      $arguments = escapeshellarg(json_encode($data));
-      $output = shell_exec($command.$arguments);
-      // print_r($output);
-      if ($output == 1) {
-        echo "python failed";
-      };
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Profundidades: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='thick0_1' id='thick0_1' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $thick0[0]; ?>' min=0 placeholder="P-1">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='thick0_2' id='thick0_2' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $thick0[1]; ?>' min=0 placeholder="P-2">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-sm-6">
+                    <div class="box">
+                      <div class='col-md-6'>
+                        <h5>Resultados Ajuste</h5>
+                      </div>
 
-      $output_decode = json_decode($output, true);
-      $nlayers = $output_decode['nlayers'];
-      $thick0 = $output_decode['thick0'];
-      $rho0 = $output_decode['rho0'];
-      // print_r($nlayers);
-      // print_r($thick0);
-      // print_r($rho0);
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Numero de Capas: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='nlayers' id='nlayers' type='number' class='md-input' style='height: 40px' size= '20' value = '<?php echo $number_rho; ?>' min=0 max=5 placeholder="Numero de capas" disabled = "true">
+                          </div>
+                        </div>
+                      </div>
 
-  ?>
-  <!-- FIN Python initial values calculation -->
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Resistividades: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho_1' id='rho_1' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[0],2); ?>' min=0 placeholder="R-1">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho_2' id='rho_2' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[1],2); ?>' min=0 placeholder="R-2">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='rho_3' id='rho_3' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[2],2); ?>' min=0 placeholder="R-3">
+                          </div>
+                        </div>
+                      </div>
 
-  <!-- Input boxes -->
-  <br>
-  <form method="post">
-    Número de capas 
-    <input type="number" id="nlayers0" name="nlayers" value="<?php echo $nlayers0; ?>" min=0 max=5> 
-    <br>
-    Resistividad aparente:
-    <input type="number" id="rho0_1" name="rho0_1" value="<?php echo $rho0[0]; ?>" min=0> 
-    <input type="number" id="rho0_2" name="rho0_2" value="<?php echo $rho0[1]; ?>" min=0> 
-    <input type="number" id="rho0_3" name="rho0_3" value="<?php echo $rho0[2]; ?>" min=0> 
-    <br>
-    Profundidad de c/capa:
-    <input type="number" id="thick0_1" name="thick0_1" value="<?php echo $thick0[0]; ?>" min=0> 
-    <input type="number" id="thick0_2" name="thick0_2" value="<?php echo $thick0[1]; ?>" min=0> 
-    <!-- <input type="number" id="thick0_3" name="thick0_3" value=0 min=0>  -->
-    
+                      <div class="row">
+                        <div class='col-md-3'>
+                          <div class='input-group'>
+                            <span class='input-group-addon'>Profundidades: </span>
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='thick_1' id='thick_1' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[0],2); ?>' min=0 placeholder="P-1">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='thick_2' id='thick_2' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[1],2); ?>' min=0 placeholder="P-2">
+                          </div>
+                        </div>
+                        <div class='col-md-2'>
+                          <div class='input-group'>
+                            <input name='thick_3' id='thick_3' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[2],2); ?>' min=0 placeholder="P-3">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-    <br>
-    <br>
-    <button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Ajustar Resistividad" align="center"
-                                                       onclick="Ajustar();">
-                                              <i class="material-icons md-24"></i><i class="material-icons md-24"></i></button>
-    
-    <br>
-    <br>
-  </form>
+                  
+                  <div class="col-sm-12">
+                    <div align="center">
+                      <button  class="btn btn-lg success" title="Ajustar Resistividad" align="center" onclick="ReAjustar();">
+                        <h3>Recalcular</h3>
+                      </button>
+                    </div>
+                  </div>
 
-  <!-- Python fit model calculation -->
-  <?php
-    // prepare json with input data
-    $data2 = [
-      "nlayers" => $nlayers,
-      "OA" => $x,
-      "R" => $y,
-      "rho0" => $rho0,
-      "thick0" => $thick0,
-    ];
+                </div>  
 
-    // calcular ajuste
-    $compute_fit = "python/fit_VES.py";
-    $command = escapeshellcmd($python_interp." ".$compute_fit." ");  
-    $arguments = escapeshellarg(json_encode($data2));
-    $output2 = shell_exec($command.$arguments);
-    $output_decode2 = json_decode($output2, true);
-    // var_dump($output_decode2);
-    $thick = $output_decode2['thick'];
-    $rho = $output_decode2['rho'];
-    // var_dump($thick)
-    // #TODO
-  ?>
-  <!-- FIN Python forward model curve --> 
 
-  <!-- Tabla de resultados -->
-  <h3>Resultados de ajuste:</h3>
 
-  <table style="width:20%">
-    <tr>
-      <th>Resistividad</th>
-      <th>Ancho de capa</th>
-    </tr>
-    <tr>
-      <td> <?php echo $rho[0]; ?> </td>
-      <td> <?php echo $thick[0]; ?> </td>
-    </tr>
-    <tr>
-      <td> <?php echo $rho[1]; ?> </td>
-      <td> <?php echo $thick[1]; ?> </td>
-    </tr>
-    <tr>
-      <td> <?php echo $rho[2]; ?> </td>
-      <td> <?php echo $thick[2]; ?> </td>
-    </tr>
-  </table>
-  <br>
+                <!-- Input boxes -->
+                <br>
+                <!--form method="post">
+                  Número de capas 
+                  <input type="number" id="nlayers0" name="nlayers" value="<?php echo $nlayers0; ?>" min=0 max=5> 
+                  <br>
+                  Resistividad aparente:
+                  <input type="number" id="rho0_1" name="rho0_1" value="<?php echo $rho0[0]; ?>" min=0> 
+                  <input type="number" id="rho0_2" name="rho0_2" value="<?php echo $rho0[1]; ?>" min=0> 
+                  <input type="number" id="rho0_3" name="rho0_3" value="<?php echo $rho0[2]; ?>" min=0> 
+                  <br>
+                  Profundidad de c/capa:
+                  <input type="number" id="thick0_1" name="thick0_1" value="<?php echo $thick0[0]; ?>" min=0> 
+                  <input type="number" id="thick0_2" name="thick0_2" value="<?php echo $thick0[1]; ?>" min=0> 
+                  <input type="number" id="thick0_3" name="thick0_3" value=0 min=0>
+                  
+                </form -->
+
 
 
 <!-- #TODO 
@@ -185,8 +300,6 @@ include '../conectionDB.php';
  - Función (python) para ajustar sólo resistividades (capas fijas)
 -->
 
-  <?php
-  ?>
   
                   <div class="col-sm-12">
                     <div class="box white">
@@ -214,10 +327,6 @@ include '../conectionDB.php';
 
   </div>
 
-  <?php
-    //include ('SelectorTemas.php');
-  ?>
-<!-- build:js scripts/app.html.js -->
 
 
 <!-- jQuery -->
