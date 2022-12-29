@@ -747,6 +747,24 @@ function Disparo(){
   
 }
 
+function Hold(){
+
+  alert("Enviamos HOLD");
+  var claseH = $('#buttonH').attr('class');
+
+  if (claseH.includes("md-btn md-fab m-b-sm danger")) {
+    $('#buttonH').removeClass('md-btn md-fab m-b-sm danger');
+    $('#buttonH').addClass('md-btn md-fab m-b-sm success');
+    socket.send("SEV_C/SEV_I/Hold/ON");
+  }
+  if (claseH.includes("md-btn md-fab m-b-sm success")) {
+    $('#buttonH').removeClass('md-btn md-fab m-b-sm success');
+    $('#buttonH').addClass('md-btn md-fab m-b-sm danger');
+    socket.send("SEV_C/SEV_I/Hold/OFF");
+  }
+
+}
+
 function AnalizarDatos(){
   //alert("entramos a analizar datos:");
   window.open(" http://localhost/SEV_1000_WS/html/grafico_ajuste.php", '_blank'); window.focus();
