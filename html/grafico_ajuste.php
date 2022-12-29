@@ -128,13 +128,16 @@ include '../conectionDB.php';
                   </div>
                 </div>
 
-                <br><br>
+                <br>
                 <div class="row">
                   
                   <div class="col-sm-6">
                     <div class="box">
-                      <div class='col-md-6'>
-                        <h5>Datos Condiciones Iniciales</h5>
+                      <br>
+                      <div class='row justify-content-center'>
+                        <div class='col-md-6'>
+                          <h5>Datos Condiciones Iniciales</h5>
+                        </div>
                       </div>
 
                       <div class="row">
@@ -190,13 +193,17 @@ include '../conectionDB.php';
                           </div>
                         </div>
                       </div>
+                      <br>
                     </div>
                   </div>
                   
                   <div class="col-sm-6">
                     <div class="box">
-                      <div class='col-md-6'>
-                        <h5>Resultados Ajuste</h5>
+                      <br>
+                      <div class='row justify-content-center'>
+                        <div class='col-md-6'>
+                          <h5>Resultados Ajuste</h5>
+                        </div>
                       </div>
 
                       <div class="row">
@@ -257,6 +264,7 @@ include '../conectionDB.php';
                           </div>
                         </div>
                       </div>
+                      <br>
                     </div>
                   </div>
 
