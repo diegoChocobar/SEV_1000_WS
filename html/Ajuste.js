@@ -84,7 +84,7 @@ function Graficar(dat,ensayo){
   // console.log(data)
 
   var lineChartData = {
-      borderColor: window.chartColors.green,
+      borderColor: window.chartColors.red,
       //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
       backgroundColor: window.chartColors.black,
       label: 'Modelo de capas',
