@@ -21,7 +21,8 @@ window.onload = function() {
 
              if(data.status == true){
               // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
-               Graficar(data,ensayo);
+               //Graficar(data,ensayo);
+               GraficarAjuste();
                //window.location.reload(true);
              }else{
                alert('Error al pedir datos para grafico: ' + data['error']);
@@ -116,6 +117,17 @@ function Graficar(dat,ensayo){
       }
     });
 }
+
+function GraficarAjuste(dat,ensayo){
+
+  //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
+  var nlayers = $("#nlayers").val();
+
+  var rho_1 = $("#rho_1").val();
+
+    alert("nlayers: " + nlayers+ "Rho_1"+ rho_1);
+}
+
 
 function ExportarDatos(){
 
