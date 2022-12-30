@@ -21,8 +21,8 @@ window.onload = function() {
 
              if(data.status == true){
               // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
-               //Graficar(data,ensayo);
-               GraficarAjuste();
+               Graficar(data,ensayo);
+              //  GraficarAjuste();
                //window.location.reload(true);
              }else{
                alert('Error al pedir datos para grafico: ' + data['error']);
@@ -45,7 +45,7 @@ window.onload = function() {
 
 function Graficar(dat,ensayo){
 
-
+  // DATOS ENSAYO
     var datat=dat.dato;
     //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
     var testt = JSON.parse(datat);
@@ -53,7 +53,6 @@ function Graficar(dat,ensayo){
     var color = Chart.helpers.color;
 
     var scatterChartData = {
-      datasets: [{
         borderColor: window.chartColors.blue,
         //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
         backgroundColor: window.chartColors.black,
@@ -63,15 +62,51 @@ function Graficar(dat,ensayo){
         //spanGaps:true,
         showLine: false, // disable for a single dataset
         data: testt.data
-      }]
     };
 
+  // DATOS AJUSTE
 
+  //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
+  var nlayers = $("#nlayers").val();
+  nlayers = parseFloat(nlayers);
+  var rho = Array();
+  var thick = Array();
+  for (i=0;i<nlayers;i++) {
+    istring = (i+1).toString();
+    r = $("#rho_" + istring).val();
+    t = $("#thick_" + istring).val();
+    rho = rho.concat(parseFloat(r));
+    thick = thick.concat(parseFloat(t));
+  };
+  // console.log(rho);
+  // console.log(thick);
+  data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
+  // console.log(data)
+
+  var lineChartData = {
+      borderColor: window.chartColors.green,
+      //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+      backgroundColor: window.chartColors.black,
+      label: 'Modelo de capas',
+      type: 'line',
+      showLine: true, // disable for a single dataset
+      tension: 0,
+      data: data_ajuste
+  };
+
+
+  // GRAFICO DATOS ENSAYO Y AJUSTE
+    var multipleChartData = {
+      datasets: [
+        scatterChartData,
+        lineChartData
+      ]
+    };
 
     var ctx = document.getElementById('canvas').getContext('2d');
     window.myScatter = Chart.Scatter(ctx, {
 
-      data: scatterChartData,
+      data: multipleChartData,
       options: {
 
         title: {
@@ -118,15 +153,118 @@ function Graficar(dat,ensayo){
     });
 }
 
-function GraficarAjuste(dat,ensayo){
+// function GraficarAjuste(dat,ensayo){
 
-  //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
-  var nlayers = $("#nlayers").val();
+//   //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
+//   var nlayers = $("#nlayers").val();
+//   nlayers = parseFloat(nlayers);
+//   var rho_1 = $("#rho_1").val();
+//   var rho_2 = $("#rho_2").val();
+//   var rho_3 = $("#rho_3").val();
+//   var thick_1 = $("#thick_1").val();
+//   var thick_2 = $("#thick_2").val();
+//   var thick_3 = $("#thick_3").val();
 
-  var rho_1 = $("#rho_1").val();
+//   rho = [rho_1, rho_2, rho_3];
+//   thick = [thick_1, thick_2, thick_3];
+//   data = ConstruirArrayCapas(nlayers, rho, thick);
+//   console.log(data)
 
-    alert("nlayers: " + nlayers+ "Rho_1"+ rho_1);
-}
+//   var lineChartData = {
+//     datasets: [{
+//       borderColor: window.chartColors.blue,
+//       //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+//       backgroundColor: window.chartColors.black,
+//       label: 'Resistividad',
+//       type: 'line',
+//       showLine: true, // disable for a single dataset
+//       tension: 0,
+//       data: data
+//     }]
+//   };
+
+//   var ctx = document.getElementById('canvas').getContext('2d');
+//   window.myScatter = Chart.Scatter(ctx, {
+
+//     data: lineChartData,
+//     options: {
+
+//       title: {
+//         display: true,
+//         text:'Sondeo Electrico Vertical -- ' //+ ensayo
+//       },
+//       scales: {
+//         xAxes: [{
+//           type: 'logarithmic',
+
+//           ticks: {
+//             userCallback: function(tick) {
+//               var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
+//               if (remain === 1 || remain === 2 || remain === 5) {
+//                 return tick.toString() + ' m';
+//               }
+//               return '';
+//             },
+//           },
+//           scaleLabel: {
+//             labelString: 'Metros',
+//             display: true,
+//           }
+//         }],
+//         yAxes: [{
+//           type: 'logarithmic',
+
+//           ticks: {
+//             userCallback: function(tick) {
+//               var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
+//               if (remain === 1 || remain === 2 || remain === 5) {
+//                 return tick.toString() + ' ';
+//               }
+//               return '';
+//             },
+//           },
+//           scaleLabel: {
+//             labelString: 'Resistividad',
+//             display: true
+//           }
+//         }]
+//       }
+//     }
+//   });
+
+// };
+
+
+function ConstruirArrayCapas(nlayers, rho, thick) {
+  const tdum = [0].concat(thick);
+  var suma = 0;
+  for (i=0;i<=nlayers;i++) {
+    suma += tdum[i];
+    tdum[i] = suma;
+  };
+  var rho_plot = [];
+  var thick_plot = [];
+  for (i=0;i<nlayers;i++) {
+    r = rho[i];
+    t = tdum[i];
+    rho_plot = rho_plot.concat(r);
+    thick_plot = thick_plot.concat(t);
+    if (i < nlayers) {
+      rho_plot = rho_plot.concat(r);
+      thick_plot = thick_plot.concat(tdum[i+1]);
+    }
+    else {
+      rho_plot = rho_plot.concat(r);
+    };
+  };
+  // console.log(rho_plot);
+  // console.log(thick_plot);
+  data = Array();
+  for (i=0;i<=nlayers*2-1;i++) {
+    data = data.concat({'x': thick_plot[i], 'y': rho_plot[i]})
+  }
+  return data
+};
 
 
 function ExportarDatos(){
