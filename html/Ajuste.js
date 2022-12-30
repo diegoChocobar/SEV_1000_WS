@@ -169,4 +169,50 @@ function ExportarDatos(){
 function ReAjustar(){
 
   alert("Entramos a ReAjustar segun los datos ingresados");
+
+  var Ensayo  = $("#Ensayo").val();
+
+  if(Ensayo != ""){
+
+      /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
+      var formData = new FormData();
+      formData.append("ReAjustar", "TRUE");
+      formData.append("Ensayo", Ensayo);
+
+      ///////////////funcion de  de escucha al php/////////////
+       var objReAjustar = new XMLHttpRequest();
+
+       objReAjustar.onreadystatechange = function() {
+           if(objReAjustar.readyState === 4) {
+             if(objReAjustar.status === 200) {
+               //alert(objNewEnsayo.responseText);
+               var data = JSON.parse(objReAjustar.responseText);
+
+               if(data['status'] == "TRUE"){
+                 alert('REAjustar Exitoso: ' + data['detalle']);
+
+                 //window.location.reload(true);
+                 //var link = "http://localhost/cdcelectronics/"+data['file'];
+                 //window.open(link, '_blank'); window.focus();
+
+               }else{
+                 alert('Error ReAjustar: ' + data['error']);
+               }
+
+
+             } else {
+               alert('Error Code 111: ' +  objReAjustar.status);
+               alert('Error Message 222: ' + objReAjustar.statusText);
+             }
+           }
+       }
+       ////////////////////////////////////////////////////////////////
+
+      objReAjustar.open('POST', '../recibe.php',true);
+      objReAjustar.send(formData);
+
+
+  }
+
+
 }

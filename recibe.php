@@ -435,5 +435,19 @@ if(isset($_POST['EliminarDato'])){
   echo json_encode($data, JSON_FORCE_OBJECT);
 }
 
+if(isset($_POST['ReAjustar'])){
+
+  $data = array();
+
+  $dato_ensayo = strip_tags($_POST['Ensayo']);
+
+  $data['status'] = 'TRUE';
+  $data['detalle'] = 'Dato ReAjustar recibido por Back';
+
+
+  echo json_encode($data, JSON_FORCE_OBJECT);
+  
+}
+
 
 ?>
