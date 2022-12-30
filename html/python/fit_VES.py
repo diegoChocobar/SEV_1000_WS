@@ -39,11 +39,7 @@ try:
     lam0 = np.concatenate([rho0, thick0])
     lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
     rho, thick = VES1D.extract_values(lam)
-    
-#    VES1D.plot_results(ab2s_exp, appres_exp, rho, thick)
-#    print(f"initial guess: \n\n rho_ini = {rho0}, thick_ini = {thick0}")
-#    print(f"computed value: \n\n rho_fin = {rho}, thick_fin = {thick}")
-    lam_dict = {'rho': list(rho), 'thick': list(thick)}
+    lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
     print(json.dumps(lam_dict))
 except:
     # LaPaz
@@ -55,11 +51,7 @@ except:
     lam0 = np.concatenate([rho0, thick0[:-1]])
     lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
     rho, thick = VES1D.extract_values(lam)
-
-#    VES1D.plot_results(ab2s_exp, appres_exp, rho, thick)
-#    print(f"initial guess: \n rho_ini = {rho0}, thick_ini = {thick0}")
-#    print(f"computed value: \n rho_fin = {rho}, thick_fin = {thick}")
-    lam_dict = {'rho': list(rho), 'thick': list(thick)}
+    lam_dict = VES1D.construct_lambda(rho, thick)
     print(json.dumps(lam_dict))
 
 # except:
@@ -70,13 +62,10 @@ except:
 
 # TODO #1
 # - problemas de ajuste con dataset LaPaz (otra funcion de más de 5 puntos?)
-# - nlayers basado en concavidades
 # - bug: nlayers = 5 (la paz)
 #   initial guess:  [70.0, 30.0, 30.0, 10.0, 10.0] [10.0, 0.0, 10.0, 20.0]
 
 # TODO #2
-# - estructura de comunicacion de datos html <=> php 
-# - estructura de comunicacion de datos php <=> python
 # - interface de input data
 # - gráfico de initial data
 # - gráfico de computed data

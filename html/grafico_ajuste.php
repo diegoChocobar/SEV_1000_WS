@@ -64,11 +64,10 @@ include '../conectionDB.php';
       $arguments = escapeshellarg(json_encode($data2));
       $output2 = shell_exec($command.$arguments);
       $output_decode2 = json_decode($output2, true);
-      // var_dump($output_decode2);
       $thick = $output_decode2['thick'];
       $rho = $output_decode2['rho'];
-      // var_dump($thick)
-      // #TODO
+      // print_r($output_decode2);
+      // print_r($thick);
       $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
