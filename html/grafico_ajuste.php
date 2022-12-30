@@ -7,7 +7,7 @@ include '../conectionDB.php';
 
 /////////////// Python initial values calculation //////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $python_interp = "/home/ale/anaconda3/bin/python";
+    $python_interp = "/home/diego/anaconda3/bin/python";
           
     // query data
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
