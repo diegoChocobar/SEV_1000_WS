@@ -7,7 +7,8 @@ include '../conectionDB.php';
 
 /////////////// Python initial values calculation //////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $python_interp = "/home/diego/anaconda3/bin/python";
+    $username = getenv("SUDO_USER");
+    $python_interp = "/home/".$username."/anaconda3/bin/python";
           
     // query data
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
@@ -158,21 +159,16 @@ include '../conectionDB.php';
                             <span class='input-group-addon'>Resistividades: </span>
                           </div>
                         </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho0_1' id='rho0_1' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[0]; ?>' min=0 placeholder="R-1">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho0_2' id='rho0_2' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[1]; ?>' min=0 placeholder="R-2">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho0_3' id='rho0_3' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $rho0[2]; ?>' min=0 placeholder="R-3">
-                          </div>
-                        </div>
+                        <?php
+                          for($i=0;$i<$nlayers0;$i++){
+                            //echo "capa:",$i,"/n";
+                            echo "<div class='col-md-2'>";
+                            echo "<div class='input-group'>";
+                            echo "<input name='rho0_$i'"," id='rho0_$i'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$rho0[$i]' min=0 placeholder='R-$i'",">";
+                            echo "</div>";
+                            echo "</div>";
+                          }
+                         ?>
                       </div>
 
                       <div class="row">
@@ -181,16 +177,16 @@ include '../conectionDB.php';
                             <span class='input-group-addon'>Profundidades: </span>
                           </div>
                         </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='thick0_1' id='thick0_1' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $thick0[0]; ?>' min=0 placeholder="P-1">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='thick0_2' id='thick0_2' type='number' class='md-input' style='height: 40px' size= '30' value = '<?php echo $thick0[1]; ?>' min=0 placeholder="P-2">
-                          </div>
-                        </div>
+                        <?php
+                          for($i=0;$i<$nlayers0-1;$i++){
+                            //echo "capa:",$i,"/n";
+                            echo "<div class='col-md-2'>";
+                            echo "<div class='input-group'>";
+                            echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='number' class='md-input' style='height: 40px' size= '30' value = '$thick0[$i]' min=0 placeholder='P-$i'",">";
+                            echo "</div>";
+                            echo "</div>";
+                          }
+                         ?>
                       </div>
                       <br>
                     </div>
@@ -224,21 +220,18 @@ include '../conectionDB.php';
                             <span class='input-group-addon'>Resistividades: </span>
                           </div>
                         </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho_1' id='rho_1' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[0],2); ?>' min=0 placeholder="R-1">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho_2' id='rho_2' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[1],2); ?>' min=0 placeholder="R-2">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='rho_3' id='rho_3' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($rho[2],2); ?>' min=0 placeholder="R-3">
-                          </div>
-                        </div>
+                        <?php
+                          for($i=0;$i<$number_rho;$i++){
+                            //echo "capa:",$i,"/n";
+                            echo "<div class='col-md-2'>";
+                            echo "<div class='input-group'>";
+                            $rho_temp = round($rho[$i],2);
+                            $j=$i+1;
+                            echo "<input name='rho_$j'"," id='rho_$j'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$rho_temp' min=0 placeholder='R-$j'",">";
+                            echo "</div>";
+                            echo "</div>";
+                          }
+                         ?>
                       </div>
 
                       <div class="row">
@@ -247,21 +240,19 @@ include '../conectionDB.php';
                             <span class='input-group-addon'>Profundidades: </span>
                           </div>
                         </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='thick_1' id='thick_1' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[0],2); ?>' min=0 placeholder="P-1">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='thick_2' id='thick_2' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[1],2); ?>' min=0 placeholder="P-2">
-                          </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='thick_3' id='thick_3' type='text' class='md-input' style='height: 40px' size= '30' value = '<?php echo round($thick[2],2); ?>' min=0 placeholder="P-3">
-                          </div>
-                        </div>
+                        <?php
+                          for($i=0;$i<$number_rho;$i++){
+                            //echo "capa:",$i,"/n";
+                            echo "<div class='col-md-2'>";
+                            echo "<div class='input-group'>";
+                            $thick_temp = round($thick[$i],2);
+                            $j=$i+1;
+                            echo "<input name='thick_$j'"," id='thick_$j'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$thick_temp' min=0 placeholder='P-$j'",">";
+                            echo "</div>";
+                            echo "</div>";
+                          }
+                         ?>
+                         
                       </div>
                       <br>
                     </div>
@@ -276,54 +267,28 @@ include '../conectionDB.php';
                     </div>
                   </div>
 
+                  
+
                 </div>  
 
-
-
-                <!-- Input boxes -->
                 <br>
-                <!--form method="post">
-                  Número de capas 
-                  <input type="number" id="nlayers0" name="nlayers" value="<?php echo $nlayers0; ?>" min=0 max=5> 
-                  <br>
-                  Resistividad aparente:
-                  <input type="number" id="rho0_1" name="rho0_1" value="<?php echo $rho0[0]; ?>" min=0> 
-                  <input type="number" id="rho0_2" name="rho0_2" value="<?php echo $rho0[1]; ?>" min=0> 
-                  <input type="number" id="rho0_3" name="rho0_3" value="<?php echo $rho0[2]; ?>" min=0> 
-                  <br>
-                  Profundidad de c/capa:
-                  <input type="number" id="thick0_1" name="thick0_1" value="<?php echo $thick0[0]; ?>" min=0> 
-                  <input type="number" id="thick0_2" name="thick0_2" value="<?php echo $thick0[1]; ?>" min=0> 
-                  <input type="number" id="thick0_3" name="thick0_3" value=0 min=0>
-                  
-                </form -->
 
-
-
-<!-- #TODO 
- - Calculo de valores iniciales (python & php) => mandar a javascript (onload) => php
- - Calculo de ajuste de parametros (python & php) => mandar a javascript (boton, ahora lo hace onload) => php 
- - Automatizar número de cajas con initial values según nlayers
- - Función (python) para ajustar sólo resistividades (capas fijas)
--->
-
-  
+                <!--////////area para el grafico//////////---->    
                   <div class="col-sm-12">
                     <div class="box white">
 
                       <div class="box-header">
-                        <!--h2 align="center">Sondeo Electrico Vertial -- <?php echo $ensayo; ?></h2-->
                         <input id="Ensayo" value="<?php echo $ensayo ?>" type="hidden" class="form-control" align="center" type="text" placeholder="Ensayo" style="width: 345px;margin: 0px 0px">
                       </div>
 
-                      <!--////////area para el grafico//////////---->
                       <div style="width:100%">
                     		<canvas id="canvas"></canvas>
                     	</div>
-                      <!--////////area para el grafico//////////---->
+                      
 
                     </div>
                   </div>
+                <!--////////area para el grafico//////////---->
 
 
               </div>
