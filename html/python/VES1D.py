@@ -159,6 +159,16 @@ def extract_values(lam):
     return res, thick
 
 
+def construct_lambda(x_exp, rho, thick):
+    rho, thick = list(rho), list(thick)
+    
+    # add layer
+    last_layer = max(x_exp) - sum(thick)
+    thick = thick + [last_layer]
+    
+    return {'rho': rho, 'thick': thick}
+    
+
 def plot_results(ab2s_exp, appres_exp, res, thick):
 
     # Figure

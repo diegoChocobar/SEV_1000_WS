@@ -7,7 +7,7 @@ include '../conectionDB.php';
 
 /////////////// Python initial values calculation //////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $python_interp = "/home/diego/anaconda3/bin/python";
+    $python_interp = "/home/ale/anaconda3/bin/python";
           
     // query data
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
@@ -64,11 +64,10 @@ include '../conectionDB.php';
       $arguments = escapeshellarg(json_encode($data2));
       $output2 = shell_exec($command.$arguments);
       $output_decode2 = json_decode($output2, true);
-      // var_dump($output_decode2);
       $thick = $output_decode2['thick'];
       $rho = $output_decode2['rho'];
-      // var_dump($thick)
-      // #TODO
+      // print_r($output_decode2);
+      // print_r($thick);
       $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
