@@ -110,6 +110,98 @@ include '../conectionDB.php';
   <link rel="stylesheet" type="text/css" href="http://localhost/SEV_1000/libs/jquery/parsleyjs/dist/parsley.css">
 
   <link href="../prettify.css" rel="stylesheet">
+    <style type="text/css">  
+      input[type=numbers]::-webkit-inner-spin-button,
+      input[type=numbers]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          }
+      input[type=numbers] { -moz-appearance:textfield; }
+
+      input[type=numbers] {
+        width : 55px;
+        height : 37px;
+        padding: 0 7px;
+        margin: 5px 10px 5px 0px;
+        box-sizing: border-box;
+        border-radius: 7px;
+        border : 0px solid #333;
+        background   : rgba(0,0,0,.03);
+      }
+      input[type=ncapas] {
+        width : 75px;
+        height : 37px;
+        padding: 0px 15px;
+        margin: 0px 5px 5px 0px;
+        box-sizing: border-box;
+        border-radius: 7px;
+        border : 0px solid #333;
+        background   : rgba(0,0,0,.05);
+        font-size: 20px;
+      }
+      input[type=number] {
+        width : 75px;
+        height : 37px;
+        padding: 0px 15px;
+        margin: 0px 5px 5px 0px;
+        box-sizing: border-box;
+        border-radius: 7px;
+        border : 0px solid #333;
+        background   : rgba(0,0,0,.05);
+        font-size: 20px;
+      }
+      input[type=checkbox] {
+        width : 20px;
+        height : 20px;
+        padding: 10px 10px;
+        margin: 12px 0px 5px 10px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border : 2px solid #333;
+      }
+      input:focus{
+        background   : rgba(0,0,0,.15);
+        border-radius: 5px;
+      }
+      span[type=myspan]{
+        width : 105px;
+        height : 37px;
+        padding: 0px 0px;;
+        margin: 5px 0px 5px 0px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border : 0px solid #333;
+      }
+
+      span[type=ncapas]{
+        width : 145px;
+        height : 37px;
+        padding: 5px 0px;;
+        margin: 0px 0px 5px 5px;
+        box-sizing: border-box;
+        border-radius: 7px;
+        border : 0px solid #333;
+      }
+      span[type=ncapas2]{
+        width : 145px;
+        height : 37px;
+        padding: 5px 0px 5px 5px;
+        margin: 0px 0px 5px 15px;
+        box-sizing: border-box;
+        border-radius: 7px;
+        border : 0px solid #333;
+      }
+      span[type=resultados]{
+        width : 125px;
+        height : 37px;
+        padding: 5px 0px;
+        margin: 5px 0px 5px 15px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border : 0px solid #333;
+      }
+    
+    </style>
+
 
 </head>
 
@@ -124,7 +216,7 @@ include '../conectionDB.php';
 
                 <div class='row justify-content-center'>
                   <div class='col-md-8'>
-                  <span class='input-group-addon'><h3>Calculo de Ajuste de Curva: <?php echo $ensayo; ?> </h3></span>
+                    <span class='input-group-addon'><h3>Calculo de Ajuste de Curva: <?php echo $ensayo; ?> </h3></span>
                   </div>
                 </div>
 
@@ -136,35 +228,38 @@ include '../conectionDB.php';
                       <br>
                       <div class='row justify-content-center'>
                         <div class='col-md-6'>
-                          <h5>Datos Condiciones Iniciales</h5>
+                          <h5>Condiciones Iniciales</h5>
+                        </div>
+                      </div>
+                      <br>
+
+                      <div class="row">
+                        <div class='col-xs-6'>
+                          <div class='input-group'>
+                            <span type='ncapas' class='input-group-addon'>Numero de Capas: </span>
+                          </div>
+                        </div>
+                        <div class='col-xs-6'>
+                          <div class='input-group'>
+                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=1 max=5 placeholder="Numero de capas a analizar">
+                          </div>
                         </div>
                       </div>
 
                       <div class="row">
-                        <div class='col-md-3'>
+                        
+                      <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon'>Numero de Capas: </span>
+                            <input type="checkbox" name="checkR" id="CheckR"><i class="dark-white"></i> 
+                              <span class='input-group-addon' type='myspan'>Resistividad: </span>
                           </div>
-                        </div>
-                        <div class='col-md-2'>
-                          <div class='input-group'>
-                            <input name='nlayers' id='nlayers' type='number' class='md-input' style='height: 40px' size= '20' value = '<?php echo $nlayers0; ?>' min=0 max=5 placeholder="Numero de capas a analizar">
-                          </div>
-                        </div>
                       </div>
-
-                      <div class="row">
-                        <div class='col-md-3'>
-                          <div class='input-group'>
-                            <span class='input-group-addon'>Resistividades: </span>
-                          </div>
-                        </div>
                         <?php
                           for($i=0;$i<$nlayers0;$i++){
                             //echo "capa:",$i,"/n";
-                            echo "<div class='col-md-2'>";
+                            echo "<div>";
                             echo "<div class='input-group'>";
-                            echo "<input name='rho0_$i'"," id='rho0_$i'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$rho0[$i]' min=0 placeholder='R-$i'",">";
+                            echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 placeholder='R-$i'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -172,17 +267,18 @@ include '../conectionDB.php';
                       </div>
 
                       <div class="row">
-                        <div class='col-md-3'>
-                          <div class='input-group'>
-                            <span class='input-group-addon'>Profundidades: </span>
-                          </div>
+                        <div class='col-xs-4'>
+                            <div class='input-group'>
+                              <input type="checkbox" name="checkR" id="CheckR"><i class="dark-white"></i> 
+                              <span class='input-group-addon' type='myspan' >Profundidad: </span>
+                            </div>
                         </div>
                         <?php
                           for($i=0;$i<$nlayers0-1;$i++){
                             //echo "capa:",$i,"/n";
-                            echo "<div class='col-md-2'>";
+                            echo "<div>";
                             echo "<div class='input-group'>";
-                            echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='number' class='md-input' style='height: 40px' size= '30' value = '$thick0[$i]' min=0 placeholder='P-$i'",">";
+                            echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 placeholder='P-$i'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -200,34 +296,34 @@ include '../conectionDB.php';
                           <h5>Resultados Ajuste</h5>
                         </div>
                       </div>
-
+                      <br>
                       <div class="row">
-                        <div class='col-md-3'>
+                        <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span class='input-group-addon'>Numero de Capas: </span>
+                            <span class='input-group-addon' type='ncapas2'>Numero de Capas: </span>
                           </div>
                         </div>
                         <div class='col-md-2'>
                           <div class='input-group'>
-                            <input name='nlayers' id='nlayers' type='number' class='md-input' style='height: 40px' size= '20' value = '<?php echo $number_rho; ?>' min=0 max=5 placeholder="Numero de capas" disabled = "true">
+                            <input name='nlayers' id='nlayers' type='ncapas' class='md-input' value = '<?php echo $number_rho; ?>' min=1 max=5 placeholder="Numero de capas" disabled = "true">
                           </div>
                         </div>
                       </div>
 
                       <div class="row">
-                        <div class='col-md-3'>
+                        <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon'>Resistividades: </span>
+                            <span class='input-group-addon' type='resultados' >Resistividades: </span>
                           </div>
                         </div>
                         <?php
                           for($i=0;$i<$number_rho;$i++){
                             //echo "capa:",$i,"/n";
-                            echo "<div class='col-md-2'>";
+                            echo "<div>";
                             echo "<div class='input-group'>";
                             $rho_temp = round($rho[$i],2);
                             $j=$i+1;
-                            echo "<input name='rho_$j'"," id='rho_$j'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$rho_temp' min=0 placeholder='R-$j'",">";
+                            echo "<input name='rho_$j'"," id='rho_$j'"," type='numbers' step='0.1' value = '$rho_temp' min=0 placeholder='R-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -235,19 +331,19 @@ include '../conectionDB.php';
                       </div>
 
                       <div class="row">
-                        <div class='col-md-3'>
+                        <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon'>Profundidades: </span>
+                            <span class='input-group-addon' type='resultados'>Profundidades: </span>
                           </div>
                         </div>
                         <?php
                           for($i=0;$i<$number_rho;$i++){
                             //echo "capa:",$i,"/n";
-                            echo "<div class='col-md-2'>";
+                            echo "<div>";
                             echo "<div class='input-group'>";
                             $thick_temp = round($thick[$i],2);
                             $j=$i+1;
-                            echo "<input name='thick_$j'"," id='thick_$j'"," type='number' step='0.01' class='md-input' style='height: 40px' size= '30' value = '$thick_temp' min=0 placeholder='P-$j'",">";
+                            echo "<input name='thick_$j'"," id='thick_$j'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
