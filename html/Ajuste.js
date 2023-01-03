@@ -242,9 +242,13 @@ function ReAjustar(){
   var nlayers = $("#nlayers").val();
   if($("#checkR").prop('checked')){var checkR = "true";}else{var checkR = "false";}
   if($("#checkP").prop('checked')){var checkP = "true";}else{var checkP = "false";}
-  //var checkR = $("#checkR").prop('checked');
-  //var checkP = $("#checkP").prop('checked');
 
+  let Rho0 = [];
+  let Thick0 = [];
+  for (var i=0; i<nlayers; i++){
+    Rho0[i] = $("#rho0_" + i).val();
+    Thick0[i] = $("#thick0_" + i).val();
+  }
 
   if(Ensayo != ""){
 
@@ -255,6 +259,8 @@ function ReAjustar(){
       formData.append("nlayers", nlayers);
       formData.append("checkR", checkR);
       formData.append("checkP", checkP);
+      formData.append("Rho0", Rho0);
+      formData.append("Thick0", Thick0);
 
       ///////////////funcion de  de escucha al php/////////////
        var objReAjustar = new XMLHttpRequest();
