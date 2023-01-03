@@ -443,10 +443,12 @@ if(isset($_POST['ReAjustar'])){
   $nlayers = strip_tags($_POST['nlayers']);
   $checkR = strip_tags($_POST['checkR']);
   $checkP = strip_tags($_POST['checkP']);
+  $Rho0 = strip_tags($_POST['Rho0']);
+  $Thick0 = strip_tags($_POST['Thick0']);
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-
+  $data['detalle'] .= 'Resistividades Iniciales:' . $Rho0 . " Thick: " .$Thick0 ;
 
   echo json_encode($data, JSON_FORCE_OBJECT);
   
