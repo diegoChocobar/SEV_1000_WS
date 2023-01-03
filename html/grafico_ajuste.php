@@ -250,7 +250,7 @@ include '../conectionDB.php';
                         
                       <div class='col-xs-4'>
                           <div class='input-group'>
-                            <input type="checkbox" name="checkR" id="CheckR"><i class="dark-white"></i> 
+                            <input type="checkbox" name="checkR" id="checkR"><i class="dark-white"></i> 
                               <span class='input-group-addon' type='myspan'>Resistividad: </span>
                           </div>
                       </div>
@@ -269,7 +269,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-4'>
                             <div class='input-group'>
-                              <input type="checkbox" name="checkR" id="CheckR"><i class="dark-white"></i> 
+                              <input type="checkbox" name="checkP" id="checkP"><i class="dark-white"></i> 
                               <span class='input-group-addon' type='myspan' >Profundidad: </span>
                             </div>
                         </div>
