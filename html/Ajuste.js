@@ -71,17 +71,20 @@ function Graficar(dat,ensayo){
   nlayers = parseFloat(nlayers);
   var rho = Array();
   var thick = Array();
+  var thick_total = Array();
   for (i=0;i<nlayers;i++) {
     istring = (i+1).toString();
     r = $("#rho_" + istring).val();
     t = $("#thick_" + istring).val();
     rho = rho.concat(parseFloat(r));
-    thick = thick.concat(parseFloat(t));
+    thick_total = thick_total.concat(parseFloat(t));
   };
-  // console.log(rho);
-  // console.log(thick);
+  suma = 0;
+  thick[0] = thick_total[0];
+  for (i=1;i<nlayers;i++) {
+    thick[i] = thick_total[i] - thick_total[i-1];
+  }
   data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
-  // console.log(data)
 
   var lineChartData = {
       borderColor: window.chartColors.red,

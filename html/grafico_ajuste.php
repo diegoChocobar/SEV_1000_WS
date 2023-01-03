@@ -66,9 +66,17 @@ include '../conectionDB.php';
       $output2 = shell_exec($command.$arguments);
       $output_decode2 = json_decode($output2, true);
       $thick = $output_decode2['thick'];
+      # compute total thick
+      $thick_total = array();
+      $suma = 0.0;
+      for ($i=0;$i<$nlayers;$i++){
+        $suma += $thick[$i];
+        $thick_total[$i] = $suma;
+      }
       $rho = $output_decode2['rho'];
       // print_r($output_decode2);
       // print_r($thick);
+      // print_r($thick_total);
       $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -341,7 +349,7 @@ include '../conectionDB.php';
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $thick_temp = round($thick[$i],2);
+                            $thick_temp = round($thick_total[$i],2);
                             $j=$i+1;
                             echo "<input name='thick_$j'"," id='thick_$j'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
                             echo "</div>";
@@ -447,6 +455,7 @@ include '../conectionDB.php';
 
 <?php $tiempo = time(); ?>
 
+<script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script>
 <script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>
