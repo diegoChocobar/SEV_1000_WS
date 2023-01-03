@@ -236,9 +236,15 @@ function ExportarDatos(){
 
 function ReAjustar(){
 
-  alert("Entramos a ReAjustar segun los datos ingresados");
+  //alert("Entramos a ReAjustar segun los datos ingresados");
 
   var Ensayo  = $("#Ensayo").val();
+  var nlayers = $("#nlayers").val();
+  if($("#checkR").prop('checked')){var checkR = "true";}else{var checkR = "false";}
+  if($("#checkP").prop('checked')){var checkP = "true";}else{var checkP = "false";}
+  //var checkR = $("#checkR").prop('checked');
+  //var checkP = $("#checkP").prop('checked');
+
 
   if(Ensayo != ""){
 
@@ -246,6 +252,9 @@ function ReAjustar(){
       var formData = new FormData();
       formData.append("ReAjustar", "TRUE");
       formData.append("Ensayo", Ensayo);
+      formData.append("nlayers", nlayers);
+      formData.append("checkR", checkR);
+      formData.append("checkP", checkP);
 
       ///////////////funcion de  de escucha al php/////////////
        var objReAjustar = new XMLHttpRequest();

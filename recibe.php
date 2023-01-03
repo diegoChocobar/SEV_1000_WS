@@ -439,10 +439,13 @@ if(isset($_POST['ReAjustar'])){
 
   $data = array();
 
-  $dato_ensayo = strip_tags($_POST['Ensayo']);
+  $ensayo = strip_tags($_POST['Ensayo']);
+  $nlayers = strip_tags($_POST['nlayers']);
+  $checkR = strip_tags($_POST['checkR']);
+  $checkP = strip_tags($_POST['checkP']);
 
   $data['status'] = 'TRUE';
-  $data['detalle'] = 'Dato ReAjustar recibido por Back';
+  $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
 
 
   echo json_encode($data, JSON_FORCE_OBJECT);
