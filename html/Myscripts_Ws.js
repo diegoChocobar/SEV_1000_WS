@@ -617,7 +617,7 @@ function ExportarDatos(){
                  //alert('Exportacion exitosa: ' + data['detalle']);
 
                  //window.location.reload(true);
-                 var link = "http://localhost/SEV_1000/"+data['file'];
+                 var link = "http://localhost/SEV_1000_WS/"+data['file'];
                  window.open(link, '_blank'); window.focus();
 
                }else{
