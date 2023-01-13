@@ -31,11 +31,9 @@ include '../conectionDB.php';
 
     // compute initial values
     $compute_init = "python/compute_init_layers.py";
-    //$compute_init = "python/hello.py";
     $command = escapeshellcmd($python_interp." ".$compute_init." ");
     $arguments = escapeshellarg(json_encode($data));
     $output = shell_exec($command.$arguments);
-    // print_r($output);
     if ($output == 1) {
       echo "python failed";
     };
@@ -244,7 +242,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span type='ncapas' class='input-group-addon'>Numero de Capas: </span>
+                            <span type='ncapas' class='input-group-addon'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-xs-6'>
@@ -321,7 +319,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='resultados' >Resistividades: </span>
+                            <span class='input-group-addon' type='resultados' >Resistividad: </span>
                           </div>
                         </div>
                         <?php

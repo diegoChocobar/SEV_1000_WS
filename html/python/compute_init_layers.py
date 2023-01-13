@@ -8,22 +8,19 @@ import pandas as pd
 # input data from database via grafico_ajuste.php
 try:
     data = json.loads(sys.argv[1])
-    nlayers, x_exp, y_exp = data['nlayers'], data['OA'], data['R']
-    # nlayers = 3
-    # x_exp = [250, 200, 160, 130, 100, 80, 80, 65, 50, 40, 40, 32, 25, 20, 16, 13, 10, 8, 6.5, 5, 4, 3.2, 2.5]
-    # y_exp = [14, 14.39, 15.61, 17.28, 18.37, 21.94, 21.02, 27.46, 41.01, 63.42, 63.08, 87.15, 112.93, 129.21, 136.49, 138.84, 137.39, 124.77, 113.45, 100.99, 91.58, 78.3, 72.17]
-
-    # reverse data if necessary
-    if x_exp[0] > x_exp[-1]:
-        x_exp.reverse()
-        y_exp.reverse()
-
-    # arrange data into a dataframe
-    df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
-    df = VES1D.preprocess_data(df)
+    nlayers, x_exp, y_exp = int(data['nlayers']), data['OA'], data['R']
 except:
     print("failed input data")
     sys.exit(1)
+
+# # reverse data if necessary
+# if x_exp[0] > x_exp[-1]:
+#     x_exp.reverse()
+#     y_exp.reverse()
+
+# arrange data into a dataframe
+df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
+df = VES1D.preprocess_data(df)
 
 # compute initial data based on polynomial fit
 try:
@@ -48,6 +45,9 @@ try:
 
 # compute initial data based on given nlayers
 except:
-    print('**')
-    print("failed fit data")
+    # appres_exp = list(df['R'])
+    # istep_rho = int(len(appres_exp) / (nlayers - 1))
+    # ilayers = [istep_rho * i for i in range(nlayers - 1)] + [-1]
+    # [round(appres_exp[i], -1) for i in ilayers]
+    print("failed fit data",x_exp[0],y_exp[0])
     sys.exit(1)

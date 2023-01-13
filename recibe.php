@@ -1,6 +1,7 @@
 <?php
 session_start();
 $_SESSION['logged'] = true;
+$ensayo = $_SESSION['ensayo'];
 
 include 'conectionDB.php';
 
@@ -402,6 +403,53 @@ function Exportar_Datos($Nombre_Ensayo){
     return $data;
 }
 
+function Calcular_Valores_Iniciales($ensayo, $nlayers){
+  
+  include 'conectionDB.php';
+  $username = getenv("SUDO_USER");
+  $python_interp = "/home/".$username."/anaconda3/bin/python";
+
+  // query data
+  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC  ");
+  $datos = $result->fetch_all(MYSQLI_ASSOC);
+  $datos_num = count($datos);
+
+  // prepare json with input data
+  $x = array();
+  $y = array();
+  for ($i=0; $i < $datos_num ; $i++) {
+        $xidx = array_push($x, floatval($datos[$i]['OA']));
+        $yidx = array_push($y, floatval($datos[$i]['resistividad']));
+  };
+  $data = [
+    "nlayers" => $nlayers,
+    "OA" => $x,
+    "R" => $y,
+  ];
+
+  // compute initial values
+  $compute_init = "html/python/compute_init_layers.py";
+  $command = escapeshellcmd($python_interp." ".$compute_init." ");
+  $arguments = escapeshellarg(json_encode($data));
+  $output = shell_exec($command.$arguments);
+  if ($output == 1) {
+    echo "python failed";
+  };
+
+  $output_decode = json_decode($output, true);
+
+  return $output_decode;
+  // return $command.$arguments;
+}
+
+// function Calcular_Ajuste($ensayo, ){
+
+//   $username = getenv("SUDO_USER");
+//   $python_interp = "/home/".$username."/anaconda3/bin/python";
+
+
+// }
+
 //*/
 
 if(isset($_POST['EliminarDato'])){
@@ -446,9 +494,14 @@ if(isset($_POST['ReAjustar'])){
   $Rho0 = strip_tags($_POST['Rho0']);
   $Thick0 = strip_tags($_POST['Thick0']);
 
+  $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
+  $nlayers0 = $output['nlayers'];
+  $thick0 = $output['thick0'];
+  $rho0 = $output['rho0'];
+
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-  $data['detalle'] .= 'Resistividades Iniciales:' . $Rho0 . " Thick: " .$Thick0 ;
+  $data['detalle'] .= 'Resistividades Iniciales:' . $Rho0 . " Thick: " .$Thick0 . "results: " . $nlayers0. ' '. implode(", ",$rho0).' '. implode(",",$thick0);
 
   echo json_encode($data, JSON_FORCE_OBJECT);
   
