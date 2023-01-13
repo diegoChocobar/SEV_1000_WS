@@ -212,7 +212,8 @@ function ExportarDatos(){
                  alert('Exportacion exitosa: ' + data['detalle']);
 
                  //window.location.reload(true);
-                 var link = "http://localhost/cdcelectronics/"+data['file'];
+                 var link = "http://localhost/SEV_1000_WS/"+data['file'];
+                 //console.log("link");
                  window.open(link, '_blank'); window.focus();
 
                }else{
@@ -301,4 +302,60 @@ function ReAjustar(){
   }
 
 
+}
+
+function CambiaCapas(){
+  
+  var Ensayo  = $("#Ensayo").val();
+  var nlayers = $("#nlayers").val();
+
+  /////////logica para limitar el numero de capas///////////
+    if(nlayers>5){
+      nlayers = 5;
+      $("#nlayers").val(nlayers);
+      alert("El valor maximo de capas es: "+ nlayers);
+    }
+    if(nlayers<2){
+      nlayers = 2;
+      $("#nlayers").val(nlayers);
+      alert("El valor minimo de capas es: "+ nlayers);
+    }
+  //////////////////////////////////////////////////////////
+
+  alert("cambio el numero de capas: "+ nlayers);
+
+  //aqui debemos ir al BackEnd y traer los valors iniciales calculados/////////
+
+  //////////logica para el muestreo de los valores iniciales calculados ///////////////
+    for (let index = 0; index < 5; index++) {
+      $("#rho0_"+index).prop( "disabled", true );
+      $("#rho0_"+index).val("R"+index); //muestreo del valor calculado para los rho0 iniciales
+      $("#rho0_"+index).css("display", "none");
+      $("#thick0_"+index).prop( "disabled", true );
+      $("#thick0_"+index).val("P"+index); // muestreo del valor calculador para los thick0 iniciales
+      $("#thick0_"+index).css("display", "none");
+    }
+    for (let index = 0; index < nlayers; index++) {
+      $("#rho0_"+index).prop( "disabled", false );
+      $("#rho0_"+index).css("display", "block");
+      if(index != nlayers-1){
+        $("#thick0_"+index).prop( "disabled", false );
+        $("#thick0_"+index).css("display", "block");
+      }
+      
+    }
+    for (let index = nlayers; index < 5; index++) {
+      $("#rho0_"+index).prop( "disabled", true );
+      $("#rho0_"+index).css("display", "none");
+      
+      if(index != nlayers-1){
+        $("#thick0_"+index).prop( "disabled", true );
+        $("#thick0_"+index).css("display", "none");
+      }
+    }
+  /////////////////////////////////////////////////////////////////////////////////////
+    
+  
+  
+  
 }

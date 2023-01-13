@@ -247,29 +247,33 @@ include '../conectionDB.php';
                         </div>
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=1 max=5 placeholder="Numero de capas a analizar">
+                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=2 max=5 onchange="CambiaCapas()" placeholder="Numero de capas a analizar">
                           </div>
                         </div>
                       </div>
 
                       <div class="row">
-                        
-                      <div class='col-xs-4'>
-                          <div class='input-group'>
-                            <input type="checkbox" name="checkR" id="checkR"><i class="dark-white"></i> 
-                              <span class='input-group-addon' type='myspan'>Resistividad: </span>
-                          </div>
-                      </div>
-                        <?php
-                          for($i=0;$i<$nlayers0;$i++){
-                            //echo "capa:",$i,"/n";
-                            echo "<div>";
-                            echo "<div class='input-group'>";
-                            echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 placeholder='R-$i'",">";
-                            echo "</div>";
-                            echo "</div>";
-                          }
-                         ?>
+                        <div class='col-xs-4'>
+                            <div class='input-group'>
+                              <input type="checkbox" name="checkR" id="checkR"><i class="dark-white"></i> 
+                                <span class='input-group-addon' type='myspan'>Resistividad: </span>
+                            </div>
+                        </div>
+                          <?php
+                            for($i=0;$i<5;$i++){
+                              //echo "capa:",$i,"/n";
+                              echo "<div>";
+                              echo "<div class='input-group'>";
+                              if($nlayers>$i){
+                                echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 onKeypress='if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;' placeholder='R-$i'",">";
+                              }else{
+                                echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 disabled='disabled' placeholder='R-$i'",">";
+                              }
+                              
+                              echo "</div>";
+                              echo "</div>";
+                            }
+                          ?>  
                       </div>
 
                       <div class="row">
@@ -280,11 +284,16 @@ include '../conectionDB.php';
                             </div>
                         </div>
                         <?php
-                          for($i=0;$i<$nlayers0-1;$i++){
+                          for($i=0;$i<4;$i++){
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 placeholder='P-$i'",">";
+                            if($nlayers>$i){
+                              echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 onKeypress='if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;' placeholder='P-$i'",">";
+                            }else{
+                              echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 disabled='disabled' placeholder='P-$i'",">";
+                            }
+                            
                             echo "</div>";
                             echo "</div>";
                           }
