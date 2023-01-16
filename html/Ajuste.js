@@ -71,17 +71,20 @@ function Graficar(dat,ensayo){
   nlayers = parseFloat(nlayers);
   var rho = Array();
   var thick = Array();
+  var thick_total = Array();
   for (i=0;i<nlayers;i++) {
     istring = (i+1).toString();
     r = $("#rho_" + istring).val();
     t = $("#thick_" + istring).val();
     rho = rho.concat(parseFloat(r));
-    thick = thick.concat(parseFloat(t));
+    thick_total = thick_total.concat(parseFloat(t));
   };
-  // console.log(rho);
-  // console.log(thick);
+  suma = 0;
+  thick[0] = thick_total[0];
+  for (i=1;i<nlayers;i++) {
+    thick[i] = thick_total[i] - thick_total[i-1];
+  }
   data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
-  // console.log(data)
 
   var lineChartData = {
       borderColor: window.chartColors.red,
@@ -209,7 +212,8 @@ function ExportarDatos(){
                  alert('Exportacion exitosa: ' + data['detalle']);
 
                  //window.location.reload(true);
-                 var link = "http://localhost/cdcelectronics/"+data['file'];
+                 var link = "http://localhost/SEV_1000_WS/"+data['file'];
+                 //console.log("link");
                  window.open(link, '_blank'); window.focus();
 
                }else{
@@ -242,9 +246,13 @@ function ReAjustar(){
   var nlayers = $("#nlayers").val();
   if($("#checkR").prop('checked')){var checkR = "true";}else{var checkR = "false";}
   if($("#checkP").prop('checked')){var checkP = "true";}else{var checkP = "false";}
-  //var checkR = $("#checkR").prop('checked');
-  //var checkP = $("#checkP").prop('checked');
 
+  let Rho0 = [];
+  let Thick0 = [];
+  for (var i=0; i<nlayers; i++){
+    Rho0[i] = $("#rho0_" + i).val();
+    Thick0[i] = $("#thick0_" + i).val();
+  }
 
   if(Ensayo != ""){
 
@@ -255,6 +263,8 @@ function ReAjustar(){
       formData.append("nlayers", nlayers);
       formData.append("checkR", checkR);
       formData.append("checkP", checkP);
+      formData.append("Rho0", Rho0);
+      formData.append("Thick0", Thick0);
 
       ///////////////funcion de  de escucha al php/////////////
        var objReAjustar = new XMLHttpRequest();
@@ -292,4 +302,60 @@ function ReAjustar(){
   }
 
 
+}
+
+function CambiaCapas(){
+  
+  var Ensayo  = $("#Ensayo").val();
+  var nlayers = $("#nlayers").val();
+
+  /////////logica para limitar el numero de capas///////////
+    if(nlayers>5){
+      nlayers = 5;
+      $("#nlayers").val(nlayers);
+      alert("El valor maximo de capas es: "+ nlayers);
+    }
+    if(nlayers<2){
+      nlayers = 2;
+      $("#nlayers").val(nlayers);
+      alert("El valor minimo de capas es: "+ nlayers);
+    }
+  //////////////////////////////////////////////////////////
+
+  alert("cambio el numero de capas: "+ nlayers);
+
+  //aqui debemos ir al BackEnd y traer los valors iniciales calculados/////////
+
+  //////////logica para el muestreo de los valores iniciales calculados ///////////////
+    for (let index = 0; index < 5; index++) {
+      $("#rho0_"+index).prop( "disabled", true );
+      $("#rho0_"+index).val("R"+index); //muestreo del valor calculado para los rho0 iniciales
+      $("#rho0_"+index).css("display", "none");
+      $("#thick0_"+index).prop( "disabled", true );
+      $("#thick0_"+index).val("P"+index); // muestreo del valor calculador para los thick0 iniciales
+      $("#thick0_"+index).css("display", "none");
+    }
+    for (let index = 0; index < nlayers; index++) {
+      $("#rho0_"+index).prop( "disabled", false );
+      $("#rho0_"+index).css("display", "block");
+      if(index != nlayers-1){
+        $("#thick0_"+index).prop( "disabled", false );
+        $("#thick0_"+index).css("display", "block");
+      }
+      
+    }
+    for (let index = nlayers; index < 5; index++) {
+      $("#rho0_"+index).prop( "disabled", true );
+      $("#rho0_"+index).css("display", "none");
+      
+      if(index != nlayers-1){
+        $("#thick0_"+index).prop( "disabled", true );
+        $("#thick0_"+index).css("display", "none");
+      }
+    }
+  /////////////////////////////////////////////////////////////////////////////////////
+    
+  
+  
+  
 }

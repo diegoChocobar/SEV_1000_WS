@@ -31,11 +31,9 @@ include '../conectionDB.php';
 
     // compute initial values
     $compute_init = "python/compute_init_layers.py";
-    //$compute_init = "python/hello.py";
     $command = escapeshellcmd($python_interp." ".$compute_init." ");
     $arguments = escapeshellarg(json_encode($data));
     $output = shell_exec($command.$arguments);
-    // print_r($output);
     if ($output == 1) {
       echo "python failed";
     };
@@ -66,9 +64,17 @@ include '../conectionDB.php';
       $output2 = shell_exec($command.$arguments);
       $output_decode2 = json_decode($output2, true);
       $thick = $output_decode2['thick'];
+      # compute total thick
+      $thick_total = array();
+      $suma = 0.0;
+      for ($i=0;$i<$nlayers;$i++){
+        $suma += $thick[$i];
+        $thick_total[$i] = $suma;
+      }
       $rho = $output_decode2['rho'];
       // print_r($output_decode2);
       // print_r($thick);
+      // print_r($thick_total);
       $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -236,34 +242,38 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span type='ncapas' class='input-group-addon'>Numero de Capas: </span>
+                            <span type='ncapas' class='input-group-addon'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=1 max=5 placeholder="Numero de capas a analizar">
+                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=2 max=5 onchange="CambiaCapas()" placeholder="Numero de capas a analizar">
                           </div>
                         </div>
                       </div>
 
                       <div class="row">
-                        
-                      <div class='col-xs-4'>
-                          <div class='input-group'>
-                            <input type="checkbox" name="checkR" id="checkR"><i class="dark-white"></i> 
-                              <span class='input-group-addon' type='myspan'>Resistividad: </span>
-                          </div>
-                      </div>
-                        <?php
-                          for($i=0;$i<$nlayers0;$i++){
-                            //echo "capa:",$i,"/n";
-                            echo "<div>";
-                            echo "<div class='input-group'>";
-                            echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 placeholder='R-$i'",">";
-                            echo "</div>";
-                            echo "</div>";
-                          }
-                         ?>
+                        <div class='col-xs-4'>
+                            <div class='input-group'>
+                              <input type="checkbox" name="checkR" id="checkR"><i class="dark-white"></i> 
+                                <span class='input-group-addon' type='myspan'>Resistividad: </span>
+                            </div>
+                        </div>
+                          <?php
+                            for($i=0;$i<5;$i++){
+                              //echo "capa:",$i,"/n";
+                              echo "<div>";
+                              echo "<div class='input-group'>";
+                              if($nlayers>$i){
+                                echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 onKeypress='if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;' placeholder='R-$i'",">";
+                              }else{
+                                echo "<input name='rho0_$i'"," id='rho0_$i'"," type='numbers' step='0.1' value = '$rho0[$i]' min=0 disabled='disabled' placeholder='R-$i'",">";
+                              }
+                              
+                              echo "</div>";
+                              echo "</div>";
+                            }
+                          ?>  
                       </div>
 
                       <div class="row">
@@ -274,11 +284,16 @@ include '../conectionDB.php';
                             </div>
                         </div>
                         <?php
-                          for($i=0;$i<$nlayers0-1;$i++){
+                          for($i=0;$i<4;$i++){
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 placeholder='P-$i'",">";
+                            if($nlayers>$i){
+                              echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 onKeypress='if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;' placeholder='P-$i'",">";
+                            }else{
+                              echo "<input name='thick0_$i'"," id='thick0_$i'"," step='0.1' type='numbers' value = '$thick0[$i]' min=0 disabled='disabled' placeholder='P-$i'",">";
+                            }
+                            
                             echo "</div>";
                             echo "</div>";
                           }
@@ -313,7 +328,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='resultados' >Resistividades: </span>
+                            <span class='input-group-addon' type='resultados' >Resistividad: </span>
                           </div>
                         </div>
                         <?php
@@ -341,7 +356,7 @@ include '../conectionDB.php';
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $thick_temp = round($thick[$i],2);
+                            $thick_temp = round($thick_total[$i],2);
                             $j=$i+1;
                             echo "<input name='thick_$j'"," id='thick_$j'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
                             echo "</div>";
@@ -447,6 +462,7 @@ include '../conectionDB.php';
 
 <?php $tiempo = time(); ?>
 
+<script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script>
 <script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>
