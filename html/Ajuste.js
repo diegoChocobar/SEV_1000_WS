@@ -97,7 +97,6 @@ function Graficar(dat,ensayo){
       data: data_ajuste
   };
 
-
   // GRAFICO DATOS ENSAYO Y AJUSTE
     var multipleChartData = {
       datasets: [
@@ -250,8 +249,10 @@ function ReAjustar(){
   let Rho0 = [];
   let Thick0 = [];
   for (var i=0; i<nlayers; i++){
-    Rho0[i] = $("#rho0_" + i).val();
-    Thick0[i] = $("#thick0_" + i).val();
+    Rho0[i] = parseFloat( $("#rho0_" + i).val() );
+    if (i<nlayers-1) {
+      Thick0[i] = parseFloat( $("#thick0_" + i).val() );
+    }
   }
 
   if(Ensayo != ""){
@@ -265,6 +266,8 @@ function ReAjustar(){
       formData.append("checkP", checkP);
       formData.append("Rho0", Rho0);
       formData.append("Thick0", Thick0);
+      // console.log(Rho0);
+      // console.log(Thick0);
 
       ///////////////funcion de  de escucha al php/////////////
        var objReAjustar = new XMLHttpRequest();
@@ -277,6 +280,12 @@ function ReAjustar(){
 
                if(data['status'] == "TRUE"){
                  alert('REAjustar Exitoso: ' + data['detalle']);
+
+                 thick_total = data['thick_total'];
+                 rho = data['rho'];
+                 console.log(rho);
+                  // FALTA COMPLETAR AQUI LA ACTUALIZACION DE LOS VALORES DE
+                  // rho y thick_total
 
                  //window.location.reload(true);
                  //var link = "http://localhost/cdcelectronics/"+data['file'];
@@ -298,10 +307,7 @@ function ReAjustar(){
       objReAjustar.open('POST', '../recibe.php',true);
       objReAjustar.send(formData);
 
-
   }
-
-
 }
 
 function CambiaCapas(){
@@ -322,40 +328,89 @@ function CambiaCapas(){
     }
   //////////////////////////////////////////////////////////
 
-  alert("cambio el numero de capas: "+ nlayers);
+  alert("Cambio el número de capas: "+ nlayers);
 
   //aqui debemos ir al BackEnd y traer los valors iniciales calculados/////////
 
-  //////////logica para el muestreo de los valores iniciales calculados ///////////////
-    for (let index = 0; index < 5; index++) {
-      $("#rho0_"+index).prop( "disabled", true );
-      $("#rho0_"+index).val("R"+index); //muestreo del valor calculado para los rho0 iniciales
-      $("#rho0_"+index).css("display", "none");
-      $("#thick0_"+index).prop( "disabled", true );
-      $("#thick0_"+index).val("P"+index); // muestreo del valor calculador para los thick0 iniciales
-      $("#thick0_"+index).css("display", "none");
+  /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
+  var formData = new FormData();
+  formData.append("CambiaCapas", "TRUE");
+  formData.append("Ensayo", Ensayo);
+  formData.append("nlayers", nlayers);
+  formData.append("checkR", checkR);
+  formData.append("checkP", checkP);
+
+  ///////////////funcion de  de escucha al php/////////////
+    rho0 = [];
+    thick0 = [];
+    var objCambioCapas = new XMLHttpRequest();
+
+    objCambioCapas.onreadystatechange = function() {
+        if(objCambioCapas.readyState === 4) {
+          if(objCambioCapas.status === 200) {
+            //alert(objNewEnsayo.responseText);
+            var data = JSON.parse(objCambioCapas.responseText);
+
+            if(data['status'] == "TRUE"){
+              alert('CambioCapas Exitoso: ' + data['detalle']);
+
+              thick0 = data['thick0'];
+              rho0 = data['rho0'];
+              // console.log(thick0);
+              // for (let index = 0; index < nlayers; index++){
+              //   console.log(rho0[index]);
+              // }
+
+              //////////logica para el muestreo de los valores iniciales calculados ///////////////
+                for (let index = 0; index < 5; index++) {
+                  $("#rho0_"+index).prop( "disabled", true );
+                  //$("#rho0_"+index).val("R"+index); //muestreo del valor calculado para los rho0 iniciales
+                  $("#rho0_"+index).val(rho0[index]); //muestreo del valor calculado para los rho0 iniciales
+                  $("#rho0_"+index).css("display", "none");
+                  $("#thick0_"+index).prop( "disabled", true );
+                  $("#thick0_"+index).val("P"+index); // muestreo del valor calculador para los thick0 iniciales
+                  $("#thick0_"+index).css("display", "none");
+                }
+                for (let index = 0; index < nlayers; index++) {
+                  $("#rho0_"+index).prop( "disabled", false );
+                  $("#rho0_"+index).css("display", "block");
+                  $("#rho0_"+index).val(rho0[index]); //muestreo del valor calculado para los rho0 iniciales
+                  $("#thick0_"+index).val(thick0[index]); //muestreo del valor calculado para los rho0 iniciales
+                  if(index != nlayers-1){
+                    $("#thick0_"+index).prop( "disabled", false );
+                    $("#thick0_"+index).css("display", "block");
+                  }
+                  
+                }
+                for (let index = nlayers; index < 5; index++) {
+                  $("#rho0_"+index).prop( "disabled", true );
+                  $("#rho0_"+index).css("display", "none");
+                  
+                  if(index != nlayers-1){
+                    $("#thick0_"+index).prop( "disabled", true );
+                    $("#thick0_"+index).css("display", "none");
+                }
+                }
+              /////////////////////////////////////////////////////////////////////////////////////
+
+              //window.location.reload(true);
+              //var link = "http://localhost/cdcelectronics/"+data['file'];
+              //window.open(link, '_blank'); window.focus();
+
+            }else{
+              alert('Error CambioCapas: ' + data['error']);
+            }
+
+
+          } else {
+            alert('Error Code 111: ' +  objCambioCapas.status);
+            alert('Error Message 222: ' + objCambioCapas.statusText);
+          }
+        }
     }
-    for (let index = 0; index < nlayers; index++) {
-      $("#rho0_"+index).prop( "disabled", false );
-      $("#rho0_"+index).css("display", "block");
-      if(index != nlayers-1){
-        $("#thick0_"+index).prop( "disabled", false );
-        $("#thick0_"+index).css("display", "block");
-      }
-      
-    }
-    for (let index = nlayers; index < 5; index++) {
-      $("#rho0_"+index).prop( "disabled", true );
-      $("#rho0_"+index).css("display", "none");
-      
-      if(index != nlayers-1){
-        $("#thick0_"+index).prop( "disabled", true );
-        $("#thick0_"+index).css("display", "none");
-      }
-    }
-  /////////////////////////////////////////////////////////////////////////////////////
-    
-  
-  
-  
+    ////////////////////////////////////////////////////////////////
+
+    objCambioCapas.open('POST', '../recibe.php',true);
+    objCambioCapas.send(formData);
+
 }

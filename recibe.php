@@ -403,11 +403,9 @@ function Exportar_Datos($Nombre_Ensayo){
     return $data;
 }
 
-function Calcular_Valores_Iniciales($ensayo, $nlayers){
-  
+function Pull_Data_From_DataBase($ensayo, $nlayers) {
+
   include 'conectionDB.php';
-  $username = getenv("SUDO_USER");
-  $python_interp = "/home/".$username."/anaconda3/bin/python";
 
   // query data
   $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC  ");
@@ -427,9 +425,18 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
     "R" => $y,
   ];
 
+  return $data;
+}
+
+function Calcular_Valores_Iniciales($ensayo, $nlayers){
+
+  $username = getenv("SUDO_USER");
+  $python_interp = "/home/".$username."/anaconda3/bin/python";
+
   // compute initial values
   $compute_init = "html/python/compute_init_layers.py";
   $command = escapeshellcmd($python_interp." ".$compute_init." ");
+  $data = Pull_Data_From_DataBase($ensayo, $nlayers);
   $arguments = escapeshellarg(json_encode($data));
   $output = shell_exec($command.$arguments);
   if ($output == 1) {
@@ -439,16 +446,38 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
   $output_decode = json_decode($output, true);
 
   return $output_decode;
-  // return $command.$arguments;
 }
 
-// function Calcular_Ajuste($ensayo, ){
+function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
 
-//   $username = getenv("SUDO_USER");
-//   $python_interp = "/home/".$username."/anaconda3/bin/python";
+  $username = getenv("SUDO_USER");
+  $python_interp = "/home/".$username."/anaconda3/bin/python";
 
-
-// }
+  // calcular ajuste
+  $compute_fit = "html/python/fit_VES.py";
+  $command = escapeshellcmd($python_interp." ".$compute_fit." ");
+  $database = Pull_Data_From_DataBase($ensayo, $nlayers);
+  $data = [
+    "nlayers" => $database["nlayers"],
+    "OA" => $database["OA"],
+    "R" => $database["R"],
+    "rho0" => array($rho0),
+    "thick0" => array($thick0),
+  ];
+  $arguments = escapeshellarg(json_encode($data));
+  $output = shell_exec($command.$arguments);
+  $output_decode = json_decode($output, true);
+  
+  # compute total thick
+  $thick = $output_decode['thick'];
+  $thick_total = array();
+  $suma = 0.0;
+  for ($i=0;$i<$nlayers;$i++){
+    $suma += $thick[$i];
+    $thick_total[$i] = $suma;
+  }
+  return array($output_decode, $thick_total);
+}
 
 //*/
 
@@ -491,8 +520,37 @@ if(isset($_POST['ReAjustar'])){
   $nlayers = strip_tags($_POST['nlayers']);
   $checkR = strip_tags($_POST['checkR']);
   $checkP = strip_tags($_POST['checkP']);
-  $Rho0 = strip_tags($_POST['Rho0']);
-  $Thick0 = strip_tags($_POST['Thick0']);
+  $rho0_string = strip_tags($_POST['Rho0']);
+  $thick0_string = strip_tags($_POST['Thick0']);
+  $rho0 = explode(",", $rho0_string); 
+  $thick0 = explode(",", $thick0_string); 
+
+  list($output, $thick_total) = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
+
+  // $nlayers0 = $output['nlayers'];
+  // $thick0 = $output['thick0'];
+  // $rho0 = $output['rho0'];
+
+  $data['status'] = 'TRUE';
+  $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
+  $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
+  $data['detalle'] .= " Results: " . implode(", ",$output["rho"]). ' Thick: '. implode(", ",$thick_total);
+  $data['rho'] = $output["rho"];
+  $data['thick'] = $output["thick"];
+  $data['thick_total'] = $thick_total;
+
+  echo json_encode($data, JSON_FORCE_OBJECT);
+
+}
+
+if(isset($_POST['CambiaCapas'])){
+
+  $data = array();
+
+  $ensayo = strip_tags($_POST['Ensayo']);
+  $nlayers = strip_tags($_POST['nlayers']);
+  $checkR = strip_tags($_POST['checkR']);
+  $checkP = strip_tags($_POST['checkP']);
 
   $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
   $nlayers0 = $output['nlayers'];
@@ -501,11 +559,12 @@ if(isset($_POST['ReAjustar'])){
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-  $data['detalle'] .= 'Resistividades Iniciales:' . $Rho0 . " Thick: " .$Thick0 . "results: " . $nlayers0. ' '. implode(", ",$rho0).' '. implode(",",$thick0);
+  $data['detalle'] .= " Results: " . $nlayers. ' '. implode(", ",$output['rho0']).' '. implode(",",$output['thick0']);
+  $data['rho0'] = $output['rho0'];
+  $data['thick0'] = $output['thick0'];
 
   echo json_encode($data, JSON_FORCE_OBJECT);
   
 }
-
 
 ?>

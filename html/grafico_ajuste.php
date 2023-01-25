@@ -64,6 +64,8 @@ include '../conectionDB.php';
       $output2 = shell_exec($command.$arguments);
       $output_decode2 = json_decode($output2, true);
       $thick = $output_decode2['thick'];
+      $rho = $output_decode2['rho'];
+
       # compute total thick
       $thick_total = array();
       $suma = 0.0;
@@ -71,15 +73,11 @@ include '../conectionDB.php';
         $suma += $thick[$i];
         $thick_total[$i] = $suma;
       }
-      $rho = $output_decode2['rho'];
-      // print_r($output_decode2);
-      // print_r($thick);
-      // print_r($thick_total);
       $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
- ?>
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -315,7 +313,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='ncapas2'>Numero de Capas: </span>
+                            <span class='input-group-addon' type='ncapas2'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-md-2'>
