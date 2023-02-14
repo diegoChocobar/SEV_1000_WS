@@ -97,7 +97,6 @@ function Graficar(dat,ensayo){
       data: data_ajuste
   };
 
-
   // GRAFICO DATOS ENSAYO Y AJUSTE
     var multipleChartData = {
       datasets: [
@@ -278,6 +277,12 @@ function ReAjustar(){
                if(data['status'] == "TRUE"){
                  alert('REAjustar Exitoso: ' + data['detalle']);
 
+                 thick_total = data['thick_total'];
+                 rho = data['rho'];
+                 console.log(rho);
+                  // FALTA COMPLETAR AQUI LA ACTUALIZACION DE LOS VALORES DE
+                  // rho y thick_total
+
                  //window.location.reload(true);
                  //var link = "http://localhost/cdcelectronics/"+data['file'];
                  //window.open(link, '_blank'); window.focus();
@@ -298,9 +303,13 @@ function ReAjustar(){
       objReAjustar.open('POST', '../recibe.php',true);
       objReAjustar.send(formData);
 
-
   }
+}
 
+function CambiaCapas(){
+  
+  var Ensayo  = $("#Ensayo").val();
+  var nlayers = $("#nlayers").val();
 
 }
 

@@ -79,7 +79,7 @@ include '../conectionDB.php';
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
- ?>
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -315,7 +315,7 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='ncapas2'>Numero de Capas: </span>
+                            <span class='input-group-addon' type='ncapas2'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-md-2'>
