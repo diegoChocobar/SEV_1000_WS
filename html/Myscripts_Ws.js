@@ -8,7 +8,7 @@ function Ajustar(){
   
 }
 
-function CalcularR(posicion){
+function CalcularR(posicion,calcular){
 
 
     var dato_oa = $("#const_OA_" + posicion).val();
@@ -19,65 +19,68 @@ function CalcularR(posicion){
     var corriente = $("#corriente_" + posicion).val();
 
 
-        if(corriente != "0" && tension !="0"){
+        if(corriente != "0" && tension !="0" && calcular!="FALSE"){
           var resistividad = (tension/corriente)*dato_k;
+
+                if(dato_oa == 0 || dato_mn ==0){
+                  if(dato_oa == 0){
+                    alert('Por favor INGRESE un valor de OA');
+                    $("#const_OA_" + posicion).focus();
+                  }else{
+                    alert('Por favor INGRESE un valor de MN');
+                    $("#const_OA_" + posicion).focus();
+                  }
+                }else{
+                  ///*
+                  //console.log("entramos a actualizar db, Tension:"+tension+"Corriente:"+corriente);
+                  //////////////Actualizar base de datos con nuevos valores///////////
+                  var formData = new FormData();
+                  formData.append("ActualizaDB_Cal", "TRUE");
+                  formData.append("db_OA", dato_oa);
+                  formData.append("db_MN", dato_mn);
+                  formData.append("db_K", dato_k);
+                  formData.append("db_tension", tension);
+                  formData.append("db_Ensayo",dato_ensayo);
+                  formData.append("db_corriente", corriente);
+
+                  ///////////////funcion de  de escucha al php/////////////
+                  var objActualizar = new XMLHttpRequest();
+
+                  objActualizar.onreadystatechange = function() {
+                      if(objActualizar.readyState === 4) {
+                        if(objActualizar.status === 200) {
+                          //alert(objXActualizarVehiculo.responseText);
+                          //var data = JSON.parse(objActualizar.responseText);
+                          var data = JSON.parse(objActualizar.responseText); //Parsea el Json al objeto anterior.
+
+                          if(data.status == true){
+                            alert(data.detalle);
+                            //window.location.reload(true);
+                            Graficar(data);
+                          }else{
+                            //alert('Error actualizacion: ' + data['error']);
+                            alert(data.error);
+                          }
+
+
+                        } else {
+                          alert('Error Code 111: ' +  objActualizar.status);
+                          alert('Error Message 222: ' + objActualizar.statusText);
+                        }
+                      }
+                  }
+                  ////////////////////////////////////////////////////////////////
+                  objActualizar.open('POST', '../recibe.php',true);
+                  objActualizar.send(formData);
+                  /////////////////////////////////////////////////////////////////
+                  //*/
+                }
         }else{
           var resistividad = 0;
         }
+
         $("#resistividad_" + posicion).val(resistividad);
 
-      if(dato_oa == 0 || dato_mn ==0){
-        if(dato_oa == 0){
-          alert('Por favor INGRESE un valor de OA');
-          $("#const_OA_" + posicion).focus();
-        }else{
-          alert('Por favor INGRESE un valor de MN');
-          $("#const_OA_" + posicion).focus();
-        }
-      }else{
-        ///*
-        //////////////Actualizar base de datos con nuevos valores///////////
-        var formData = new FormData();
-        formData.append("ActualizaDB_Cal", "TRUE");
-        formData.append("db_OA", dato_oa);
-        formData.append("db_MN", dato_mn);
-        formData.append("db_K", dato_k);
-        formData.append("db_tension", tension);
-        formData.append("db_Ensayo",dato_ensayo);
-        formData.append("db_corriente", corriente);
-
-        ///////////////funcion de  de escucha al php/////////////
-         var objActualizar = new XMLHttpRequest();
-
-         objActualizar.onreadystatechange = function() {
-             if(objActualizar.readyState === 4) {
-               if(objActualizar.status === 200) {
-                 //alert(objXActualizarVehiculo.responseText);
-                 //var data = JSON.parse(objActualizar.responseText);
-                 var data = JSON.parse(objActualizar.responseText); //Parsea el Json al objeto anterior.
-
-                 if(data.status == true){
-                   alert(data.detalle);
-                   //window.location.reload(true);
-                   Graficar(data);
-                 }else{
-                   //alert('Error actualizacion: ' + data['error']);
-                   alert(data.error);
-                 }
-
-
-               } else {
-                 alert('Error Code 111: ' +  objActualizar.status);
-                 alert('Error Message 222: ' + objActualizar.statusText);
-               }
-             }
-         }
-         ////////////////////////////////////////////////////////////////
-        objActualizar.open('POST', '../recibe.php',true);
-        objActualizar.send(formData);
-        /////////////////////////////////////////////////////////////////
-        //*/
-      }
 
 }
 
@@ -360,6 +363,7 @@ window.onload = function() {
       var dispositivo_receptor = arr_data[1];
       var tipo_data = arr_data[2];
       var value_data = arr_data[3];
+      var calcular = 0;
       //console.log(`Datos recibidos del servidor: ${event.data}`);
       console.log(`Datos recibidos. Emisor: ` + dispositivo_emisor + ` Receptor: ` + dispositivo_receptor + ` Tipo: `+ tipo_data + ` Value: ` + value_data);
 
@@ -389,8 +393,10 @@ window.onload = function() {
     
                      if(data['status'] == "TRUE"){
                        //alert('Carga de Tension en dbPuente Extoda: ' + data['status']);
-                       console.log(`Actualiza Tension: ` + value_data);
+                       calcular = data["calcular"];
+                       console.log(`Actualiza Tension: ` + value_data + ' Calcular:'+ calcular);
                        $("#tension_0").val(value_data);
+                       CalcularR(0,calcular);
                      }else{
                        alert('Error actualizar Tension dbPuente: ' + data['error']);
                      }
@@ -436,10 +442,11 @@ window.onload = function() {
     
                      if(data['status'] == "TRUE"){
                        //alert('Carga de Corriente en dbPuente Extoda: ' + data['status']);
-                       console.log(`Actualiza Corriente: ` + value_data);
+                       calcular =data['calcular'];
+                       console.log(`Actualiza Corriente: ` + value_data + ' Calcular:'+ calcular);
                        $("#corriente_0").val(value_data);
-                       $("#resistividad_0").val(value_data);
-                       CalcularR(0);
+                       //$("#resistividad_0").val(value_data);
+                       CalcularR(0,calcular);
                      }else{
                        alert('Error actualizar Corriente en dbPuente: ' + data['error']);
                      }
