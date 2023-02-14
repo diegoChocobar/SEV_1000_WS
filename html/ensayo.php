@@ -3,7 +3,7 @@ session_start();
 $ensayo = $_SESSION['ensayo'];
 $_SESSION['tension'] = 0;
 $_SESSION['corriente'] = 0;
-
+$_SESSION['calcular'] = 0;
 
 include '../checklogin.php';
 include '../conectionDB.php';
