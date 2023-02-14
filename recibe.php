@@ -20,6 +20,11 @@ if(isset($_POST['Tension_ESPWS'])) {
   
   if($actualiza === TRUE){
     $data['status'] = 'TRUE';
+    if($_SESSION['corriente']!=0){
+      $data['calcular'] = 'TRUE';
+    }else{
+      $data['calcular'] = 'FALSE';
+    }
   }else{
     $data['status'] = 'FALSE';
     $data['error'] = 'Insert DB datos';
@@ -34,11 +39,19 @@ if(isset($_POST['Corriente_ESPWS'])) {
   $data = array();
 
   $corriente= strip_tags($_POST['value']);
+  $_SESSION['corriente'] = $corriente;
 
   $actualiza = $conn->query("UPDATE `puente` SET `corriente`='$corriente',`status_i`='1',`fecha`= CURRENT_TIMESTAMP WHERE `id` = '1' ");
   
   if($actualiza === TRUE){
     $data['status'] = 'TRUE';
+    if($_SESSION['tension'] != 0){
+      $data['calcular'] = 'TRUE';
+      $_SESSION['calcular'] = 1;
+    }else{
+      $data['calcular'] = 'FALSE';
+      $_SESSION['calcular'] = 0;
+    }
   }else{
     $data['status'] = 'FALSE';
     $data['error'] = 'Insert DB datos';
@@ -87,6 +100,8 @@ if(isset($_POST['esp_corriente']) && isset($_POST['esp_status_i'])) {
 ////////la funcion que dispara esta accion es la del boton calc
 if(isset($_POST['ActualizaDB_Cal'])) {
 
+  $_SESSION['tension'] = 0;
+  $_SESSION['corriente'] = 0;
     $data = array();
 
     $dato_oa = strip_tags($_POST['db_OA']);
