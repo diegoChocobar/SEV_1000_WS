@@ -39,7 +39,7 @@ try:
     lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
     print(json.dumps(lam_dict))
 except:
-    print('**')
+    # print('**')
     thick0, rho0 = VES1D.init_values(x_exp, y_exp)
     lam0 = np.concatenate([rho0, thick0[:-1]])
     lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
