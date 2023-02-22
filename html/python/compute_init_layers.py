@@ -6,17 +6,32 @@ import pandas as pd
 
 
 # input data from database via grafico_ajuste.php
+inpdata = sys.argv[1]
 try:
-    data = json.loads(sys.argv[1])
+    data = json.loads(inpdata)
+except:
+    procdata = inpdata.split(', ')
+    procdata[0] = procdata[0].replace('{ nlayers :','')
+    procdata[1] = procdata[1].replace('OA :','')
+    procdata[2] = procdata[2].replace('R :','')
+    procdata[2] = procdata[2].replace('}','')
+    data = {
+        'nlayers': int(procdata[0]),
+        'OA': json.loads(procdata[1]),
+        'R': json.loads(procdata[2]),
+    }
+
+try:
     nlayers, x_exp, y_exp = int(data['nlayers']), data['OA'], data['R']
+
+    # reverse data if necessary
+    if x_exp[0] > x_exp[-1]:
+        x_exp.reverse()
+        y_exp.reverse()
+
 except:
     print("failed input data")
     sys.exit(1)
-
-# # reverse data if necessary
-# if x_exp[0] > x_exp[-1]:
-#     x_exp.reverse()
-#     y_exp.reverse()
 
 # arrange data into a dataframe
 df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
