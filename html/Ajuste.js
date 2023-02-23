@@ -1,5 +1,5 @@
-window.onload = function() {
 
+window.onload = function() {
   /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
   //alert("entramos en script ajuste.js");
   var ensayo = $("#Ensayo").val();
@@ -13,11 +13,12 @@ window.onload = function() {
 
 
    objData.onreadystatechange = function() {
+    
        if(objData.readyState === 4) {
          if(objData.status === 200) {
            //alert(objNewEnsayo.responseText);
            var data = JSON.parse(objData.responseText); //Parsea el Json al objeto anterior.
-           //console.log(data);
+          //  console.log(data);
 
            if(data.status == true){
             // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
@@ -280,10 +281,14 @@ if(Ensayo != ""){
 
              if(data['status'] == "TRUE"){
                alert('REAjustar Exitoso: ' + data['detalle']);
+               results = data["results"];
+               results_arr = JSON.parse(results);
+               thick_total = results_arr['thick_total'];
+               rho = results_arr['rho'];
+               
+               console.log(thick_total);
 
-               thick_total = data['thick_total'];
-               rho = data['rho'];
-               console.log(rho);
+
                 // FALTA COMPLETAR AQUI LA ACTUALIZACION DE LOS VALORES DE
                 // rho y thick_total
 

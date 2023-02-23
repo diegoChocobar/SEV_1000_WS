@@ -5,11 +5,34 @@ $ensayo = $_SESSION['ensayo'];
 include '../checklogin.php';
 include '../conectionDB.php';
 
-/////////////// Python initial values calculation //////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $username = getenv("SUDO_USER");
-    $python_interp = "/home/".$username."/anaconda3/bin/python";
-          
+//////////////////////////////////////////////////////////////////
+/////////////// CHECK SYSTEM AND DECLARE VARIABLES ///////////////
+//////////////////////////////////////////////////////////////////
+
+// for linux
+try {
+  $username = getenv("SUDO_USER");
+  $python_interp = "/home/".$username."/anaconda3/bin/python";
+  $compute_init = "python/compute_init_layers.py";
+  $compute_fit = "python/fit_VES.py";
+} catch (Exception $e) { 
+  print_r("linux". $e);
+}
+
+// for windows
+try {
+  $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+  $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+  $compute_init = $package_path."\\html\\python\\compute_init_layers.py";
+  $compute_fit = $package_path."\\html\\python\\fit_VES.py";
+} catch (Exception $e) { 
+  print_r("windows". $e);
+}
+
+//////////////////////////////////////////////////////////////////
+/////////////// Python initial values calculation //////////////// 
+//////////////////////////////////////////////////////////////////
+
     // query data
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
     $datos = $result->fetch_all(MYSQLI_ASSOC);
@@ -30,7 +53,6 @@ include '../conectionDB.php';
     ];
 
     // compute initial values
-    $compute_init = "python/compute_init_layers.py";
     $command = escapeshellcmd($python_interp." ".$compute_init." ");
     $arguments = escapeshellarg(json_encode($data));
     $output = shell_exec($command.$arguments);
@@ -42,12 +64,20 @@ include '../conectionDB.php';
     $nlayers = $output_decode['nlayers'];
     $thick0 = $output_decode['thick0'];
     $rho0 = $output_decode['rho0'];
+
+    // // for testing:
+    // $nlayers0 = 3;
+    // $nlayers = 3;
+    // $thick0 = array(0,1,2,3,4);
+    // $rho0 = array(0,1,2,3,4);
     // print_r($nlayers);
     // print_r($thick0);
     // print_r($rho0);
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////Pthon fit model calculation////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+////////////////// Python fit model calculation //////////////////
+//////////////////////////////////////////////////////////////////
+
        // prepare json with input data
        $data2 = [
         "nlayers" => $nlayers,
@@ -58,7 +88,6 @@ include '../conectionDB.php';
       ];
   
       // calcular ajuste
-      $compute_fit = "python/fit_VES.py";
       $command = escapeshellcmd($python_interp." ".$compute_fit." ");  
       $arguments = escapeshellarg(json_encode($data2));
       $output2 = shell_exec($command.$arguments);
@@ -73,7 +102,17 @@ include '../conectionDB.php';
         $suma += $thick[$i];
         $thick_total[$i] = $suma;
       }
+      
+      // // for testing:
+      // $thick_total = array(0,1,2,3,4);
+      // $rho = array(0,1,2,3,4);
+      // print_r($output_decode2);
+      // print_r($thick);
+      // print_r($thick_total);
+
       $number_rho = count($rho);
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -258,7 +297,7 @@ include '../conectionDB.php';
                             </div>
                         </div>
                           <?php
-                            for($i=0;$i<5;$i++){
+                            for($i=0;$i<$nlayers;$i++){
                               //echo "capa:",$i,"/n";
                               echo "<div>";
                               echo "<div class='input-group'>";
@@ -282,7 +321,7 @@ include '../conectionDB.php';
                             </div>
                         </div>
                         <?php
-                          for($i=0;$i<4;$i++){
+                          for($i=0;$i<$nlayers-1;$i++){
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
@@ -460,7 +499,7 @@ include '../conectionDB.php';
 
 <?php $tiempo = time(); ?>
 
-<script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script>
+<!-- <script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script> -->
 <script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>
