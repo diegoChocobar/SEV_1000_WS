@@ -1,5 +1,7 @@
 <?php
 session_start();
+header('Content-Type:application/json');
+
 $_SESSION['logged'] = true;
 $ensayo = $_SESSION['ensayo'];
 
@@ -430,11 +432,25 @@ function Pull_Data_From_DataBase($ensayo, $nlayers) {
 
 function Calcular_Valores_Iniciales($ensayo, $nlayers){
 
-  $username = getenv("SUDO_USER");
-  $python_interp = "/home/".$username."/anaconda3/bin/python";
+  // for linux
+  try {
+    $username = getenv("SUDO_USER");
+    $python_interp = "/home/".$username."/anaconda3/bin/python";
+    $compute_init = "python/compute_init_layers.py";
+  } catch (Exception $e) { 
+    print_r("linux". $e);
+  }
+
+  // for windows
+  try {
+    $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+    $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+    $compute_init = $package_path."\\html\\python\\compute_init_layers.py";
+  } catch (Exception $e) { 
+    print_r("windows". $e);
+  }
 
   // compute initial values
-  $compute_init = "html/python/compute_init_layers.py";
   $command = escapeshellcmd($python_interp." ".$compute_init." ");
   $data = Pull_Data_From_DataBase($ensayo, $nlayers);
   $arguments = escapeshellarg(json_encode($data));
@@ -450,11 +466,25 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
 
 function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
 
-  $username = getenv("SUDO_USER");
-  $python_interp = "/home/".$username."/anaconda3/bin/python";
+  // for linux
+  try {
+    $username = getenv("SUDO_USER");
+    $python_interp = "/home/".$username."/anaconda3/bin/python";
+    $compute_fit = "python/fit_VES.py";
+  } catch (Exception $e) { 
+    print_r("linux". $e);
+  }
+
+  // for windows
+  try {
+    $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+    $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+    $compute_fit = $package_path."\\html\\python\\fit_VES_backend.py";
+  } catch (Exception $e) { 
+    print_r("windows". $e);
+  }
 
   // calcular ajuste
-  $compute_fit = "html/python/fit_VES.py";
   $command = escapeshellcmd($python_interp." ".$compute_fit." ");
   $database = Pull_Data_From_DataBase($ensayo, $nlayers);
   $data = [
@@ -466,17 +496,10 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
   ];
   $arguments = escapeshellarg(json_encode($data));
   $output = shell_exec($command.$arguments);
-  $output_decode = json_decode($output, true);
-  
-  # compute total thick
-  $thick = $output_decode['thick'];
-  $thick_total = array();
-  $suma = 0.0;
-  for ($i=0;$i<$nlayers;$i++){
-    $suma += $thick[$i];
-    $thick_total[$i] = $suma;
-  }
-  return array($output_decode, $thick_total);
+  if ($output == 1) {
+    echo "python failed";
+  };
+  return $output;
 }
 
 //*/
@@ -525,19 +548,14 @@ if(isset($_POST['ReAjustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
-  list($output, $thick_total) = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
-
-  // $nlayers0 = $output['nlayers'];
-  // $thick0 = $output['thick0'];
-  // $rho0 = $output['rho0'];
+  // aca esta el error!!!
+  // list($output, $thick_total) = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
+  $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
-  $data['detalle'] .= " Results: " . implode(", ",$output["rho"]). ' Thick: '. implode(", ",$thick_total);
-  $data['rho'] = $output["rho"];
-  $data['thick'] = $output["thick"];
-  $data['thick_total'] = $thick_total;
+  $data['results'] = $output;
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
