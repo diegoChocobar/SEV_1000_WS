@@ -5,21 +5,33 @@ import VES1D
 import pandas as pd
 
 
+fail = False
 # input data from database via grafico_ajuste.php
 inpdata = sys.argv[1]
+
 try:
     data = json.loads(inpdata)
 except:
+    fail = True
+
+if fail:
     procdata = inpdata.split(', ')
-    procdata[0] = procdata[0].replace('{ nlayers :','')
-    procdata[1] = procdata[1].replace('OA :','')
-    procdata[2] = procdata[2].replace('R :','')
-    procdata[2] = procdata[2].replace('}','')
+    if (procdata == 3): 
+        procdata[0] = procdata[0].replace('{ nlayers :','')
+        procdata[1] = procdata[1].replace('OA :','')
+        procdata[2] = procdata[2].replace('R :','')
+        procdata[2] = procdata[2].replace('}','')
+    else:
+        procdata = inpdata.replace('{"nlayers":','')
+        procdata = procdata.replace(',"OA":',',,')
+        procdata = procdata.replace(',"R":',',,')
+        procdata = procdata.replace('}','')
+        procdata = inpdata.split(',,')
     data = {
-        'nlayers': int(procdata[0]),
-        'OA': json.loads(procdata[1]),
-        'R': json.loads(procdata[2]),
-    }
+            'nlayers': int(procdata[0]),
+            'OA': json.loads(procdata[1]),
+            'R': json.loads(procdata[2]),
+        }
 
 try:
     nlayers, x_exp, y_exp = int(data['nlayers']), data['OA'], data['R']
@@ -30,7 +42,7 @@ try:
         y_exp.reverse()
 
 except:
-    print("failed input data")
+    print("failed python: input data")
     sys.exit(1)
 
 # arrange data into a dataframe
@@ -64,5 +76,6 @@ except:
     # istep_rho = int(len(appres_exp) / (nlayers - 1))
     # ilayers = [istep_rho * i for i in range(nlayers - 1)] + [-1]
     # [round(appres_exp[i], -1) for i in ilayers]
-    print("failed fit data",x_exp[0],y_exp[0])
-    sys.exit(1)
+    # print("failed fit data",x_exp[0],y_exp[0])
+    print("failed python: compute init")
+    sys.exit(2)

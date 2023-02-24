@@ -167,7 +167,14 @@ def construct_lambda(x_exp, rho, thick):
     thick = thick + [last_layer]
     
     return {'rho': rho, 'thick': thick}
-    
+
+def compute_total_thick(thick):
+    thick_total = []
+    suma = 0
+    for i in range(len(thick)):
+        suma += thick[i]
+        thick_total.append(suma)
+    return thick_total
 
 def plot_results(ab2s_exp, appres_exp, res, thick):
 

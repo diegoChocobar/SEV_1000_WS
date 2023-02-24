@@ -5,75 +5,15 @@ $ensayo = $_SESSION['ensayo'];
 include '../checklogin.php';
 include '../conectionDB.php';
 
-/////////////// Python initial values calculation //////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-    $username = getenv("SUDO_USER");
-    $python_interp = "/home/".$username."/anaconda3/bin/python";
-          
-    // query data
-    $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
-    $datos = $result->fetch_all(MYSQLI_ASSOC);
-    $datos_num = count($datos);
 
-    // prepare json with input data
-    $nlayers0 = 3;
-    $x = array();
-    $y = array();
-    for ($i=0; $i < $datos_num ; $i++) {
-          $xidx = array_push($x, floatval($datos[$i]['OA']));
-          $yidx = array_push($y, floatval($datos[$i]['resistividad']));
-    };
-    $data = [
-      "nlayers" => $nlayers0,
-      "OA" => $x,
-      "R" => $y,
-    ];
+// Default número de capas:
+$nlayers0 = 3;
+$nlayers = $nlayers0;
 
-    // compute initial values
-    $compute_init = "python/compute_init_layers.py";
-    //$compute_init = "python/hello.py";
-    $command = escapeshellcmd($python_interp." ".$compute_init." ");
-    $arguments = escapeshellarg(json_encode($data));
-    $output = shell_exec($command.$arguments);
-    // print_r($output);
-    if ($output == 1) {
-      echo "python failed";
-    };
-
-    $output_decode = json_decode($output, true);
-    $nlayers = $output_decode['nlayers'];
-    $thick0 = $output_decode['thick0'];
-    $rho0 = $output_decode['rho0'];
-    // print_r($nlayers);
-    // print_r($thick0);
-    // print_r($rho0);
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////Pthon fit model calculation////////////////////////////////////////////
-       // prepare json with input data
-       $data2 = [
-        "nlayers" => $nlayers,
-        "OA" => $x,
-        "R" => $y,
-        "rho0" => $rho0,
-        "thick0" => $thick0,
-      ];
-  
-      // calcular ajuste
-      $compute_fit = "python/fit_VES.py";
-      $command = escapeshellcmd($python_interp." ".$compute_fit." ");  
-      $arguments = escapeshellarg(json_encode($data2));
-      $output2 = shell_exec($command.$arguments);
-      $output_decode2 = json_decode($output2, true);
-      $thick = $output_decode2['thick'];
-      $rho = $output_decode2['rho'];
-      // print_r($output_decode2);
-      // print_r($thick);
-      $number_rho = count($rho);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
- ?>
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -236,12 +176,12 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span type='ncapas' class='input-group-addon'>Numero de Capas: </span>
+                            <span type='ncapas' class='input-group-addon'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <input name='nlayers' id='nlayers' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=2 max=5 onchange="CambiaCapas()" placeholder="Numero de capas a analizar">
+                            <input name='nlayers0' id='nlayers0' class='md-input' type='number' type='ncapas' value = '<?php echo $nlayers0; ?>' min=2 max=5 onchange="CambiaCapas()" placeholder="Numero de capas a analizar">
                           </div>
                         </div>
                       </div>
@@ -274,7 +214,7 @@ include '../conectionDB.php';
                         <div class='col-xs-4'>
                             <div class='input-group'>
                               <input type="checkbox" name="checkP" id="checkP"><i class="dark-white"></i> 
-                              <span class='input-group-addon' type='myspan' >Profundidad: </span>
+                              <span class='input-group-addon' type='myspan' > Ancho de capas: </span>
                             </div>
                         </div>
                         <?php
@@ -309,12 +249,12 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-6'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='ncapas2'>Numero de Capas: </span>
+                            <span class='input-group-addon' type='ncapas2'>Número de Capas: </span>
                           </div>
                         </div>
                         <div class='col-md-2'>
                           <div class='input-group'>
-                            <input name='nlayers' id='nlayers' type='ncapas' class='md-input' value = '<?php echo $number_rho; ?>' min=1 max=5 placeholder="Numero de capas" disabled = "true">
+                            <input name='nlayers' id='nlayers' type='ncapas' class='md-input' value = '<?php echo $nlayers; ?>' min=1 max=5 placeholder="Numero de capas" disabled = "true">
                           </div>
                         </div>
                       </div>
@@ -322,17 +262,17 @@ include '../conectionDB.php';
                       <div class="row">
                         <div class='col-xs-4'>
                           <div class='input-group'>
-                            <span class='input-group-addon' type='resultados' >Resistividades: </span>
+                            <span class='input-group-addon' type='resultados'>Resistividad: </span>
                           </div>
                         </div>
                         <?php
-                          for($i=0;$i<$number_rho;$i++){
+                          for($i=0;$i<5;$i++){
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $rho_temp = round($rho[$i],2);
+                            $rho_temp = round($rho[$i], 1);
                             $j=$i+1;
-                            echo "<input name='rho_$j'"," id='rho_$j'"," type='numbers' step='0.1' value = '$rho_temp' min=0 placeholder='R-$j' disabled='disabled'",">";
+                            echo "<input name='rho_$i'"," id='rho_$i'"," type='numbers' step='0.1' value = '$rho_temp' min=0 placeholder='R-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -346,13 +286,13 @@ include '../conectionDB.php';
                           </div>
                         </div>
                         <?php
-                          for($i=0;$i<$number_rho;$i++){
+                          for($i=0;$i<5;$i++){
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $thick_temp = round($thick[$i],2);
+                            $thick_temp = round($thick_total[$i], 1);
                             $j=$i+1;
-                            echo "<input name='thick_$j'"," id='thick_$j'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
+                            echo "<input name='thick_$i'"," id='thick_$i'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -366,7 +306,7 @@ include '../conectionDB.php';
                   
                   <div class="col-sm-12">
                     <div align="center">
-                      <button  class="btn btn-lg success" title="Ajustar Resistividad" align="center" onclick="ReAjustar();">
+                      <button  class="btn btn-lg success" title="Ajustar Resistividad" align="center" onclick="Ajustar();">
                         <h3>Recalcular</h3>
                       </button>
                     </div>
@@ -456,6 +396,7 @@ include '../conectionDB.php';
 
 <?php $tiempo = time(); ?>
 
+<!-- <script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script> -->
 <script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>
