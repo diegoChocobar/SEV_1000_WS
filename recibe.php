@@ -258,8 +258,6 @@ if(isset($_POST['Data_Ensayo'])){
 
   $stringdata = '{"data":[';
 
-
-
     for ($i=0; $i < $datos_num ; $i++) {
       $stringdata .= '{';
       $stringdata .= '"x":';
@@ -287,9 +285,26 @@ if(isset($_POST['Data_Ensayo'])){
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
+}
 
+if(isset($_POST['Calcular_Iniciales'])){
+  
+  $data = array();
+
+  $ensayo = strip_tags($_POST['Ensayo']);
+  $nlayers = strip_tags($_POST['nlayers']);
+
+  $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
+
+  $data['status'] = True;
+  $data['resultados'] = $output;
+  $data['rho0'] = $output['rho0'];
+  $data['thick0'] = $output['thick0'];
+
+  echo json_encode($data, JSON_FORCE_OBJECT);
 
 }
+
 
 if(isset($_GET['data']) ) {
 
@@ -469,11 +484,6 @@ function Define_Python_Commands($keyword) {
     print_r("windows". $e);
   }
 
-  // // compute initial values
-  // $command = escapeshellcmd($python_interp." ".$python_file." ");
-  // $data = Pull_Data_From_DataBase($ensayo, $nlayers);
-  // $arguments = escapeshellarg(json_encode($data));
-
   return $python_interp." ".$python_file." ";
 }
 
@@ -554,7 +564,7 @@ if(isset($_POST['EliminarDato'])){
   echo json_encode($data, JSON_FORCE_OBJECT);
 }
 
-if(isset($_POST['ReAjustar'])){
+if(isset($_POST['Ajustar'])){
 
   $data = array();
 
@@ -567,14 +577,43 @@ if(isset($_POST['ReAjustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
+///////////////////////////////////////////////////
+
+$result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC ");
+$datos = $result->fetch_all(MYSQLI_ASSOC);
+$datos_num = count($datos);
+
+$stringdata = '{"data":[';
+
+  for ($i=0; $i < $datos_num ; $i++) {
+    $stringdata .= '{';
+    $stringdata .= '"x":';
+    $stringdata .= $datos[$i]['OA'];
+    $stringdata .= ',';
+    $stringdata .= '"y":';
+    $stringdata .= $datos[$i]['resistividad'];
+    if($i != $datos_num-1 ){
+      $stringdata .= '},';
+    }else{
+      $stringdata .= '}]}';
+    }
+
+  }
+
+
+////////////////////////////////////////////////
+
+
+
   $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
 
   $data['status'] = 'TRUE';
-  $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
+  $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
   $data['detalle'] .= " Resultados: " . $output;
   // implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
   $data['results'] = $output;
+  $data['dato'] = $stringdata;
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
@@ -592,7 +631,7 @@ if(isset($_POST['CambiaCapas'])){
   $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
 
   $data['status'] = 'TRUE';
-  $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
+  $data['detalle'] = 'Dato recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Results: nlayers = " . $nlayers;
   $data['detalle'] .= ", rho0 = ". implode(", ",$output['rho0']);
   $data['detalle'] .= ", thick0 = ". implode(",",$output['thick0']);
