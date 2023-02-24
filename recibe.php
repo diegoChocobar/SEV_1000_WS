@@ -434,18 +434,27 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
 
   // for linux
   try {
-    $username = getenv("SUDO_USER");
-    $python_interp = "/home/".$username."/anaconda3/bin/python";
-    $compute_init = "python/compute_init_layers.py";
+    $command = escapeshellcmd("uname");
+    $output = shell_exec($command);
+    if (strpos($output, "Linux") !== false) {
+      $username = getenv("SUDO_USER");
+      $python_interp = "/home/".$username."/anaconda3/bin/python";
+      $package_path = "/opt/lampp/htdocs/SEV_1000_WS";
+      $compute_init = $package_path."/html/python/compute_init_layers_backend.py";
+    }
   } catch (Exception $e) { 
     print_r("linux". $e);
   }
 
   // for windows
   try {
-    $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
-    $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
-    $compute_init = $package_path."\\html\\python\\compute_init_layers.py";
+    $command = escapeshellcmd("ver");
+    $output = shell_exec($command);
+    if (strpos($output, "Microsoft") !== false) {
+      $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+      $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+      $compute_init = $package_path."\\html\\python\\compute_init_layers_backend.py";
+    }
   } catch (Exception $e) { 
     print_r("windows". $e);
   }
@@ -455,8 +464,8 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
   $data = Pull_Data_From_DataBase($ensayo, $nlayers);
   $arguments = escapeshellarg(json_encode($data));
   $output = shell_exec($command.$arguments);
-  if ($output == 1) {
-    echo "python failed";
+  if (strpos($output, "failed python") !== false) {
+    return "python failed: " . $output;
   };
 
   $output_decode = json_decode($output, true);
@@ -468,18 +477,27 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
 
   // for linux
   try {
-    $username = getenv("SUDO_USER");
-    $python_interp = "/home/".$username."/anaconda3/bin/python";
-    $compute_fit = "python/fit_VES.py";
+    $command = escapeshellcmd("uname");
+    $output = shell_exec($command);
+    if (strpos($output, "Linux") !== false) {
+      $username = getenv("SUDO_USER");
+      $python_interp = "/home/".$username."/anaconda3/bin/python";
+      $package_path = "/opt/lampp/htdocs/SEV_1000_WS";
+      $compute_fit = $package_path."/html/python/fit_VES_backend.py";
+    }
   } catch (Exception $e) { 
     print_r("linux". $e);
   }
 
   // for windows
   try {
-    $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
-    $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
-    $compute_fit = $package_path."\\html\\python\\fit_VES_backend.py";
+    $command = escapeshellcmd("ver");
+    $output = shell_exec($command);
+    if (strpos($output, "Microsoft") !== false) {
+      $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+      $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+      $compute_fit = $package_path."\\html\\python\\fit_VES_backend.py";
+    }
   } catch (Exception $e) { 
     print_r("windows". $e);
   }
@@ -496,9 +514,11 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
   ];
   $arguments = escapeshellarg(json_encode($data));
   $output = shell_exec($command.$arguments);
-  if ($output == 1) {
-    echo "python failed";
+  
+  if (strpos($output, "failed python") !== false) {
+    return "python failed: " . $output;
   };
+
   return $output;
 }
 
@@ -548,7 +568,6 @@ if(isset($_POST['ReAjustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
-  // aca esta el error!!!
   // list($output, $thick_total) = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
   $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
 
@@ -571,13 +590,12 @@ if(isset($_POST['CambiaCapas'])){
   $checkP = strip_tags($_POST['checkP']);
 
   $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
-  $nlayers0 = $output['nlayers'];
-  $thick0 = $output['thick0'];
-  $rho0 = $output['rho0'];
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato ReAjustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-  $data['detalle'] .= " Results: " . $nlayers. ' '. implode(", ",$output['rho0']).' '. implode(",",$output['thick0']);
+  $data['detalle'] .= " Results: nlayers = " . $nlayers;
+  $data['detalle'] .= ", rho0 = ". implode(", ",$output['rho0']);
+  $data['detalle'] .= ", thick0 = ". implode(",",$output['thick0']);
   $data['rho0'] = $output['rho0'];
   $data['thick0'] = $output['thick0'];
 

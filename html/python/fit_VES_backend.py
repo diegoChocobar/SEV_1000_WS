@@ -41,7 +41,7 @@ try:
         x_exp.reverse()
         y_exp.reverse()
 except:
-    print("failed input data")
+    print("failed python: input data")
     sys.exit(1)
 
 

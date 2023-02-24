@@ -21,10 +21,14 @@ try {
 
 // for windows
 try {
-  $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
-  $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
-  $compute_init = $package_path."\\html\\python\\compute_init_layers.py";
-  $compute_fit = $package_path."\\html\\python\\fit_VES.py";
+  $command = escapeshellcmd("ver");
+  $output = shell_exec($command);
+  if (strpos($output, "Microsoft") !== false) {
+    $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+    $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
+    $compute_init = $package_path."\\html\\python\\compute_init_layers.py";
+    $compute_fit = $package_path."\\html\\python\\fit_VES.py";
+  }
 } catch (Exception $e) { 
   print_r("windows". $e);
 }
