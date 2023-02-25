@@ -165,6 +165,10 @@ def construct_lambda(x_exp, rho, thick):
     # add layer
     last_layer = max(x_exp) - sum(thick)
     thick = thick + [last_layer]
+
+    # round to two significant figures
+    rho = [round(r, 1) for r in rho]
+    thick = [round(t, 1) for t in thick]
     
     return {'rho': rho, 'thick': thick}
 
@@ -174,6 +178,10 @@ def compute_total_thick(thick):
     for i in range(len(thick)):
         suma += thick[i]
         thick_total.append(suma)
+
+    # round to two significant figures
+    thick_total = [round(t, 1) for t in thick_total]
+    
     return thick_total
 
 def plot_results(ab2s_exp, appres_exp, res, thick):

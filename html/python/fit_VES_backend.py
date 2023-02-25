@@ -11,6 +11,7 @@ def flatten(l):
 
 # input data from database via grafico_ajuste.php
 inpdata = sys.argv[1]
+# print(inpdata)
 try:
     data = json.loads(sys.argv[1])
 except:

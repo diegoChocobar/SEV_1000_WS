@@ -8,6 +8,7 @@ import pandas as pd
 fail = False
 # input data from database via grafico_ajuste.php
 inpdata = sys.argv[1]
+inpdata = inpdata.strip()
 
 try:
     data = json.loads(inpdata)
@@ -16,7 +17,7 @@ except:
 
 if fail:
     procdata = inpdata.split(', ')
-    if (procdata == 3): 
+    if (len(procdata) == 3): 
         procdata[0] = procdata[0].replace('{ nlayers :','')
         procdata[1] = procdata[1].replace('OA :','')
         procdata[2] = procdata[2].replace('R :','')
