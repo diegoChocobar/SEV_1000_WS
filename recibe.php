@@ -298,8 +298,6 @@ if(isset($_POST['Calcular_Iniciales'])){
 
   $data['status'] = True;
   $data['resultados'] = $output;
-  $data['rho0'] = $output['rho0'];
-  $data['thick0'] = $output['thick0'];
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
@@ -420,6 +418,32 @@ function Exportar_Datos($Nombre_Ensayo){
     return $data;
 }
 
+function Formatear_Data_Para_Graficar($ensayo) {
+
+  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC ");
+  $datos = $result->fetch_all(MYSQLI_ASSOC);
+  $datos_num = count($datos);
+  
+  $stringdata = '{"data":[';
+  
+  for ($i=0; $i < $datos_num ; $i++) {
+    $stringdata .= '{';
+    $stringdata .= '"x":';
+    $stringdata .= $datos[$i]['OA'];
+    $stringdata .= ',';
+    $stringdata .= '"y":';
+    $stringdata .= $datos[$i]['resistividad'];
+    if($i != $datos_num-1 ){
+      $stringdata .= '},';
+    }else{
+      $stringdata .= '}]}';
+    }
+
+  }
+
+  return $stringdata;
+}
+
 function Pull_Data_From_DataBase($ensayo, $nlayers) {
 
   include 'conectionDB.php';
@@ -499,15 +523,16 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
     return "python failed: " . $output;
   };
 
-  $output_decode = json_decode($output, true);
-
-  return $output_decode;
+  // $output_decode = json_decode($output, true);
+  // return $output_decode;
+  return $output;
 }
 
 function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
 
   // calcular ajuste
-  $command = escapeshellcmd($python_interp." ".$compute_fit." ");
+  $shellcomand = Define_Python_Commands("fit_values");
+  $command = escapeshellcmd($shellcomand);
   $database = Pull_Data_From_DataBase($ensayo, $nlayers);
   $data = [
     "nlayers" => $database["nlayers"],
@@ -517,7 +542,6 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
     "thick0" => array($thick0),
   ];
   $arguments = escapeshellarg(json_encode($data));
-  $shellcomand = Define_Python_Commands("fit_values");
 
   $output = shell_exec($shellcomand.$arguments);
 
@@ -525,9 +549,6 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
     return "python failed: " . $output;
   };
 
-  // $output_decode = json_decode($output, true);
-
-  // return $output_decode;
   return $output;
 }
 
@@ -577,42 +598,15 @@ if(isset($_POST['Ajustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
-///////////////////////////////////////////////////
-
-$result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC ");
-$datos = $result->fetch_all(MYSQLI_ASSOC);
-$datos_num = count($datos);
-
-$stringdata = '{"data":[';
-
-  for ($i=0; $i < $datos_num ; $i++) {
-    $stringdata .= '{';
-    $stringdata .= '"x":';
-    $stringdata .= $datos[$i]['OA'];
-    $stringdata .= ',';
-    $stringdata .= '"y":';
-    $stringdata .= $datos[$i]['resistividad'];
-    if($i != $datos_num-1 ){
-      $stringdata .= '},';
-    }else{
-      $stringdata .= '}]}';
-    }
-
-  }
-
-
-////////////////////////////////////////////////
-
-
-
+  $stringdata = Formatear_Data_Para_Graficar($ensayo);
   $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
   $data['detalle'] .= " Resultados: " . $output;
-  // implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
-  $data['results'] = $output;
+  implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
+  $data['resultados'] = $output;
   $data['dato'] = $stringdata;
 
   echo json_encode($data, JSON_FORCE_OBJECT);
@@ -632,11 +626,10 @@ if(isset($_POST['CambiaCapas'])){
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-  $data['detalle'] .= " Results: nlayers = " . $nlayers;
-  $data['detalle'] .= ", rho0 = ". implode(", ",$output['rho0']);
-  $data['detalle'] .= ", thick0 = ". implode(",",$output['thick0']);
-  $data['rho0'] = $output['rho0'];
-  $data['thick0'] = $output['thick0'];
+  // $data['detalle'] .= " Resultados: nlayers = " . $nlayers;
+  // $data['detalle'] .= ", rho0 = ". implode(", ",$output['rho0']);
+  // $data['detalle'] .= ", thick0 = ". implode(",",$output['thick0']);
+  $data['resultados'] = $output;
 
   echo json_encode($data, JSON_FORCE_OBJECT);
   
