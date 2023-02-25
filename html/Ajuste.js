@@ -59,7 +59,13 @@ function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajust
 
     if (objData_ini.readyState === 4) {
       if (objData_ini.status === 200) {
-        var data = JSON.parse(objData_ini.responseText);
+        
+        try {
+          var data = JSON.parse(objData_ini.responseText);
+        } catch (err) {
+          // error handling
+          console.log(objData_ini.responseText);          
+        }
 
         if (data.status == true) {
 
@@ -139,26 +145,12 @@ function Graficar(dat, ensayo) {
 
   // DATOS AJUSTE
 
-  //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
   var nlayers = $("#nlayers").val();
   nlayers = parseFloat(nlayers);
   var results = dat["resultados"];
   var results_arr = JSON.parse(results);
   var rho = results_arr['rho'];
   var thick = results_arr['thick'];
-  // var thick_total = Array();
-  // for (i = 0; i < nlayers; i++) {
-  //   istring = (i + 1).toString();
-  //   r = $("#rho_" + istring).val();
-  //   t = $("#thick_" + istring).val();
-  //   rho = rho.concat(parseFloat(r));
-  //   thick_total = thick_total.concat(parseFloat(t));
-  // };
-  // suma = 0;
-  // thick[0] = thick_total[0];
-  // for (i = 1; i < nlayers; i++) {
-  //   thick[i] = thick_total[i] - thick_total[i - 1];
-  // }
   data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
 
   var lineChartData = {
@@ -344,9 +336,13 @@ function Ajustar() {
     objAjustar.onreadystatechange = function () {
       if (objAjustar.readyState === 4) {
         if (objAjustar.status === 200) {
-          //alert(objNewEnsayo.responseText);
-          var data = JSON.parse(objAjustar.responseText);
-          // console.log(objAjustar.responseText);
+
+          try {
+            var data = JSON.parse(objAjustar.responseText);
+          } catch (err) {
+            // error handling
+            console.log(objAjustar.responseText);          
+          }
           
           if (data['status'] == "TRUE") {
             alert('Ajustar Exitoso: ' + data['detalle']);
@@ -456,8 +452,13 @@ function CambiaCapas() {
   objCambioCapas.onreadystatechange = function () {
     if (objCambioCapas.readyState === 4) {
       if (objCambioCapas.status === 200) {
-        //alert(objNewEnsayo.responseText);
-        var data = JSON.parse(objCambioCapas.responseText);
+        
+        try {
+          var data = JSON.parse(objCambioCapas.responseText);
+        } catch (err) {
+          // error handling
+          console.log(objCambioCapas.responseText);          
+        }
 
         if (data['status'] == "TRUE") {
           alert('CambioCapas Exitoso: ' + data['detalle']);
