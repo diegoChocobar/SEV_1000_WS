@@ -252,26 +252,7 @@ if(isset($_POST['Data_Ensayo'])){
   //$array_y = array('42.33','38.66','36.77','38.01','43.55');
   //$num_array = count($array_x);
 
-  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$Nombre_Ensayo."' ORDER BY `OA` ASC ");
-  $datos = $result->fetch_all(MYSQLI_ASSOC);
-  $datos_num = count($datos);
-
-  $stringdata = '{"data":[';
-
-    for ($i=0; $i < $datos_num ; $i++) {
-      $stringdata .= '{';
-      $stringdata .= '"x":';
-      $stringdata .= $datos[$i]['OA'];
-      $stringdata .= ',';
-      $stringdata .= '"y":';
-      $stringdata .= $datos[$i]['resistividad'];
-      if($i != $datos_num-1 ){
-        $stringdata .= '},';
-      }else{
-        $stringdata .= '}]}';
-      }
-
-    }
+  $stringdata = Formatear_Data_Para_Graficar($Nombre_Ensayo);
 
   if($Nombre_Ensayo != ""){
     $data['status'] = TRUE;
@@ -420,6 +401,8 @@ function Exportar_Datos($Nombre_Ensayo){
 
 function Formatear_Data_Para_Graficar($ensayo) {
 
+  include 'conectionDB.php';
+  
   $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC ");
   $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
@@ -605,7 +588,6 @@ if(isset($_POST['Ajustar'])){
   $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
   $data['detalle'] .= " Resultados: " . $output;
-  implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
   $data['resultados'] = $output;
   $data['dato'] = $stringdata;
 
