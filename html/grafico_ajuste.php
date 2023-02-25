@@ -9,9 +9,12 @@ include '../conectionDB.php';
 // Default número de capas:
 $nlayers0 = 3;
 $nlayers = $nlayers0;
+$rho0 = array("R-1","R-2","R-3","R-4","R-5");
+$rho = array("R-1","R-2","R-3","R-4","R-5");
+$thick0 = array("P-1","P-2","P-3","P-4","P-5");
+$thick_total = array("P-1","P-2","P-3","P-4","P-5");
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 ?>
 
@@ -214,7 +217,7 @@ $nlayers = $nlayers0;
                         <div class='col-xs-4'>
                             <div class='input-group'>
                               <input type="checkbox" name="checkP" id="checkP"><i class="dark-white"></i> 
-                              <span class='input-group-addon' type='myspan' > Ancho de capas: </span>
+                              <span class='input-group-addon' type='myspan' >  Ancho de capas: </span>
                             </div>
                         </div>
                         <?php
@@ -270,9 +273,9 @@ $nlayers = $nlayers0;
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $rho_temp = round($rho[$i], 1);
+                            // $rho_temp = round($rho[$i], 1);
                             $j=$i+1;
-                            echo "<input name='rho_$i'"," id='rho_$i'"," type='numbers' step='0.1' value = '$rho_temp' min=0 placeholder='R-$j' disabled='disabled'",">";
+                            echo "<input name='rho_$i'"," id='rho_$i'"," type='numbers' step='0.1' value = '$rho[$i]' min=0 placeholder='R-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -290,9 +293,9 @@ $nlayers = $nlayers0;
                             //echo "capa:",$i,"/n";
                             echo "<div>";
                             echo "<div class='input-group'>";
-                            $thick_temp = round($thick_total[$i], 1);
+                            // $thick_temp = round($thick_total[$i], 1);
                             $j=$i+1;
-                            echo "<input name='thick_$i'"," id='thick_$i'"," type='numbers' step='0.1' value = '$thick_temp' min=0 placeholder='P-$j' disabled='disabled'",">";
+                            echo "<input name='thick_$i'"," id='thick_$i'"," type='numbers' step='0.1' value = '$thick_total[$i]' min=0 placeholder='P-$j' disabled='disabled'",">";
                             echo "</div>";
                             echo "</div>";
                           }
@@ -396,7 +399,6 @@ $nlayers = $nlayers0;
 
 <?php $tiempo = time(); ?>
 
-<!-- <script type="text/javascript" src="chartjs-plugin-datalabels.js?v=<?php echo $tiempo ?>"></script> -->
 <script type="text/javascript" src="Ajuste.js?v=<?php echo $tiempo ?>"></script>
 
 <script>

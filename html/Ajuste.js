@@ -1,4 +1,3 @@
-
 window.onload = function () {
   /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
   //alert("entramos en script ajuste.js");
@@ -23,7 +22,8 @@ window.onload = function () {
           // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
           ValoresIniciales(data);
           //Graficar(data,Ensayo);
-                //window.location.reload(true);
+
+          //window.location.reload(true);
         } else {
           alert('Error al pedir datos para grafico: ' + data['error']);
         }
@@ -63,8 +63,10 @@ function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajust
 
         if (data.status == true) {
 
-          var rho0 = data["rho0"];
-          var thick0 = data["thick0"];
+          var results = data["resultados"];
+          var results_arr = JSON.parse(results);
+          var rho0 = results_arr['rho0'];
+          var thick0 = results_arr['thick0'];
 
           //////////logica para el muestreo de los valores iniciales calculados ///////////////
           for (let index = 0; index < nlayers; index++) {
@@ -140,7 +142,7 @@ function Graficar(dat, ensayo) {
   //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
   var nlayers = $("#nlayers").val();
   nlayers = parseFloat(nlayers);
-  var results = dat["results"];
+  var results = dat["resultados"];
   var results_arr = JSON.parse(results);
   var rho = results_arr['rho'];
   var thick = results_arr['thick'];
@@ -250,8 +252,6 @@ function ConstruirArrayCapas(nlayers, rho, thick) {
       rho_plot = rho_plot.concat(r);
     };
   };
-  // console.log(rho_plot);
-  // console.log(thick_plot);
   data = Array();
   for (i = 0; i <= nlayers * 2 - 1; i++) {
     data = data.concat({ 'x': thick_plot[i], 'y': rho_plot[i] })
@@ -346,23 +346,22 @@ function Ajustar() {
         if (objAjustar.status === 200) {
           //alert(objNewEnsayo.responseText);
           var data = JSON.parse(objAjustar.responseText);
-
+          // console.log(objAjustar.responseText);
+          
           if (data['status'] == "TRUE") {
             alert('Ajustar Exitoso: ' + data['detalle']);
-            results = data["results"];
-            results_arr = JSON.parse(results);
-            thick_total = results_arr['thick_total'];
-            rho = results_arr['rho'];
-            data_xy = data['dato'];
+            var results = data["resultados"];
+            // console.log(results);
+            var results_arr = JSON.parse(results);
+            var thick_total = results_arr['thick_total'];
+            var rho = results_arr['rho'];
+            var data_xy = data['dato'];
 
             // console.log(thick_total);
             // console.log(rho);
             $("#nlayers").val(nlayers);
             //////////logica para el muestreo de los valores iniciales calculados ///////////////
             for (let index = 0; index < nlayers; index++) {
-              console.log(index);
-              console.log(rho[index]);
-              console.log(thick_total[index]);
               $("#rho_" + index).prop("disabled", true);
               $("#rho_" + index).val(rho[index]); //muestreo del valor calculado para los rho0 iniciales
               $("#rho_" + index).css("display", "none");
@@ -463,12 +462,10 @@ function CambiaCapas() {
         if (data['status'] == "TRUE") {
           alert('CambioCapas Exitoso: ' + data['detalle']);
 
-          thick0 = data['thick0'];
-          rho0 = data['rho0'];
-          // console.log(thick0);
-          // for (let index = 0; index < nlayers; index++){
-          //   console.log(rho0[index]);
-          // }
+          var results = data["resultados"];
+          var results_arr = JSON.parse(results);
+          var rho0 = results_arr['rho0'];
+          var thick0 = results_arr['thick0'];
 
           //////////logica para el muestreo de los valores iniciales calculados ///////////////
           for (let index = 0; index < 5; index++) {
