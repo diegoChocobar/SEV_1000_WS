@@ -347,7 +347,7 @@ function Ajustar() {
           if (data['status'] == "TRUE") {
             alert('Ajustar Exitoso: ' + data['detalle']);
             var results = data["resultados"];
-            // console.log(results);
+            console.log(results);
             var results_arr = JSON.parse(results);
             var thick_total = results_arr['thick_total'];
             var rho = results_arr['rho'];
@@ -385,15 +385,11 @@ function Ajustar() {
               }
             }
 
-            // FALTA COMPLETAR AQUI LA ACTUALIZACION DE LOS VALORES DE
-            // rho y thick_total
-
             //window.location.reload(true);
             //var link = "http://localhost/cdcelectronics/"+data['file'];
             //window.open(link, '_blank'); window.focus();
             
             Graficar(data,Ensayo);
-
 
           } else {
             alert('Error Ajustar: ' + data['error']);
@@ -433,8 +429,6 @@ function CambiaCapas() {
   //////////////////////////////////////////////////////////
 
   alert("Cambio el número de capas: " + nlayers);
-
-  //aqui debemos ir al BackEnd y traer los valors iniciales calculados/////////
 
   /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
   var formData = new FormData();

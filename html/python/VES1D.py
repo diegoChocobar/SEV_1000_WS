@@ -127,6 +127,7 @@ def forward(ab2, rho, thick):
     # Resistivity to conductivity
     return res_a
 
+
 def apparent_resistivity(ab2s, *params):
     nparams = len(params)
     nlayers = int((nparams + 1)/ 2)

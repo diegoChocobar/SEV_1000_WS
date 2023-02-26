@@ -511,7 +511,8 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
   return $output;
 }
 
-function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
+// function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
+function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP){
 
   // calcular ajuste
   $shellcomand = Define_Python_Commands("fit_values");
@@ -519,6 +520,8 @@ function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
   $database = Pull_Data_From_DataBase($ensayo, $nlayers);
   $data = [
     "nlayers" => $database["nlayers"],
+    "checkR" => $checkR,
+    "checkP" => $checkP,
     "OA" => $database["OA"],
     "R" => $database["R"],
     "rho0" => array($rho0),
@@ -570,8 +573,7 @@ if(isset($_POST['EliminarDato'])){
 
 if(isset($_POST['Ajustar'])){
 
-  $data = array();
-
+  // get data from frontend
   $ensayo = strip_tags($_POST['Ensayo']);
   $nlayers = strip_tags($_POST['nlayers']);
   $checkR = strip_tags($_POST['checkR']);
@@ -582,8 +584,10 @@ if(isset($_POST['Ajustar'])){
   $thick0 = explode(",", $thick0_string); 
 
   $stringdata = Formatear_Data_Para_Graficar($ensayo);
-  $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
+  // $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
+  $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
+  $data = array();
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
   $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
