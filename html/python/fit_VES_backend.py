@@ -14,11 +14,11 @@ inpdata = sys.argv[1]
 # print(inpdata)
 try:
     data = json.loads(inpdata)
-    data["checkR"] = True if data["checkR"] == "true" else False
-    data["checkP"] = True if data["checkP"] == "true" else False
 except:
     procdata = inpdata.replace('{ nlayers :', '')
     procdata = procdata.replace(', OA :', ',,')
+    procdata = procdata.replace(', checkR :', ',,')
+    procdata = procdata.replace(', checkP :', ',,')
     procdata = procdata.replace(', R :', ',,')
     procdata = procdata.replace(', rho0 :[', ',,')
     procdata = procdata.replace('], thick0 :[', ',,')
@@ -27,14 +27,17 @@ except:
     procdata = procdata.split(',,')
     data = {
         "nlayers": int(procdata[0].strip()),
-        # "checkR": procdata[1],
-        # "checkP": procdata[2],
-        "OA": json.loads(procdata[1]),
-        'R': json.loads(procdata[2]),
-        'rho0': json.loads(procdata[3]),
-        'thick0': json.loads(procdata[4]),
+        "checkR": procdata[1].strip(),
+        "checkP": procdata[2].strip(),
+        "OA": json.loads(procdata[3]),
+        'R': json.loads(procdata[4]),
+        'rho0': json.loads(procdata[5]),
+        'thick0': json.loads(procdata[6]),
     }
     # print(json.dumps(data))
+
+data["checkR"] = True if data["checkR"] == "true" else False
+data["checkP"] = True if data["checkP"] == "true" else False
 
 try:
     checkR, checkP = data['checkR'], data['checkP']
