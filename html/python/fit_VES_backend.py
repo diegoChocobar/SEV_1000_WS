@@ -1,9 +1,7 @@
 import sys
 import numpy as np
-import pandas as pd
 import VES1D
 from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 import json
 
 def flatten(l):
@@ -12,6 +10,7 @@ def flatten(l):
 # input data from database via grafico_ajuste.php
 inpdata = sys.argv[1]
 # print(inpdata)
+
 try:
     data = json.loads(inpdata)
 except:
@@ -23,7 +22,6 @@ except:
     procdata = procdata.replace(', rho0 :[', ',,')
     procdata = procdata.replace('], thick0 :[', ',,')
     procdata = procdata.replace(']}', '')
-    # FALTA CODEAR checkR y checkP
     procdata = procdata.split(',,')
     data = {
         "nlayers": int(procdata[0].strip()),
@@ -55,9 +53,9 @@ except:
     sys.exit(1)
 
 
-# arrange data into a dataframe
-df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
-df = VES1D.preprocess_data(df)
+# # arrange data into a dataframe
+# df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
+# df = VES1D.preprocess_data(df)
 
 # VARIAR TODOS LOS PARAMETROS (ancho de capas y resistividades)
 if not checkR and not checkP:
@@ -73,20 +71,12 @@ if not checkR and not checkP:
     try:
         lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
         rho, thick = VES1D.extract_values(lam)
-        lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
-        lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
-        print(json.dumps(lam_dict))
     except:
-        # REVISAR!!!
-        # si el ajuste fallar, se usan otros valores iniciales
+        # REVISAR!!! si el ajuste fallar, se usan otros valores iniciales
         # (capas dadas por puntos de inflexion de ajuste polinomico)
         thick0, rho0 = VES1D.init_values(x_exp, y_exp)
         lam0 = np.concatenate([rho0, thick0[:-1]])
         lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
-        rho, thick = VES1D.extract_values(lam)
-        lam_dict = VES1D.construct_lambda(rho, thick)
-        lam_dict['thick_total'] = VES1D.compute_total_thick(thick)
-        print(json.dumps(lam_dict))
 
 
 # VARIAR UN SET DE PARAMETROS (resistividades)
@@ -110,9 +100,7 @@ elif not checkR and checkP:
 
     try:
         rho, pcov = curve_fit(f, x_exp, y_exp, p0=rho0, bounds=bounds_rho)
-        lam_dict = VES1D.construct_lambda(x_exp, rho, thick0)
-        lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
-        print(json.dumps(lam_dict))
+        thick = thick0
     except:
         print("failed python: fit failed (rho)")
 
@@ -138,8 +126,15 @@ elif checkR and not checkP:
 
     try:
         thick, pcov = curve_fit(f, x_exp, y_exp, p0=thick0, bounds=bounds_thick)
-        lam_dict = VES1D.construct_lambda(x_exp, rho0, thick)
-        lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
-        print(json.dumps(lam_dict))
+        rho = rho0
     except:
         print("failed python: fit failed (thick)")
+
+
+lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
+lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
+lam_dict['error'] = VES1D.compute_error(x_exp, y_exp, rho, thick)
+lam_dict['fit_plot'] = VES1D.export_fitted_values(x_exp, rho, thick)
+lam_dict['layer_model'] = VES1D.export_layers_model(x_exp, rho, thick)
+
+print(json.dumps(lam_dict))

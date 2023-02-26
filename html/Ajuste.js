@@ -143,21 +143,26 @@ function Graficar(dat, ensayo) {
     data: testt.data
   };
 
-  // DATOS AJUSTE
+  // DATOS AJUSTE - MODELO DE CAPAS
 
-  var nlayers = $("#nlayers").val();
-  nlayers = parseFloat(nlayers);
-  var results = dat["resultados"];
-  var results_arr = JSON.parse(results);
-  var rho = results_arr['rho'];
-  var thick = results_arr['thick'];
-  data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
+  var results = JSON.parse(dat["resultados"]);
+  var modelo_capas = results["layer_model"];
+  var data_ajuste = results["fit_plot"];
 
-  var lineChartData = {
+  var lineChartLayerModel = {
     borderColor: window.chartColors.red,
-    //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
     backgroundColor: window.chartColors.black,
     label: 'Modelo de capas',
+    type: 'line',
+    showLine: true, // disable for a single dataset
+    tension: 0,
+    data: modelo_capas
+  };
+
+  var lineChartData = {
+    borderColor: window.chartColors.orange,
+    backgroundColor: window.chartColors.black,
+    label: 'Datos ajustados',
     type: 'line',
     showLine: true, // disable for a single dataset
     tension: 0,
@@ -168,7 +173,8 @@ function Graficar(dat, ensayo) {
   var multipleChartData = {
     datasets: [
       scatterChartData,
-      lineChartData
+      lineChartLayerModel, // modelo de capas
+      lineChartData, // datos del ajuste
     ]
   };
 
@@ -221,35 +227,6 @@ function Graficar(dat, ensayo) {
     }
   });
 }
-
-function ConstruirArrayCapas(nlayers, rho, thick) {
-  const tdum = [0].concat(thick);
-  var suma = 0;
-  for (i = 0; i <= nlayers; i++) {
-    suma += tdum[i];
-    tdum[i] = suma;
-  };
-  var rho_plot = [];
-  var thick_plot = [];
-  for (i = 0; i < nlayers; i++) {
-    r = rho[i];
-    t = tdum[i];
-    rho_plot = rho_plot.concat(r);
-    thick_plot = thick_plot.concat(t);
-    if (i < nlayers) {
-      rho_plot = rho_plot.concat(r);
-      thick_plot = thick_plot.concat(tdum[i + 1]);
-    }
-    else {
-      rho_plot = rho_plot.concat(r);
-    };
-  };
-  data = Array();
-  for (i = 0; i <= nlayers * 2 - 1; i++) {
-    data = data.concat({ 'x': thick_plot[i], 'y': rho_plot[i] })
-  }
-  return data
-};
 
 
 function ExportarDatos() {
@@ -345,16 +322,14 @@ function Ajustar() {
           }
           
           if (data['status'] == "TRUE") {
-            alert('Ajustar Exitoso: ' + data['detalle']);
+            // alert('Ajustar Exitoso: ' + data['detalle']);
+            alert('¡Ajuste Exitoso!');
             var results = data["resultados"];
             console.log(results);
             var results_arr = JSON.parse(results);
             var thick_total = results_arr['thick_total'];
             var rho = results_arr['rho'];
-            var data_xy = data['dato'];
 
-            // console.log(thick_total);
-            // console.log(rho);
             $("#nlayers").val(nlayers);
             //////////logica para el muestreo de los valores iniciales calculados ///////////////
             for (let index = 0; index < nlayers; index++) {

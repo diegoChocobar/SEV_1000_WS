@@ -511,7 +511,6 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
   return $output;
 }
 
-// function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0){
 function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP){
 
   // calcular ajuste
@@ -584,16 +583,20 @@ if(isset($_POST['Ajustar'])){
   $thick0 = explode(",", $thick0_string); 
 
   $stringdata = Formatear_Data_Para_Graficar($ensayo);
-  // $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0);
   $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
   $data = array();
-  $data['status'] = 'TRUE';
-  $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
-  $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
-  $data['detalle'] .= " Resultados: " . $output;
-  $data['resultados'] = $output;
-  $data['dato'] = $stringdata;
+  if(strpos($output, "failed python") !== false){
+    $data['status'] = 'FALSE';
+    $data['error'] = $output;
+  } else{
+    $data['status'] = 'TRUE';
+    $data['detalle'] = 'Dato Ajustar recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;
+    $data['detalle'] .= " Resistividades Iniciales: " . implode(", ", $rho0) . " Thick: " . implode(", ", $thick0);
+    $data['detalle'] .= " Resultados: " . $output;
+    $data['resultados'] = $output;
+    $data['dato'] = $stringdata;
+  }
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
