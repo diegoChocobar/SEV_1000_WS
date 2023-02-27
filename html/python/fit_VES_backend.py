@@ -126,7 +126,7 @@ elif checkR and not checkP:
     except:
         print("failed python: fit failed (thick)")
 
-
+thick = VES1D.add_last_layer(x_exp, thick)
 lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
 lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
 lam_dict['error'] = VES1D.compute_error(x_exp, y_exp, rho, thick)

@@ -151,6 +151,16 @@ def apparent_resistivity(ab2s, *params):
     return app_res
 
 
+def add_last_layer(x_exp, thick):
+
+    # add layer to thick
+    thick = list(thick)
+    last_layer = max(x_exp) - sum(thick)
+    if last_layer < 0: last_layer = -last_layer
+    thick = thick + [last_layer]
+
+    return thick
+
 def extract_values(lam):
     
     nlayers = int((len(lam) + 1) / 2)
@@ -162,9 +172,6 @@ def extract_values(lam):
 def construct_lambda(x_exp, rho, thick):
     rho, thick = list(rho), list(thick)
     
-    # add layer
-    last_layer = max(x_exp) - sum(thick)
-    thick = thick + [last_layer]
 
     # round to two significant figures
     rho = [round(r, 1) for r in rho]

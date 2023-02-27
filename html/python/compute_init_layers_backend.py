@@ -64,6 +64,7 @@ try:
     else:
         rho0 = VES1D.initial_rho(nlayers, df['R'])
         thick0 = VES1D.initial_thick(nlayers, df['R'], df['OA'])
+        thick0 = [t if t > 1 else 1 for t in thick0]
         ini_data = {
             "nlayers": nlayers, 
             "thick0": list(thick0),
