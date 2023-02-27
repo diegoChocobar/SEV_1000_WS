@@ -148,7 +148,8 @@ function Graficar(dat, ensayo) {
   var results = JSON.parse(dat["resultados"]);
   var modelo_capas = results["layer_model"];
   var data_ajuste = results["fit_plot"];
-
+  console.log(results["error"])
+  var errorText = "Error de ajuste = " + results["error"] + " %"
   var lineChartLayerModel = {
     borderColor: window.chartColors.red,
     backgroundColor: window.chartColors.black,
@@ -178,12 +179,26 @@ function Graficar(dat, ensayo) {
     ]
   };
 
+  var plugin = {
+    beforeDraw: function (chart) {
+        var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+        ctx.restore();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(errorText, width * .92, height * 0.1);
+        ctx.save();
+    }
+  };
+  Chart.plugins.register(plugin);
+
   var ctx = document.getElementById('canvas').getContext('2d');
   window.myScatter = Chart.Scatter(ctx, {
 
     data: multipleChartData,
     options: {
-
+      plugins: [plugin],
       title: {
         display: true,
         text: 'Sondeo Electrico Vertical -- ' + ensayo

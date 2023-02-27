@@ -192,7 +192,7 @@ def compute_error(ab2s_exp, appres_exp, res, thick):
     n = len(y_exp) if len(y_exp) == len(y_fit) else 0
     diff = abs(y_exp - y_fit)
     mape = 1 / n * sum(diff / y_exp)
-    return mape * 100
+    return round(mape * 100, 1)
 
 
 def fitted_apparent_resistivity(ab2s_exp, res, thick):

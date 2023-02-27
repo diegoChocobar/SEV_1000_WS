@@ -53,10 +53,6 @@ except:
     sys.exit(1)
 
 
-# # arrange data into a dataframe
-# df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
-# df = VES1D.preprocess_data(df)
-
 # VARIAR TODOS LOS PARAMETROS (ancho de capas y resistividades)
 if not checkR and not checkP:
 
