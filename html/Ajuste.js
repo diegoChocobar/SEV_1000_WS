@@ -1,4 +1,3 @@
-
 window.onload = function () {
   /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
   //alert("entramos en script ajuste.js");
@@ -23,7 +22,8 @@ window.onload = function () {
           // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
           ValoresIniciales(data);
           //Graficar(data,Ensayo);
-                //window.location.reload(true);
+
+          //window.location.reload(true);
         } else {
           alert('Error al pedir datos para grafico: ' + data['error']);
         }
@@ -59,12 +59,21 @@ function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajust
 
     if (objData_ini.readyState === 4) {
       if (objData_ini.status === 200) {
-        var data = JSON.parse(objData_ini.responseText);
+        
+        try {
+          var data = JSON.parse(objData_ini.responseText);
+        } catch (err) {
+          // error handling
+          console.log(objData_ini.responseText);          
+        }
 
         if (data.status == true) {
 
-          var rho0 = data["rho0"];
-          var thick0 = data["thick0"];
+          var results = data["resultados"];
+          var results_arr = JSON.parse(results);
+          // console.log(results_arr);
+          var rho0 = results_arr['rho0'];
+          var thick0 = results_arr['thick0'];
 
           //////////logica para el muestreo de los valores iniciales calculados ///////////////
           for (let index = 0; index < nlayers; index++) {
@@ -115,6 +124,12 @@ function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajust
 
 function Graficar(dat, ensayo) {
 
+  console.log(typeof window.myScatter);
+  if (typeof window.myScatter != 'undefined') {
+    window.myScatter.destroy();
+    // var plugin = null;
+  }
+  
   // DATOS ENSAYO
   var datat = dat.dato;
   //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
@@ -135,35 +150,27 @@ function Graficar(dat, ensayo) {
     data: testt.data
   };
 
-  // DATOS AJUSTE
+  // DATOS AJUSTE - MODELO DE CAPAS
 
-  //var test = JSON.stringify(datat); //Parsea el Json al objeto anterior.
-  var nlayers = $("#nlayers").val();
-  nlayers = parseFloat(nlayers);
-  var results = dat["results"];
-  var results_arr = JSON.parse(results);
-  var rho = results_arr['rho'];
-  var thick = results_arr['thick'];
-  // var thick_total = Array();
-  // for (i = 0; i < nlayers; i++) {
-  //   istring = (i + 1).toString();
-  //   r = $("#rho_" + istring).val();
-  //   t = $("#thick_" + istring).val();
-  //   rho = rho.concat(parseFloat(r));
-  //   thick_total = thick_total.concat(parseFloat(t));
-  // };
-  // suma = 0;
-  // thick[0] = thick_total[0];
-  // for (i = 1; i < nlayers; i++) {
-  //   thick[i] = thick_total[i] - thick_total[i - 1];
-  // }
-  data_ajuste = ConstruirArrayCapas(nlayers, rho, thick);
-
-  var lineChartData = {
+  var results = JSON.parse(dat["resultados"]);
+  var modelo_capas = results["layer_model"];
+  var data_ajuste = results["fit_plot"];
+  console.log(results["error"])
+  var errorText = "error = " + results["error"] + " %"
+  var lineChartLayerModel = {
     borderColor: window.chartColors.red,
-    //backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
     backgroundColor: window.chartColors.black,
     label: 'Modelo de capas',
+    type: 'line',
+    showLine: true, // disable for a single dataset
+    tension: 0,
+    data: modelo_capas
+  };
+
+  var lineChartData = {
+    borderColor: window.chartColors.orange,
+    backgroundColor: window.chartColors.black,
+    label: 'Ajuste, ' + errorText,
     type: 'line',
     showLine: true, // disable for a single dataset
     tension: 0,
@@ -174,7 +181,8 @@ function Graficar(dat, ensayo) {
   var multipleChartData = {
     datasets: [
       scatterChartData,
-      lineChartData
+      lineChartLayerModel, // modelo de capas
+      lineChartData, // datos del ajuste
     ]
   };
 
@@ -183,7 +191,6 @@ function Graficar(dat, ensayo) {
 
     data: multipleChartData,
     options: {
-
       title: {
         display: true,
         text: 'Sondeo Electrico Vertical -- ' + ensayo
@@ -227,38 +234,6 @@ function Graficar(dat, ensayo) {
     }
   });
 }
-
-function ConstruirArrayCapas(nlayers, rho, thick) {
-  const tdum = [0].concat(thick);
-  var suma = 0;
-  for (i = 0; i <= nlayers; i++) {
-    suma += tdum[i];
-    tdum[i] = suma;
-  };
-  var rho_plot = [];
-  var thick_plot = [];
-  for (i = 0; i < nlayers; i++) {
-    r = rho[i];
-    t = tdum[i];
-    rho_plot = rho_plot.concat(r);
-    thick_plot = thick_plot.concat(t);
-    if (i < nlayers) {
-      rho_plot = rho_plot.concat(r);
-      thick_plot = thick_plot.concat(tdum[i + 1]);
-    }
-    else {
-      rho_plot = rho_plot.concat(r);
-    };
-  };
-  // console.log(rho_plot);
-  // console.log(thick_plot);
-  data = Array();
-  for (i = 0; i <= nlayers * 2 - 1; i++) {
-    data = data.concat({ 'x': thick_plot[i], 'y': rho_plot[i] })
-  }
-  return data
-};
-
 
 function ExportarDatos() {
 
@@ -344,25 +319,26 @@ function Ajustar() {
     objAjustar.onreadystatechange = function () {
       if (objAjustar.readyState === 4) {
         if (objAjustar.status === 200) {
-          //alert(objNewEnsayo.responseText);
-          var data = JSON.parse(objAjustar.responseText);
 
+          try {
+            var data = JSON.parse(objAjustar.responseText);
+          } catch (err) {
+            // error handling
+            console.log(objAjustar.responseText);          
+          }
+          
           if (data['status'] == "TRUE") {
-            alert('Ajustar Exitoso: ' + data['detalle']);
-            results = data["results"];
-            results_arr = JSON.parse(results);
-            thick_total = results_arr['thick_total'];
-            rho = results_arr['rho'];
-            data_xy = data['dato'];
+            // alert('Ajustar Exitoso: ' + data['detalle']);
+            alert('¡Ajuste Exitoso!');
+            var results = data["resultados"];
+            console.log(results);
+            var results_arr = JSON.parse(results);
+            var thick_total = results_arr['thick_total'];
+            var rho = results_arr['rho'];
 
-            // console.log(thick_total);
-            // console.log(rho);
             $("#nlayers").val(nlayers);
             //////////logica para el muestreo de los valores iniciales calculados ///////////////
             for (let index = 0; index < nlayers; index++) {
-              console.log(index);
-              console.log(rho[index]);
-              console.log(thick_total[index]);
               $("#rho_" + index).prop("disabled", true);
               $("#rho_" + index).val(rho[index]); //muestreo del valor calculado para los rho0 iniciales
               $("#rho_" + index).css("display", "none");
@@ -390,15 +366,11 @@ function Ajustar() {
               }
             }
 
-            // FALTA COMPLETAR AQUI LA ACTUALIZACION DE LOS VALORES DE
-            // rho y thick_total
-
             //window.location.reload(true);
             //var link = "http://localhost/cdcelectronics/"+data['file'];
             //window.open(link, '_blank'); window.focus();
             
             Graficar(data,Ensayo);
-
 
           } else {
             alert('Error Ajustar: ' + data['error']);
@@ -439,8 +411,6 @@ function CambiaCapas() {
 
   alert("Cambio el número de capas: " + nlayers);
 
-  //aqui debemos ir al BackEnd y traer los valors iniciales calculados/////////
-
   /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
   var formData = new FormData();
   formData.append("CambiaCapas", "TRUE");
@@ -457,18 +427,22 @@ function CambiaCapas() {
   objCambioCapas.onreadystatechange = function () {
     if (objCambioCapas.readyState === 4) {
       if (objCambioCapas.status === 200) {
-        //alert(objNewEnsayo.responseText);
-        var data = JSON.parse(objCambioCapas.responseText);
+        
+        try {
+          var data = JSON.parse(objCambioCapas.responseText);
+        } catch (err) {
+          // error handling
+          console.log(objCambioCapas.responseText);          
+        }
 
         if (data['status'] == "TRUE") {
           alert('CambioCapas Exitoso: ' + data['detalle']);
 
-          thick0 = data['thick0'];
-          rho0 = data['rho0'];
-          // console.log(thick0);
-          // for (let index = 0; index < nlayers; index++){
-          //   console.log(rho0[index]);
-          // }
+          var results = data["resultados"];
+          var results_arr = JSON.parse(results);
+          // console.log(results_arr);
+          var rho0 = results_arr['rho0'];
+          var thick0 = results_arr['thick0'];
 
           //////////logica para el muestreo de los valores iniciales calculados ///////////////
           for (let index = 0; index < 5; index++) {

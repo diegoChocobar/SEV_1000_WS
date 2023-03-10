@@ -1,7 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 import pandas as pd
+
 
 def preprocess_data(df):
     from collections import Counter
@@ -127,6 +126,7 @@ def forward(ab2, rho, thick):
     # Resistivity to conductivity
     return res_a
 
+
 def apparent_resistivity(ab2s, *params):
     nparams = len(params)
     nlayers = int((nparams + 1)/ 2)
@@ -151,6 +151,16 @@ def apparent_resistivity(ab2s, *params):
     return app_res
 
 
+def add_last_layer(x_exp, thick):
+
+    # add layer to thick
+    thick = list(thick)
+    last_layer = max(x_exp) - sum(thick)
+    if last_layer < 0: last_layer = -last_layer
+    thick = thick + [last_layer]
+
+    return thick
+
 def extract_values(lam):
     
     nlayers = int((len(lam) + 1) / 2)
@@ -162,11 +172,13 @@ def extract_values(lam):
 def construct_lambda(x_exp, rho, thick):
     rho, thick = list(rho), list(thick)
     
-    # add layer
-    last_layer = max(x_exp) - sum(thick)
-    thick = thick + [last_layer]
+
+    # round to two significant figures
+    rho = [round(r, 1) for r in rho]
+    thick = [round(t, 1) for t in thick]
     
     return {'rho': rho, 'thick': thick}
+
 
 def compute_total_thick(thick):
     thick_total = []
@@ -174,35 +186,11 @@ def compute_total_thick(thick):
     for i in range(len(thick)):
         suma += thick[i]
         thick_total.append(suma)
-    return thick_total
 
-def plot_results(ab2s_exp, appres_exp, res, thick):
-
-    # Figure
-    # fig = plt.figure()
-    ax = plt.gca()
-
-    plt.plot(ab2s_exp, appres_exp, 'o', color='tab:orange', label='data')
-    plot_apparent_resistivity(ab2s_exp, res, thick)
-    plot_layers(ab2s_exp, res, thick)
+    # round to two significant figures
+    thick_total = [round(t, 1) for t in thick_total]
     
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.xlabel('AB/2 (m)')
-    plt.ylabel('$\\rho_a$ ($\Omega$m)')
-    ymin = min(appres_exp) * 0.8
-    ymax = max(appres_exp) * 1.2
-    plt.ylim(ymin, ymax)
-    mape = compute_error(ab2s_exp, appres_exp, res, thick)
-    plt.legend(title=f'error = {mape:.1e}')
-    # xtext = max(ab2s_exp) * 0.8
-    # ytext = max(appres_exp) * 0.8
-    # plt.text(xtext, ytext, )
-
-    ax.tick_params(direction='in',which='major',bottom=True,top=True,left=True,right=True)
-    ax.tick_params(direction='in',which='minor',bottom=True,top=True,left=True,right=True)
-
-    plt.show()
+    return thick_total
 
 
 def compute_error(ab2s_exp, appres_exp, res, thick):
@@ -211,7 +199,7 @@ def compute_error(ab2s_exp, appres_exp, res, thick):
     n = len(y_exp) if len(y_exp) == len(y_fit) else 0
     diff = abs(y_exp - y_fit)
     mape = 1 / n * sum(diff / y_exp)
-    return mape * 100
+    return round(mape * 100, 1)
 
 
 def fitted_apparent_resistivity(ab2s_exp, res, thick):
@@ -219,12 +207,7 @@ def fitted_apparent_resistivity(ab2s_exp, res, thick):
     return apparent_resistivity(ab2s_exp, *lam)
 
 
-def plot_apparent_resistivity(ab2s_exp, res, thick):
-    appres_fitted = fitted_apparent_resistivity(ab2s_exp, res, thick)
-    plt.plot(ab2s_exp, appres_fitted, color='tab:red', linestyle='solid', label=f'ajuste')
-    
-
-def plot_layers(ab2s_exp, res, thick):
+def export_layers_model(ab2s_exp, res, thick):
     nlayers = len(res)
     tdum = [0] + list(thick)
     tdum = np.array([sum(tdum[:i+1]) for i in range(nlayers)])
@@ -239,4 +222,15 @@ def plot_layers(ab2s_exp, res, thick):
         else:
             res_plot.append(r)
             thick_plot.append(max(ab2s_exp))
-    plt.plot(thick_plot, res_plot, color='tab:green')
+    layermodel = []
+    for xi, yi in zip(thick_plot, res_plot):
+        layermodel.append({"x": round(xi, 1), "y": round(yi, 1)})
+    return layermodel
+
+
+def export_fitted_values(x_exp, rho, thick):
+    y_fitted = fitted_apparent_resistivity(x_exp, rho, thick)
+    fitvalues = []
+    for xi, yi in zip(x_exp, y_fitted):
+        fitvalues.append({"x": xi, "y": round(yi, 1)})
+    return fitvalues
