@@ -69,7 +69,7 @@ include 'checklogin.php';
                         </a>
                       </div>
                       <div class="form-group">
-                        <h1 class="txt-white bold text-shadow align-center">CDC ELECTRONICS</h1>
+                        <h1 class="txt-white bold text-shadow align-center">CDC ELECTRONICS DEVELOPER</h1>
                       </div>
                       <br>
                       <div class="form-group" align="left">
