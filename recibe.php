@@ -108,6 +108,7 @@ if(isset($_POST['ActualizaDB_Cal'])) {
     $dato_k = strip_tags($_POST['db_K']);
     $dato_mn = strip_tags($_POST['db_MN']);
     $dato_ensayo = strip_tags($_POST['db_Ensayo']);
+    $dato_modelo = strip_tags($_POST['db_Modelo']);
     $dato_v = strip_tags($_POST['db_tension']);
     $dato_i = strip_tags($_POST['db_corriente']);
 
@@ -120,19 +121,19 @@ if(isset($_POST['ActualizaDB_Cal'])) {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if($resistividad != 0 ){
 
-      $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
+      $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' AND `modelo`='".$dato_modelo."' ");
       $datos = $result->fetch_all(MYSQLI_ASSOC);
       $datos_num = count($datos);
 
       if($datos_num > 0){
-        $actualiza = $conn->query("UPDATE `datos` SET `tension`='$dato_v',`corriente`='$dato_i',`OA`='$dato_oa',`MN`='$dato_mn',`K`='$dato_k',`resistividad`='$resistividad',`fecha`= CURRENT_TIMESTAMP WHERE `trabajo` = '".$dato_ensayo."' AND `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' ");
+        $actualiza = $conn->query("UPDATE `datos` SET `tension`='$dato_v',`corriente`='$dato_i',`OA`='$dato_oa',`MN`='$dato_mn',`K`='$dato_k',`resistividad`='$resistividad',`fecha`= CURRENT_TIMESTAMP WHERE `trabajo` = '".$dato_ensayo."' AND `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `modelo`='".$dato_modelo."' ");
 
         if($actualiza === TRUE){
             $data['status'] = true;
             $data['detalle'] = "Actualizamos con exito el dato en DB";
             ////////////LOGICA PARA CARGAR ARRAY PARA GRAFICAR/////////////////
 
-            $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' ORDER BY `OA` ASC ");
+            $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' AND `modelo`='".$dato_modelo."' ORDER BY `OA` ASC ");
             $datos_d = $result_d->fetch_all(MYSQLI_ASSOC);
             $datos_num_d = count($datos_d);
 
@@ -161,14 +162,14 @@ if(isset($_POST['ActualizaDB_Cal'])) {
         }
       }else{
         //$insertar = $conn->query("INSERT INTO `Datos` SET `OA`='$dato_oa',`MN`='$dato_mn',`K`='$dato_k',`fecha`= CURRENT_TIMESTAMP WHERE `id` = '1' ");
-        $insertar = $conn->query("INSERT INTO `datos`(`id`,`trabajo`,`tension`,`corriente`,`OA`,`MN`,`K`,`resistividad`,`fecha`) VALUES (NULL,'$dato_ensayo','$dato_v','$dato_i','$dato_oa','$dato_mn','$dato_k','$resistividad',CURRENT_TIMESTAMP)");
+        $insertar = $conn->query("INSERT INTO `datos`(`id`,`trabajo`,`modelo`,`tension`,`corriente`,`OA`,`MN`,`K`,`resistividad`,`fecha`) VALUES (NULL,'$dato_ensayo','$dato_modelo','$dato_v','$dato_i','$dato_oa','$dato_mn','$dato_k','$resistividad',CURRENT_TIMESTAMP)");
 
         if($insertar === TRUE){
             $data['status'] = true;
             $data['detalle'] = "Dato Insertado con Exito en DB";
             ////////////LOGICA PARA CARGAR ARRAY PARA GRAFICAR/////////////////
 
-            $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' ORDER BY `OA` ASC ");
+            $result_d = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$dato_ensayo."' AND `modelo`='".$dato_modelo."' ORDER BY `OA` ASC ");
             $datos_d = $result_d->fetch_all(MYSQLI_ASSOC);
             $datos_num_d = count($datos_d);
 
@@ -216,8 +217,24 @@ if(isset($_POST['Cambio_Ensayo'])){
   $data = array();
 
   $_SESSION['ensayo'] = strip_tags($_POST['Cambio_Ensayo']);
+  $_SESSION['modelo'] = strip_tags($_POST['Modelo_Ensayo']);
   $data['status'] = 'TRUE';
   $data['ensayo'] = $_SESSION['ensayo'];
+  $data['modelo'] = $_SESSION['modelo'];
+
+  echo json_encode($data, JSON_FORCE_OBJECT);
+
+}
+
+if(isset($_POST['Cambio_Modelo'])){
+
+  $data = array();
+
+  $_SESSION['ensayo'] = "Prueba";
+  $_SESSION['modelo'] = strip_tags($_POST['Modelo_Ensayo']);
+  $data['status'] = 'TRUE';
+  $data['ensayo'] = $_SESSION['ensayo'];
+  $data['modelo'] = $_SESSION['modelo'];
 
   echo json_encode($data, JSON_FORCE_OBJECT);
 
@@ -226,10 +243,11 @@ if(isset($_POST['Cambio_Ensayo'])){
 if(isset($_POST['Nuevo_Ensayo'])){
   $data = array();
   $Nombre_Ensayo = $_POST['Nombre_Ensayo'];
+  $Modelo_Ensayo = $_POST['Modelo_Ensayo'];
 
   if($Nombre_Ensayo != ""){
 
-    $result = $conn->query("SELECT * FROM `ensayo` WHERE `nombre`='".$Nombre_Ensayo."' AND `nombre`='1' ");
+    $result = $conn->query("SELECT * FROM `ensayo` WHERE `nombre`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Ensayo."' AND `status`='1' ");
     $datos = $result->fetch_all(MYSQLI_ASSOC);
     $datos_num = count($datos);
 
@@ -238,7 +256,7 @@ if(isset($_POST['Nuevo_Ensayo'])){
       $data['error'] = 'Ensayo ya existe';
     }else{
 
-      $insertar = $conn->query("INSERT INTO `ensayo`(`id`,`nombre`,`fecha`,`status`) VALUES (NULL,'$Nombre_Ensayo',CURRENT_TIMESTAMP,'1')");
+      $insertar = $conn->query("INSERT INTO `ensayo`(`id`,`nombre`,`modelo`,`fecha`,`status`) VALUES (NULL,'$Nombre_Ensayo','$Modelo_Ensayo',CURRENT_TIMESTAMP,'1')");
 
       if($insertar === TRUE){
           $data['status'] = 'TRUE';
@@ -263,11 +281,12 @@ if(isset($_POST['Data_Ensayo'])){
 
   $data = array();
   $Nombre_Ensayo = $_POST['Nombre_Ensayo'];
+  $Modelo_Datos = $_POST['Modelo_Datos'];
   //$array_x = array('2.5','3.2','4','5','6.5');
   //$array_y = array('42.33','38.66','36.77','38.01','43.55');
   //$num_array = count($array_x);
 
-  $stringdata = Formatear_Data_Para_Graficar($Nombre_Ensayo);
+  $stringdata = Formatear_Data_Para_Graficar($Nombre_Ensayo,$Modelo_Datos);
 
   if($Nombre_Ensayo != ""){
     $data['status'] = TRUE;
@@ -310,10 +329,11 @@ if(isset($_POST['Eliminar_Ensayo'])){
 
   $data = array();
   $Nombre_Ensayo = $_POST['Nombre_Ensayo'];
+  $Modelo_Ensayo = $_POST['Modelo_Ensayo'];
 
   if($Nombre_Ensayo != ""){
     ///*
-    $result = $conn->query("SELECT * FROM `ensayo` WHERE `nombre`='".$Nombre_Ensayo."' AND `status`='1' ");
+    $result = $conn->query("SELECT * FROM `ensayo` WHERE `nombre`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Ensayo."' AND `status`='1' ");
     $datos = $result->fetch_all(MYSQLI_ASSOC);
     $datos_num = count($datos);
 
@@ -323,7 +343,7 @@ if(isset($_POST['Eliminar_Ensayo'])){
       $data['error'] = 'Ensayo no existe en DB. No podemos elimiar';
     }else{
 
-      $delet = $conn->query("UPDATE `ensayo` SET `nombre`='$Nombre_Ensayo',`fecha`=CURRENT_TIMESTAMP,`status`='0' WHERE `nombre`='".$Nombre_Ensayo."' AND `status`='1' ");
+      $delet = $conn->query("UPDATE `ensayo` SET `nombre`='$Nombre_Ensayo',`fecha`=CURRENT_TIMESTAMP,`status`='0' WHERE `nombre`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Ensayo."' AND `status`='1' ");
 
       if($delet === TRUE){
           $data['status'] = 'TRUE';
@@ -350,11 +370,12 @@ if(isset($_POST['Exportar_Datos'])){
 
   $data = array();
   $Nombre_Ensayo = $_POST['Nombre_Ensayo'];
+  $Modelo_Datos = $_POST['Modelo_Datos'];
 
   if($Nombre_Ensayo != ""){
     //$data['status'] = 'TRUE';
     //$data['detalle'] = $Nombre_Ensayo;
-    $data = Exportar_Datos($Nombre_Ensayo);
+    $data = Exportar_Datos($Nombre_Ensayo,$Modelo_Datos);
   }else{
     $data['status'] = 'FALSE';
     $data['error'] = 'Ensayo no cargado';
@@ -363,16 +384,16 @@ if(isset($_POST['Exportar_Datos'])){
   echo json_encode($data, JSON_FORCE_OBJECT);
 }
 
-function Exportar_Datos($Nombre_Ensayo){
+function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
 
   include 'conectionDB.php';
   $data = array();
   $fecha_actual = date("d-m-Y");
   $stringdata = "OA;MN;V;I;R"."\n";
 
-  $file_name ='archivos/SEV_' . $Nombre_Ensayo .'_'. $fecha_actual . '.txt';
+  $file_name ='archivos/SEV_' . $Nombre_Ensayo .'_' . $Modelo_Datos . '_' . $fecha_actual . '.txt';
 
-    $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$Nombre_Ensayo."' ORDER BY `OA` ASC ");
+    $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Datos."' ORDER BY `OA` ASC ");
     $datos = $result->fetch_all(MYSQLI_ASSOC);
     $datos_num = count($datos);
 
@@ -414,11 +435,11 @@ function Exportar_Datos($Nombre_Ensayo){
     return $data;
 }
 
-function Formatear_Data_Para_Graficar($ensayo) {
+function Formatear_Data_Para_Graficar($ensayo,$modelo) {
 
   include 'conectionDB.php';
   
-  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC ");
+  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC ");
   $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
   
@@ -561,14 +582,15 @@ if(isset($_POST['EliminarDato'])){
   $dato_oa = strip_tags($_POST['OA']);
   $dato_mn = strip_tags($_POST['MN']);
   $dato_ensayo = strip_tags($_POST['Ensayo']);
+  $dato_modelo = strip_tags($_POST['Modelo']);
 
-  $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
+  $result = $conn->query("SELECT * FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' AND `modelo`='".$dato_modelo."' ");
   $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
 
   if($datos_num > 0){
     
-    $borrar = $conn->query("DELETE FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' ");
+    $borrar = $conn->query("DELETE FROM `datos` WHERE `OA`='".$dato_oa."' AND `MN`='".$dato_mn."' AND `trabajo`='".$dato_ensayo."' AND `modelo`='".$dato_modelo."' ");
     if($borrar === TRUE){
       $data['status'] = 'TRUE';
       $data['detalle'] = 'Dato Eliminado con exito';
@@ -597,7 +619,10 @@ if(isset($_POST['Ajustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
-  $stringdata = Formatear_Data_Para_Graficar($ensayo);
+  /////////MODIFICAR PARA QUE TOME EL VERDADERO VALOR DEL MODELO A AJUSTAR////////////
+  $modelo = "Schlumberger";
+  ////////////////////////////////////////////////////////////////////////////////////
+  $stringdata = Formatear_Data_Para_Graficar($ensayo,$modelo);
   $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
   $data = array();

@@ -1,6 +1,7 @@
 <?php
 session_start();
 $ensayo = $_SESSION['ensayo'];
+$modelo = $_SESSION['modelo'];
 
 include '../checklogin.php';
 include '../conectionDB.php';
@@ -159,7 +160,10 @@ $thick_total = array("P-1","P-2","P-3","P-4","P-5");
 
                 <div class='row justify-content-center'>
                   <div class='col-md-8'>
-                    <span class='input-group-addon'><h3>Calculo de Ajuste de Curva: <?php echo $ensayo; ?> </h3></span>
+                    <span class='input-group-addon'><h3>Calculo de Ajuste de Curva</h3></span>
+                  </div>
+                  <div class='col-md-8'>
+                    <span class='input-group-addon'><h3><?php echo $ensayo; ?> : <?php echo $modelo; ?> </h3></span>
                   </div>
                 </div>
 
