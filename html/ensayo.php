@@ -1,6 +1,7 @@
 <?php
 session_start();
 $ensayo = $_SESSION['ensayo'];
+$modelo = $_SESSION['modelo'];
 $_SESSION['tension'] = 0;
 $_SESSION['corriente'] = 0;
 $_SESSION['calcular'] = 0;
@@ -73,25 +74,8 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
           <div ui-view class="app-body" id="view">
               <div class="padding">
                   <div class="box">
-
-                    <!--div class="box-header b-b" align="center">
-
-                        <div class="form-group">
-                          <a class="image align-left" href="https://geofisicainstrumentos.com" target="_blank">
-                              <img class="cropContainer" src="http://localhost/SEV_1000_WS/img/logo.png" title="cdcelectronics instrumentos">
-                          </a>
-                        </div>
-
-                        <div class="form-group">
-                          <h1 class="txt-white bold text-shadow align-center"><strong>CDC ELECTRONICS</strong></h1>
-                        </div>
-
-                    </div-->
-
-                    <!--div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div>
-                    <div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div><div class="box-divider" class="col-md-12"></div-->
+                    
                     <br>
-
 
                     <div class="col-sm-12">
                         <div class="row">
@@ -121,19 +105,31 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                             </button>
                           </div>
 
+                          <div class="col-sm-2">
+                                <select class="form-control c-select" id="ModeloEnsayo" name="modelo de ensayo" class="required">
+                                    <option value="" >Tipo de Modelo</option>
+                                    <option value="Schlumberger" >Schlumberger</option>
+                                    <option value="Wenner" >Wenner</option>
+                                    <option value="D-D" >Dipolo Dipolo</option>
+                                  
+                                </select>
+                           </div>
+
                           <div class="col-sm-3" align="left">
                             <input id="NuevoEnsayo" value="" class="form-control" align="center" type="text" placeholder="Nombre de ensayo" style="width: 245px;margin: 0px 0px">
                           </div>
 
-                          <div class="col-sm-2" align="left">
-                            <button  class="btn btn-fw white" align="center" onclick="Nuevo_Ensayo()">
-                              Nuevo Ensayo
+                          <div class="col-sm-1" align="left">
+                            <button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Nuevo Ensayo" align="center"
+                                           onclick="Nuevo_Ensayo()">
+                                  <i class="material-icons md-24"></i><i class="material-icons md-24"></i>
                             </button>
                           </div>
 
                           <div class="col-sm-1" align="left">
-                            <button  class="btn btn-fw red" align="center" onclick="Eliminar_Ensayo()">
-                              Eliminar Ensayo
+                            <button  class="btn btn-icon btn-social rounded btn-social-colored pink" title="Eliminar" align="center"
+                                     onclick="Eliminar_Ensayo()">
+                                <i class="material-icons md-24"></i><i class="material-icons md-24"></i>
                             </button>
                           </div>
 
@@ -152,6 +148,13 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 
                           <div class="box-header">
                             <div class="row justify-content-center">
+                              <div class="col-sm-2">
+                                    <select class="form-control c-select" id="ModeloDatos" name="modelo de datos" onchange="change_modelo_datos()"  class="required">
+                                        <option value="Schlumberger" <?php if($_SESSION['modelo'] == 'Schlumberger'){echo "selected='selected'";} ?>>Schlumberger</option>
+                                        <option value="Wenner"  <?php if($_SESSION['modelo'] == 'Wenner'){echo "selected='selected'";} ?>>Wenner</option>
+                                        <option value="D-D"  <?php if($_SESSION['modelo'] == 'D-D'){echo "selected='selected'";} ?>>Dipolo Dipolo</option>
+                                    </select>
+                              </div>
                               <div class="col-xs-6">
                                 <div class="form-control"><b>Ensayo SEV:</b></div>
                               </div>
@@ -159,7 +162,8 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                 <select class="form-control c-select" id="Ensayo" name="Ensayo" onchange="change_Ensayo()"  class="required">
 
                                   <?php
-                                    $result = $conn->query("SELECT * FROM `ensayo` WHERE `status`='1'  ORDER BY `nombre` ASC ");
+                                    $modelo = $_SESSION['modelo'];
+                                    $result = $conn->query("SELECT * FROM `ensayo` WHERE `modelo`='".$modelo."' AND `status`='1'  ORDER BY `nombre` ASC ");
                                     $datos = $result->fetch_all(MYSQLI_ASSOC);
                                     $datos_num = count($datos);
                                     for($i=0;$i<$datos_num;$i++){ ?>
@@ -265,8 +269,9 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 
                                       $oa = $const_oa[$i];
                                       $ensayo =  $_SESSION['ensayo'];
+                                      $modelo = $_SESSION['modelo'];
                                       //echo "$oa". "$ensayo";
-                                      $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` DESC  ");
+                                      $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` DESC  ");
                                       $datos = $result->fetch_all(MYSQLI_ASSOC);
                                       $datos_num = count($datos);
 

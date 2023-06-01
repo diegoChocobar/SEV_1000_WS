@@ -1,6 +1,7 @@
 <?php
 session_start();
 $ensayo = $_SESSION['ensayo'];
+$modelo = $_SESSION['modelo'];
 
 include '../checklogin.php';
 include '../conectionDB.php';
@@ -62,6 +63,7 @@ include '../conectionDB.php';
                       <div class="box-header">
                         <!--h2 align="center">Sondeo Electrico Vertial -- <?php echo $ensayo; ?></h2-->
                         <input id="Ensayo" value="<?php echo $ensayo ?>" type="hidden" class="form-control" align="center" type="text" placeholder="Ensayo" style="width: 345px;margin: 0px 0px">
+                        <input id="Modelo" value="<?php echo $modelo ?>" type="hidden" class="form-control" align="center" type="text" placeholder="Modelo" style="width: 345px;margin: 0px 0px">
                       </div>
 
                       <!--////////area para el grafico//////////---->

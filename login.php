@@ -30,6 +30,8 @@ if(isset($_POST['user']) && isset($_POST['password'])) {
       $msg .= "Exito!!!";
       $_SESSION['logged'] = true;
       $_SESSION['ensayo'] ="Prueba";
+      //$_SESSION['modelo'] ="Schlumberger";
+      $_SESSION['modelo'] ="Wenner";
       $_SESSION['timeout'] = time();
       echo '<meta http-equiv="refresh" content="1; url=dashboard.php">';
     }else{

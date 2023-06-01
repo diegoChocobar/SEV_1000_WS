@@ -15,6 +15,8 @@ function CalcularR(posicion,calcular){
     var dato_mn = $("#const_MN_" + posicion).val();
     var dato_k = $("#constante_" + posicion).val();
     var dato_ensayo = $("#Ensayo").val();
+    var dato_modelo = $("#ModeloDatos").val();
+    
     var tension = $("#tension_" + posicion).val();
     var corriente = $("#corriente_" + posicion).val();
 
@@ -42,6 +44,7 @@ function CalcularR(posicion,calcular){
                   formData.append("db_tension", tension);
                   formData.append("db_Ensayo",dato_ensayo);
                   formData.append("db_corriente", corriente);
+                  formData.append("db_Modelo", dato_modelo);
 
                   ///////////////funcion de  de escucha al php/////////////
                   var objActualizar = new XMLHttpRequest();
@@ -147,12 +150,14 @@ function ActualizarR(posicion){
 function change_Ensayo(){
 
     var ensayo = $("#Ensayo").val();
+    var Modelo_Ensayo  = $("#ModeloDatos").val();
     //alert('Cargando ensayo: ' + ensayo);
 
     if(ensayo != ""){
         /////Mandar consulta al servidor para actualizar los datos del Usuario/////////////////////
         var formData = new FormData();
         formData.append("Cambio_Ensayo", ensayo);
+        formData.append("Modelo_Ensayo", Modelo_Ensayo);
 
         ///////////////funcion de  de escucha al php/////////////
          var objActualizarUsuario = new XMLHttpRequest();
@@ -164,7 +169,7 @@ function change_Ensayo(){
                  var data = JSON.parse(objActualizarUsuario.responseText);
 
                  if(data['status'] == "TRUE"){
-                   alert('Cargando Ensayo..: ' + data['ensayo']);
+                   alert('Cargando Ensayo:' + data['ensayo'] + ' Modelo:' + data['modelo']);
                    window.location.reload(true);
                  }else{
                    alert('Error actualizacion: ' + data['error']);
@@ -182,6 +187,45 @@ function change_Ensayo(){
          objActualizarUsuario.send(formData);
          ////////////////////////////////////////////////////////////////
      }
+}
+
+function change_modelo_datos(){
+  var Modelo_Ensayo  = $("#ModeloDatos").val();
+
+      if(Modelo_Ensayo != ""){
+        /////Mandar consulta al servidor para actualizar los datos del Usuario/////////////////////
+        var formData = new FormData();
+        formData.append("Cambio_Modelo", "OK");
+        formData.append("Modelo_Ensayo", Modelo_Ensayo);
+
+        ///////////////funcion de  de escucha al php/////////////
+        var objActualizarUsuario = new XMLHttpRequest();
+
+        objActualizarUsuario.onreadystatechange = function() {
+            if(objActualizarUsuario.readyState === 4) {
+              if(objActualizarUsuario.status === 200) {
+                //alert(objXActualizarVehiculo.responseText);
+                var data = JSON.parse(objActualizarUsuario.responseText);
+
+                if(data['status'] == "TRUE"){
+                  alert('Buscando Ensayos con el Modelo:' + data['modelo']);
+                  window.location.reload(true);
+                }else{
+                  alert('Error actualizacion: ' + data['error']);
+                }
+
+
+              } else {
+                alert('Error Code 111: ' +  objActualizarUsuario.status);
+                alert('Error Message 222: ' + objActualizarUsuario.statusText);
+              }
+            }
+        }
+
+        objActualizarUsuario.open('POST', '../recibe.php',true);
+        objActualizarUsuario.send(formData);
+        ////////////////////////////////////////////////////////////////
+    }
 }
 
 function change_MN(posicion){
@@ -234,13 +278,16 @@ function change_OA(posicion){
 function Nuevo_Ensayo(){
 
     var Nuevo_Ensayo  = $("#NuevoEnsayo").val();
+    var Modelo_Ensayo  = $("#ModeloEnsayo").val();
 
-    if(Nuevo_Ensayo != ""){
-        //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo);
+    if(Nuevo_Ensayo != "" & Modelo_Ensayo!=""){
+        //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo +"Modelo:"+ Modelo_Ensayo);
+        
         /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
         var formData = new FormData();
         formData.append("Nuevo_Ensayo", "TRUE");
         formData.append("Nombre_Ensayo", Nuevo_Ensayo);
+        formData.append("Modelo_Ensayo", Modelo_Ensayo);
 
         ///////////////funcion de  de escucha al php/////////////
          var objNewEnsayo = new XMLHttpRequest();
@@ -272,13 +319,16 @@ function Nuevo_Ensayo(){
         objNewEnsayo.send(formData);
 
     }else{
-      alert("Completar nombre de nuevo ensayo");
+      if(Nuevo_Ensayo == ""){alert("Completar nombre de nuevo ensayo");}
+      if(Modelo_Ensayo==""){alert("Completar Modelo de ensayo");}
+      
     }
 
 }
 
 function Eliminar_Ensayo(){
   var Ensayo  = $("#NuevoEnsayo").val();
+  var Modelo  = $("#ModeloEnsayo").val();
 
   if(Ensayo != "" && Ensayo != "Prueba"){
 
@@ -292,7 +342,7 @@ function Eliminar_Ensayo(){
         var opt = select[i];
         if(opt.value==Ensayo){
           //alert("Eliminando ENSAYO:..."+Ensayo);
-          Delet_Ensayo(Ensayo);
+          Delet_Ensayo(Ensayo,Modelo);
           cont = cont +1;
         }
       }
@@ -306,12 +356,13 @@ function Eliminar_Ensayo(){
 
 }
 
-function Delet_Ensayo(Ensayo){
+function Delet_Ensayo(Ensayo,Modelo){
   //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo);
   /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
   var formData = new FormData();
   formData.append("Eliminar_Ensayo", "TRUE");
   formData.append("Nombre_Ensayo", Ensayo);
+  formData.append("Modelo_Ensayo", Modelo);
 
   ///////////////funcion de  de escucha al php/////////////
    var objNewEnsayo = new XMLHttpRequest();
@@ -486,9 +537,11 @@ window.onload = function() {
 
     /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
     var ensayo = $("#Ensayo").val();
+    var Modelo_Datos = $("#ModeloDatos").val();
     var formData = new FormData();
     formData.append("Data_Ensayo", "TRUE");
     formData.append("Nombre_Ensayo", ensayo);
+    formData.append("Modelo_Datos", Modelo_Datos);
 
     ///////////////funcion de  de escucha al php/////////////
      var objData = new XMLHttpRequest();
@@ -602,13 +655,15 @@ function Graficar(dat){
 function ExportarDatos(){
 
   var Ensayo  = $("#Ensayo").val();
+  var Modelo_Datos  = $("#ModeloDatos").val();
 
   if(Ensayo != ""){
-      alert("Cargando nuevo ensayo.." + Ensayo);
+      alert("Exportando datos de ensayo.." + Ensayo + ":"+Modelo_Datos);
       /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
       var formData = new FormData();
       formData.append("Exportar_Datos", "TRUE");
       formData.append("Nombre_Ensayo", Ensayo);
+      formData.append("Modelo_Datos", Modelo_Datos);
 
       ///////////////funcion de  de escucha al php/////////////
        var objNewEnsayo = new XMLHttpRequest();
@@ -661,6 +716,7 @@ function EliminarDato(posicion){
       var dato_mn = $("#const_MN_" + posicion).val();
       var dato_k = $("#constante_" + posicion).val();
       var dato_ensayo = $("#Ensayo").val();
+      var dato_modelo = $("#ModeloDatos").val();
 
       if(dato_k != "0" & dato_ensayo != "" ){
         //alert('Eliminar datos. oa:' + dato_oa + ' mn:' + dato_mn  + ' k:' + dato_k + ' Ensayo: ' +dato_ensayo );
@@ -671,6 +727,7 @@ function EliminarDato(posicion){
         formData.append("K", dato_k);
         formData.append("OA", dato_oa);
         formData.append("Ensayo",dato_ensayo);
+        formData.append("Modelo",dato_modelo);
 
         ///////////////funcion de  de escucha al php/////////////
 

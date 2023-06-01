@@ -2,10 +2,12 @@ window.onload = function() {
 
     /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
     var ensayo = $("#Ensayo").val();
+    var modelo = $("#Modelo").val();
     //var ensayo = "Prueba"
     var formData = new FormData();
     formData.append("Data_Ensayo", "TRUE");
     formData.append("Nombre_Ensayo", ensayo);
+    formData.append("Modelo_Datos", modelo);
 
     ///////////////funcion de  de escucha al php/////////////
      var objData = new XMLHttpRequest();
