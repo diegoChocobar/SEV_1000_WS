@@ -307,9 +307,10 @@ if(isset($_POST['Calcular_Iniciales'])){
   $data = array();
 
   $ensayo = strip_tags($_POST['Ensayo']);
+  $modelo = strip_tags($_POST['Modelo_Datos']);
   $nlayers = strip_tags($_POST['nlayers']);
 
-  $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
+  $output = Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo);
 
   $data['status'] = True;
   $data['resultados'] = $output;
@@ -463,12 +464,12 @@ function Formatear_Data_Para_Graficar($ensayo,$modelo) {
   return $stringdata;
 }
 
-function Pull_Data_From_DataBase($ensayo, $nlayers) {
+function Pull_Data_From_DataBase($ensayo, $nlayers, $modelo) {
 
   include 'conectionDB.php';
 
   // query data
-  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' ORDER BY `OA` ASC  ");
+  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC  ");
   $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
 
@@ -530,10 +531,10 @@ function Define_Python_Commands($keyword) {
   return $python_interp." ".$python_file." ";
 }
 
-function Calcular_Valores_Iniciales($ensayo, $nlayers){
+function Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo){
 
   // compute initial values
-  $data = Pull_Data_From_DataBase($ensayo, $nlayers);
+  $data = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
   $arguments = escapeshellarg(json_encode($data));
   $shellcomand = Define_Python_Commands("init_values");
 
@@ -547,12 +548,13 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers){
   return $output;
 }
 
-function Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP){
+function Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $checkP){
 
   // calcular ajuste
   $shellcomand = Define_Python_Commands("fit_values");
   $command = escapeshellcmd($shellcomand);
-  $database = Pull_Data_From_DataBase($ensayo, $nlayers);
+  ////aqui falta la variable modelo
+  $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
   $data = [
     "nlayers" => $database["nlayers"],
     "checkR" => $checkR,
@@ -611,6 +613,7 @@ if(isset($_POST['Ajustar'])){
 
   // get data from frontend
   $ensayo = strip_tags($_POST['Ensayo']);
+  $modelo = strip_tags($_POST['Modelo']);
   $nlayers = strip_tags($_POST['nlayers']);
   $checkR = strip_tags($_POST['checkR']);
   $checkP = strip_tags($_POST['checkP']);
@@ -619,11 +622,9 @@ if(isset($_POST['Ajustar'])){
   $rho0 = explode(",", $rho0_string); 
   $thick0 = explode(",", $thick0_string); 
 
-  /////////MODIFICAR PARA QUE TOME EL VERDADERO VALOR DEL MODELO A AJUSTAR////////////
-  $modelo = "Schlumberger";
   ////////////////////////////////////////////////////////////////////////////////////
   $stringdata = Formatear_Data_Para_Graficar($ensayo,$modelo);
-  $output = Calcular_Ajuste($ensayo, $nlayers, $rho0, $thick0, $checkR, $checkP);
+  $output = Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
   $data = array();
   if(strpos($output, "failed python") !== false){
@@ -647,11 +648,13 @@ if(isset($_POST['CambiaCapas'])){
   $data = array();
 
   $ensayo = strip_tags($_POST['Ensayo']);
+  $modelo = strip_tags($_POST['Modelo']);
   $nlayers = strip_tags($_POST['nlayers']);
   $checkR = strip_tags($_POST['checkR']);
   $checkP = strip_tags($_POST['checkP']);
 
-  $output = Calcular_Valores_Iniciales($ensayo, $nlayers);
+  //////aqui falta agregar la variable modelo
+  $output = Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo);
 
   $data['status'] = 'TRUE';
   $data['detalle'] = 'Dato recibido. Ensayo:' . $ensayo . ' Capas:' . $nlayers . ' checkR:' . $checkR . ' checkP:' . $checkP;

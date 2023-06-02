@@ -1,11 +1,14 @@
 window.onload = function () {
   /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
-  //alert("entramos en script ajuste.js");
+  
   var ensayo = $("#Ensayo").val();
+  var modelo = $("#Modelo").val();
+  //alert("Ensayo:"+ensayo+" modelo:"+modelo);
   //var ensayo = "Prueba"
   var formData = new FormData();
   formData.append("Data_Ensayo", "TRUE");
   formData.append("Nombre_Ensayo", ensayo);
+  formData.append("Modelo_Datos", modelo);
 
   ///////////////funcion de  de escucha al php/////////////
   var objData = new XMLHttpRequest();
@@ -46,12 +49,14 @@ window.onload = function () {
 function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajuste con python
 
   var Ensayo = $("#Ensayo").val();
+  var modelo = $("#Modelo").val();
   var nlayers = $("#nlayers").val();
 
   var formData_ini = new FormData();
   formData_ini.append("Calcular_Iniciales", "TRUE");
   formData_ini.append("Ensayo", Ensayo);
   formData_ini.append("nlayers", nlayers);
+  formData_ini.append("Modelo_Datos", modelo);
 
   var objData_ini = new XMLHttpRequest();
 
@@ -288,7 +293,9 @@ function ExportarDatos() {
 function Ajustar() {
 
   var Ensayo = $("#Ensayo").val();
+  var modelo = $("#Modelo").val();
   var nlayers = $("#nlayers0").val();
+  //alert("Entramos a ajustar:"+Ensayo+modelo)
   if ($("#checkR").prop('checked')) { var checkR = "true"; } else { var checkR = "false"; }
   if ($("#checkP").prop('checked')) { var checkP = "true"; } else { var checkP = "false"; }
 
@@ -307,6 +314,7 @@ function Ajustar() {
     var formData = new FormData();
     formData.append("Ajustar", "TRUE");
     formData.append("Ensayo", Ensayo);
+    formData.append("Modelo", modelo);
     formData.append("nlayers", nlayers);
     formData.append("checkR", checkR);
     formData.append("checkP", checkP);
@@ -394,6 +402,7 @@ function Ajustar() {
 function CambiaCapas() {
 
   var Ensayo = $("#Ensayo").val();
+  var Modelo = $("#Modelo").val();
   var nlayers = $("#nlayers0").val();
 
   /////////logica para limitar el numero de capas///////////
@@ -415,6 +424,7 @@ function CambiaCapas() {
   var formData = new FormData();
   formData.append("CambiaCapas", "TRUE");
   formData.append("Ensayo", Ensayo);
+  formData.append("Modelo", Modelo);
   formData.append("nlayers", nlayers);
   formData.append("checkR", checkR);
   formData.append("checkP", checkP);
