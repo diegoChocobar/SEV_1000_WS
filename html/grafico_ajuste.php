@@ -331,6 +331,7 @@ $thick_total = array("P-1","P-2","P-3","P-4","P-5");
 
                       <div class="box-header">
                         <input id="Ensayo" value="<?php echo $ensayo ?>" type="hidden" class="form-control" align="center" type="text" placeholder="Ensayo" style="width: 345px;margin: 0px 0px">
+                        <input id="Modelo" value="<?php echo $modelo ?>" type="hidden" class="form-control" align="center" type="text" placeholder="Modelo" style="width: 345px;margin: 0px 0px">
                       </div>
 
                       <div style="width:100%">
