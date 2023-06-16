@@ -5,12 +5,14 @@ window.onload = function () {
   var modelo = $("#Modelo").val();
   //alert("Ensayo:"+ensayo+" modelo:"+modelo);
   //var ensayo = "Prueba"
+  
+  /*//////////////funcion de  de escucha al php/////////////
   var formData = new FormData();
   formData.append("Data_Ensayo", "TRUE");
   formData.append("Nombre_Ensayo", ensayo);
   formData.append("Modelo_Datos", modelo);
 
-  ///////////////funcion de  de escucha al php/////////////
+  
   var objData = new XMLHttpRequest();
 
   objData.onreadystatechange = function () {
@@ -38,15 +40,17 @@ window.onload = function () {
       }
     }
   }
-  ////////////////////////////////////////////////////////////////
-
   objData.open('POST', '../recibe.php', true);
   objData.send(formData);
+  *////////////////////////////////////////////////////////////////
+
+
+  ValoresIniciales();
 
 };
 
 
-function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajuste con python
+function ValoresIniciales() { // calcular los valores iniciales del ajuste con python
 
   var Ensayo = $("#Ensayo").val();
   var modelo = $("#Modelo").val();
@@ -110,6 +114,7 @@ function ValoresIniciales(data_xy) { // calcular los valores iniciales del ajust
           }
 
           Ajustar();
+          //Ajustar(rho0,thick0);
 
         } else {
           alert('Error al calcular los valores iniciales: ' + data['resultados']);
@@ -398,7 +403,10 @@ function Ajustar() {
   }
 
 }
+function butonAjustar(){
+  ///obetenemos del front los valores iniciales
 
+}
 function CambiaCapas() {
 
   var Ensayo = $("#Ensayo").val();

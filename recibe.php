@@ -277,31 +277,6 @@ if(isset($_POST['Nuevo_Ensayo'])){
 
 }
 
-if(isset($_POST['Data_Ensayo'])){
-
-  $data = array();
-  $Nombre_Ensayo = $_POST['Nombre_Ensayo'];
-  $Modelo_Datos = $_POST['Modelo_Datos'];
-  //$array_x = array('2.5','3.2','4','5','6.5');
-  //$array_y = array('42.33','38.66','36.77','38.01','43.55');
-  //$num_array = count($array_x);
-
-  $stringdata = Formatear_Data_Para_Graficar($Nombre_Ensayo,$Modelo_Datos);
-
-  if($Nombre_Ensayo != ""){
-    $data['status'] = TRUE;
-    //$data['dato'] = '{"data":[{"x":2.5,"y":42.33},{"x":3.2,"y":38.66},{"x":4,"y":36.77},{"x":5,"y":38.01},{"x":6.55,"y":43.55},{"x":8,"y":50.63},{"x":10,"y":57.96},{"x":13,"y":66.80},{"x":16,"y":71.98},{"x":20,"y":74.96},{"x":25,"y":76.0},{"x":32,"y":68.34},{"x":40,"y":59.11},{"x":50,"y":49.35}]}';
-    $data['dato'] = $stringdata;
-  }else {
-    $data['status'] = FALSE;
-    $data['error'] = 'Datos de Ensayo no cargado';
-    $data['dato'] ='';
-  }
-
-  echo json_encode($data, JSON_FORCE_OBJECT);
-
-}
-
 if(isset($_POST['Calcular_Iniciales'])){
   
   $data = array();
@@ -569,7 +544,7 @@ function Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $c
   $output = shell_exec($shellcomand.$arguments);
 
   if (strpos($output, "failed python") !== false) {
-    return "python failed: " . $output;
+    return "failed python: " . $output;
   };
 
   return $output;
