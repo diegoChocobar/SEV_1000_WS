@@ -1,49 +1,5 @@
 window.onload = function () {
   /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
-  
-  var ensayo = $("#Ensayo").val();
-  var modelo = $("#Modelo").val();
-  //alert("Ensayo:"+ensayo+" modelo:"+modelo);
-  //var ensayo = "Prueba"
-
-  /*//////////////funcion de  de escucha al php/////////////
-  var formData = new FormData();
-  formData.append("Data_Ensayo", "TRUE");
-  formData.append("Nombre_Ensayo", ensayo);
-  formData.append("Modelo_Datos", modelo);
-
-  
-  var objData = new XMLHttpRequest();
-
-  objData.onreadystatechange = function () {
-
-    if (objData.readyState === 4) {
-      if (objData.status === 200) {
-        //alert(objNewEnsayo.responseText);
-        var data = JSON.parse(objData.responseText); //Parsea el Json al objeto anterior.
-        //  console.log(data);
-
-        if (data.status == true) {
-          // alert('Datos de graficos obtenidos de forma exitosa: ' + data['status']);
-          ValoresIniciales(data);
-          //Graficar(data,Ensayo);
-
-          //window.location.reload(true);
-        } else {
-          alert('Error al pedir datos para grafico: ' + data['error']);
-        }
-
-
-      } else {
-        alert('Error Code 111: ' + objData.status);
-        alert('Error Message 222: ' + objData.statusText);
-      }
-    }
-  }
-  objData.open('POST', '../recibe.php', true);
-  objData.send(formData);
-  *////////////////////////////////////////////////////////////////
-
 
   ValoresIniciales();
 
