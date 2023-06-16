@@ -5,7 +5,7 @@ window.onload = function () {
   var modelo = $("#Modelo").val();
   //alert("Ensayo:"+ensayo+" modelo:"+modelo);
   //var ensayo = "Prueba"
-  
+
   /*//////////////funcion de  de escucha al php/////////////
   var formData = new FormData();
   formData.append("Data_Ensayo", "TRUE");
@@ -113,8 +113,7 @@ function ValoresIniciales() { // calcular los valores iniciales del ajuste con p
             }
           }
 
-          Ajustar();
-          //Ajustar(rho0,thick0);
+          Ajustar(rho0,thick0);
 
         } else {
           alert('Error al calcular los valores iniciales: ' + data['resultados']);
@@ -295,7 +294,7 @@ function ExportarDatos() {
 
 }
 
-function Ajustar() {
+function Ajustar(rho0,thick0) {
 
   var Ensayo = $("#Ensayo").val();
   var modelo = $("#Modelo").val();
@@ -403,10 +402,30 @@ function Ajustar() {
   }
 
 }
-function butonAjustar(){
+
+function Button_Ajustar(){
   ///obetenemos del front los valores iniciales
+  var nlayers = $("#nlayers0").val();
+
+  let Rho0 = [];
+  let Thick0 = [];
+  for (var i = 0; i < nlayers; i++) {
+    Rho0[i] = parseFloat($("#rho0_" + i).val());
+    if (i < nlayers - 1) {
+      Thick0[i] = parseFloat($("#thick0_" + i).val());
+    }
+  }
+
+  if (Ensayo != "") {
+    //alert("Rho0,Thick0:"+Rho0[0]+Thick0[0]);
+    Ajustar(Rho0,Thick0);
+    
+  }else{
+    alert("Error: Ensayo Nulo");
+  }
 
 }
+
 function CambiaCapas() {
 
   var Ensayo = $("#Ensayo").val();

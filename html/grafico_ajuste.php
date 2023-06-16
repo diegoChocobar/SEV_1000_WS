@@ -313,7 +313,7 @@ $thick_total = array("P-1","P-2","P-3","P-4","P-5");
                   
                   <div class="col-sm-12">
                     <div align="center">
-                      <button  class="btn btn-lg success" title="Ajustar Resistividad" align="center" onclick="Ajustar();">
+                      <button  class="btn btn-lg success" title="Ajustar Resistividad" align="center" onclick="Button_Ajustar();">
                         <h3>Recalcular</h3>
                       </button>
                     </div>
