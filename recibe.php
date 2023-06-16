@@ -413,10 +413,6 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
 
 function Formatear_Data_Para_Graficar($datos) {
 
-  // include 'conectionDB.php';
-  
-  // $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC ");
-  // $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
   
   $stringdata = '{"data":[';
@@ -523,8 +519,6 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo){
     return "python failed: " . $output;
   };
 
-  // $output_decode = json_decode($output, true);
-  // return $output_decode;
   return $output;
 }
 
@@ -533,8 +527,6 @@ function Calcular_Ajuste($data_proc, $nlayers, $rho0, $thick0, $checkR, $checkP)
   // calcular ajuste
   $shellcomand = Define_Python_Commands("fit_values");
   $command = escapeshellcmd($shellcomand);
-  // $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
-  // $data_proc = $database['data_proc'];
   $data = [
     "nlayers" => $data_proc["nlayers"],
     "checkR" => $checkR,
