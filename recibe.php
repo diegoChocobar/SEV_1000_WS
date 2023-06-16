@@ -411,12 +411,12 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
     return $data;
 }
 
-function Formatear_Data_Para_Graficar($ensayo,$modelo) {
+function Formatear_Data_Para_Graficar($datos) {
 
-  include 'conectionDB.php';
+  // include 'conectionDB.php';
   
-  $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC ");
-  $datos = $result->fetch_all(MYSQLI_ASSOC);
+  // $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC ");
+  // $datos = $result->fetch_all(MYSQLI_ASSOC);
   $datos_num = count($datos);
   
   $stringdata = '{"data":[';
@@ -445,23 +445,27 @@ function Pull_Data_From_DataBase($ensayo, $nlayers, $modelo) {
 
   // query data
   $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$ensayo."' AND `modelo`='".$modelo."' ORDER BY `OA` ASC  ");
-  $datos = $result->fetch_all(MYSQLI_ASSOC);
-  $datos_num = count($datos);
+  $data_raw = $result->fetch_all(MYSQLI_ASSOC);
+  $datos_num = count($data_raw);
 
   // prepare json with input data
   $x = array();
   $y = array();
   for ($i=0; $i < $datos_num ; $i++) {
-        $xidx = array_push($x, floatval($datos[$i]['OA']));
-        $yidx = array_push($y, floatval($datos[$i]['resistividad']));
+        $xidx = array_push($x, floatval($data_raw[$i]['OA']));
+        $yidx = array_push($y, floatval($data_raw[$i]['resistividad']));
   };
-  $data = [
+  $data_proc = [
     "nlayers" => $nlayers,
     "OA" => $x,
     "R" => $y,
   ];
+  $output = [
+    "data_proc" => $data_proc,
+    "data_raw" => $data_raw,
+  ];
 
-  return $data;
+  return $output;
 }
 
 function Define_Python_Commands($keyword) {
@@ -509,8 +513,9 @@ function Define_Python_Commands($keyword) {
 function Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo){
 
   // compute initial values
-  $data = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
-  $arguments = escapeshellarg(json_encode($data));
+  $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
+  $data_proc = $database['data_proc'];
+  $arguments = escapeshellarg(json_encode($data_proc));
   $shellcomand = Define_Python_Commands("init_values");
 
   $output = shell_exec($shellcomand.$arguments);
@@ -523,19 +528,19 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo){
   return $output;
 }
 
-function Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $checkP){
+function Calcular_Ajuste($data_proc, $nlayers, $rho0, $thick0, $checkR, $checkP){
 
   // calcular ajuste
   $shellcomand = Define_Python_Commands("fit_values");
   $command = escapeshellcmd($shellcomand);
-  ////aqui falta la variable modelo
-  $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
+  // $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
+  // $data_proc = $database['data_proc'];
   $data = [
-    "nlayers" => $database["nlayers"],
+    "nlayers" => $data_proc["nlayers"],
     "checkR" => $checkR,
     "checkP" => $checkP,
-    "OA" => $database["OA"],
-    "R" => $database["R"],
+    "OA" => $data_proc["OA"],
+    "R" => $data_proc["R"],
     "rho0" => array($rho0),
     "thick0" => array($thick0),
   ];
@@ -544,7 +549,7 @@ function Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $c
   $output = shell_exec($shellcomand.$arguments);
 
   if (strpos($output, "failed python") !== false) {
-    return "failed python: " . $output;
+    return "python failed: " . $output;
   };
 
   return $output;
@@ -598,8 +603,11 @@ if(isset($_POST['Ajustar'])){
   $thick0 = explode(",", $thick0_string); 
 
   ////////////////////////////////////////////////////////////////////////////////////
-  $stringdata = Formatear_Data_Para_Graficar($ensayo,$modelo);
-  $output = Calcular_Ajuste($ensayo, $modelo, $nlayers, $rho0, $thick0, $checkR, $checkP);
+  $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
+  $data_raw = $database['data_raw'];
+  $stringdata = Formatear_Data_Para_Graficar($data_raw);
+  $data_proc = $database['data_proc'];
+  $output = Calcular_Ajuste($data_proc, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
   $data = array();
   if(strpos($output, "failed python") !== false){
