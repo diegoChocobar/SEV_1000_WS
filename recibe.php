@@ -642,4 +642,20 @@ if(isset($_POST['CambiaCapas'])){
   
 }
 
+if(isset($_POST['Data_Ensayo'])){
+  // get data from frontend
+  $ensayo = strip_tags($_POST['Nombre_Ensayo']);
+  $modelo = strip_tags($_POST['Modelo_Datos']);
+  $nlayers = 3;
+
+  $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
+  $data_raw = $database['data_raw'];
+  $stringdata = Formatear_Data_Para_Graficar($data_raw);
+
+  $data['status'] = true;
+  $data['dato'] = $stringdata;
+  echo json_encode($data, JSON_FORCE_OBJECT);
+
+}
+
 ?>
