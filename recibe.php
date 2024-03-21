@@ -490,7 +490,7 @@ function Define_Python_Commands($keyword) {
     $command = escapeshellcmd("ver");
     $output = shell_exec($command);
     if (strpos($output, "Microsoft") !== false) {
-      $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+      $python_interp = "C:\\Python3.11\\python.exe";
       $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
       if ($keyword == "init_values") {
         $python_file = $package_path."\\html\\python\\compute_init_layers_backend.py";
