@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import json
-import VES1D
+import VES1D_misc
 import pandas as pd
 
 
@@ -48,12 +48,12 @@ except:
 
 # arrange data into a dataframe
 df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
-df = VES1D.preprocess_data(df)
+df = VES1D_misc.preprocess_data(df)
 
 # compute initial data based on polynomial fit
 try:
     if nlayers == 0:
-        thick0, rho0 = VES1D.init_values(df['OA'], df['R'])
+        thick0, rho0 = VES1D_misc.init_values(df['OA'], df['R'])
         nlayers0 = len(rho0)
         ini_data = {
             "nlayers": nlayers0, 
@@ -62,8 +62,8 @@ try:
         }
         print(json.dumps(ini_data))
     else:
-        rho0 = VES1D.initial_rho(nlayers, df['R'])
-        thick0 = VES1D.initial_thick(nlayers, df['R'], df['OA'])
+        rho0 = VES1D_misc.initial_rho(nlayers, df['R'])
+        thick0 = VES1D_misc.initial_thick(nlayers, df['R'], df['OA'])
         thick0 = [t if t > 1 else 1 for t in thick0]
         ini_data = {
             "nlayers": nlayers, 

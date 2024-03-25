@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import VES1D
+import VES1D_misc, VES1D_models
 from scipy.optimize import curve_fit
 import json
 
@@ -57,7 +57,7 @@ except:
 if not checkR and not checkP:
 
     # define fit function
-    f = VES1D.apparent_resistivity
+    f = VES1D_models.apparent_resistivity_Schlumberger
 
     # definir espacio de hiperparámetros y valores iniciales 
     # TOTAL HIPERPARAMETERS = 2 * nlayers - 1
@@ -66,11 +66,11 @@ if not checkR and not checkP:
 
     try:
         lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
-        rho, thick = VES1D.extract_values(lam)
+        rho, thick = VES1D_misc.extract_values(lam)
     except:
         # REVISAR!!! si el ajuste fallar, se usan otros valores iniciales
         # (capas dadas por puntos de inflexion de ajuste polinomico)
-        thick0, rho0 = VES1D.init_values(x_exp, y_exp)
+        thick0, rho0 = VES1D_misc.init_values(x_exp, y_exp)
         lam0 = np.concatenate([rho0, thick0[:-1]])
         lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
 
@@ -86,7 +86,7 @@ elif not checkR and checkP:
         thick0 = [float(r) for r in thick0]
         params = np.concatenate([rho, thick0])
 
-        return VES1D.apparent_resistivity(ab2s, *params)
+        return VES1D_models.apparent_resistivity_Schlumberger(ab2s, *params)
 
     f = apparent_resistivity_with_fixed_thick
     
@@ -112,7 +112,7 @@ elif checkR and not checkP:
         thick = [float(r) for r in thick]
         params = np.concatenate([rho0, thick])
 
-        return VES1D.apparent_resistivity(ab2s, *params)
+        return VES1D_models.apparent_resistivity_Schlumberger(ab2s, *params)
 
     f = apparent_resistivity_with_fixed_rho
 
@@ -126,11 +126,11 @@ elif checkR and not checkP:
     except:
         print("failed python: fit failed (thick)")
 
-thick = VES1D.add_last_layer(x_exp, thick)
-lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
-lam_dict['thick_total'] = VES1D.compute_total_thick(lam_dict['thick'])
-lam_dict['error'] = VES1D.compute_error(x_exp, y_exp, rho, thick)
-lam_dict['fit_plot'] = VES1D.export_fitted_values(x_exp, rho, thick)
-lam_dict['layer_model'] = VES1D.export_layers_model(x_exp, rho, thick)
+thick = VES1D_misc.add_last_layer(x_exp, thick)
+lam_dict = VES1D_misc.construct_lambda(x_exp, rho, thick)
+lam_dict['thick_total'] = VES1D_misc.compute_total_thick(lam_dict['thick'])
+lam_dict['error'] = VES1D_misc.compute_error(x_exp, y_exp, rho, thick)
+lam_dict['fit_plot'] = VES1D_misc.export_fitted_values(x_exp, rho, thick)
+lam_dict['layer_model'] = VES1D_misc.export_layers_model(x_exp, rho, thick)
 
 print(json.dumps(lam_dict))
