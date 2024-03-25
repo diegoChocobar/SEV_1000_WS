@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import pandas as pd
-import VES1D
+import VES1D_misc, VES1D_models
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import json
@@ -9,27 +9,15 @@ import json
 def flatten(l):
     return [item for sublist in l for item in sublist]
 
-# input data from database via grafico_ajuste.php
-inpdata = sys.argv[1]
-try:
-    data = json.loads(sys.argv[1])
-except:
-    procdata = inpdata.replace('{ nlayers :', '')
-    procdata = procdata.replace('OA :', '')
-    procdata = procdata.replace('R :', '')
-    procdata = procdata.replace('rho0 :', '')
-    procdata = procdata.replace('thick0 :', '')
-    procdata = procdata.replace('}', '')
-    procdata = procdata.split(', ')
-    data = {
-        'nlayers': int(procdata[0]),
-        'OA': json.loads(procdata[1]),
-        'R': json.loads(procdata[2]),
-        'rho0': json.loads(procdata[3]),
-        'thick0': json.loads(procdata[4]),
-    }
-    #print('failed')
 
+# input data from database via grafico_ajuste.php
+filepath = 'data.json'
+with open(filepath, 'r') as f:
+	data = json.load(f)
+#print(data)
+
+
+# formatting input data
 try:
     nlayers, rho0, thick0 = int(data['nlayers']), data['rho0'], data['thick0']
     if len(rho0) == 1: rho0 = flatten(rho0)
@@ -41,29 +29,35 @@ try:
         x_exp.reverse()
         y_exp.reverse()
 except:
-    print("failed input data")
+    print("failed input data format")
     sys.exit(1)
 
 
-# arrange data into a dataframe
-df = pd.DataFrame(data={'OA': x_exp, 'R': y_exp})
-df = VES1D.preprocess_data(df)
-    
-# define bounds and fit function
-f = VES1D.apparent_resistivity
+# define fit function
+if data["model"] == 'schlumberger':
+    f = VES1D_models.apparent_resistivity_Schlumberger
+elif data["model"] == 'wenner':
+    print('not implemented')
+    sys.exit(1)
+elif data["model"] == 'dipolo':
+    print('not implemented')
+    sys.exit()
+# define bounds for parameter optimization
 bounds = (tuple([0 for i in range(2*nlayers - 1)]), tuple([np.inf for i in range(2*nlayers - 1)]))
 
 
 try:
+# try fitting curve with input seeds
     lam0 = np.concatenate([rho0, thick0])
     lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
-    rho, thick = VES1D.extract_values(lam)
-    lam_dict = VES1D.construct_lambda(x_exp, rho, thick)
-    print(json.dumps(lam_dict))
+    rho, thick = VES1D_misc.extract_values(lam)
+    lam_dict = VES1D_misc.construct_lambda(x_exp, rho, thick)
+    print(data["model"],json.dumps(lam_dict))
 except:
-    thick0, rho0 = VES1D.init_values(x_exp, y_exp)
+# if fitting fails, try initializing seeds differently
+    thick0, rho0 = VES1D_misc.init_values(x_exp, y_exp)
     lam0 = np.concatenate([rho0, thick0[:-1]])
     lam, pcov = curve_fit(f, x_exp, y_exp, p0=lam0, bounds=bounds)
-    rho, thick = VES1D.extract_values(lam)
-    lam_dict = VES1D.construct_lambda(rho, thick)
-    print(json.dumps(lam_dict))
+    rho, thick = VES1D_misc.extract_values(lam)
+    lam_dict = VES1D_misc.construct_lambda(rho, thick)
+    print(data["model"],json.dumps(lam_dict))
