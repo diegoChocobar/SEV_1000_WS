@@ -255,19 +255,28 @@ function change_MN(posicion){
 }
 
 function change_OA(posicion){
-
+  
   var constante_k = 0; ///constante obtenida por el metodo de schlumberger
+  var Modelo  = $("#ModeloDatos").val();
 
   var valor = $("#const_OA_"+posicion).val();
   const_OA = parseFloat(valor);
   var const_MN = $("#const_MN_"+posicion).val();
 
-  if(const_MN != "0" && valor != "0"){
+  if(valor != "0"){
 
     var ab = (const_OA*2);
-    constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
-    $("#constante_"+posicion).val(constante_k);
-    //alert("distancia oa:" + const_OA + " constante k: " + constante_k);
+    if(Modelo == "Wenner"){
+      const_MN = const_OA*2/3;
+      $("#const_MN_"+posicion).val(const_MN.toFixed(1));
+      constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
+      $("#constante_"+posicion).val(constante_k);
+    }
+    if(const_MN != "0"){
+      constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
+      $("#constante_"+posicion).val(constante_k);
+    }
+    //alert("distancia oa:" + const_OA + " mn: " + const_MN + " constante k: " + constante_k + " Modelo: " + Modelo);
   }else{
     $("#constante_"+posicion).val(0);
     //alert("faltan argumentos para calcular el valor de la constante");
