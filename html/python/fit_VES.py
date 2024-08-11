@@ -1,9 +1,7 @@
 import sys
 import numpy as np
-import pandas as pd
 import VES1D_misc, VES1D_models
 from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 import json
 
 def flatten(l):
