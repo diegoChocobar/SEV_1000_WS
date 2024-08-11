@@ -21,6 +21,9 @@ data["checkR"] = True if data["checkR"] == "true" else False
 data["checkP"] = True if data["checkP"] == "true" else False
 print(data)
 
+optimize = True
+if optimize:
+    data["OA"], data["R"] = VES1D_proc.process_experimental_data(data["OA"], data["R"])
 
 # VARIAR TODOS LOS PARAMETROS (ancho de capas y resistividades)
 if not data["checkR"] and not data["checkP"]:

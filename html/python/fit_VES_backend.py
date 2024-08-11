@@ -8,6 +8,10 @@ inpdata = sys.argv[1]
 
 data = VES1D_proc.process_string_input_data(inpdata)
 
+optimize = True
+if optimize:
+    data["OA"], data["R"] = VES1D_proc.process_experimental_data(data["OA"], data["R"])
+
 # VARIAR TODOS LOS PARAMETROS (ancho de capas y resistividades)
 if not data["checkR"] and not data["checkP"]:
 
