@@ -20,6 +20,14 @@ function CalcularR(posicion,calcular){
     var tension = $("#tension_" + posicion).val();
     var corriente = $("#corriente_" + posicion).val();
 
+    if(dato_modelo == "Schlumberger"){
+      var dato_oa = $("#const_OA_" + posicion).val();
+    }
+    if(dato_modelo == "Wenner"){
+      var dato_oa = dato_mn * 3/2;
+    }
+
+    //alert('Calculando resitivadad aparente: oa='+dato_oa);
 
         if(corriente != "0" && tension !="0" && calcular!="FALSE"){
           var resistividad = (tension/corriente)*dato_k;
@@ -273,6 +281,34 @@ function change_OA(posicion){
       $("#constante_"+posicion).val(constante_k);
     }
     if(const_MN != "0"){
+      constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
+      $("#constante_"+posicion).val(constante_k);
+    }
+    //alert("distancia oa:" + const_OA + " mn: " + const_MN + " constante k: " + constante_k + " Modelo: " + Modelo);
+  }else{
+    $("#constante_"+posicion).val(0);
+    //alert("faltan argumentos para calcular el valor de la constante");
+  }
+
+}
+
+function change_a(posicion){
+  
+  var constante_k = 0; ///constante obtenida por el metodo de schlumberger
+  var Modelo  = $("#ModeloDatos").val();
+
+  var valor = $("#const_a_"+posicion).val();
+  const_a = parseFloat(valor);
+  var const_MN = $("#const_MN_"+posicion).val();
+
+  //alert("entramos a calcular cambia a. mn="+valor+"posicion="+posicion)
+
+  if(valor != "0"){
+
+    var ab = (const_a*3);
+    if(Modelo == "Wenner"){
+      const_MN = const_a;
+      $("#const_MN_"+posicion).val(const_MN.toFixed(1));
       constante_k = (3.1415926535/(4*const_MN))*(ab*ab - const_MN*const_MN);
       $("#constante_"+posicion).val(constante_k);
     }
@@ -721,11 +757,18 @@ function ExportarGrafico(){
 
 function EliminarDato(posicion){
 
-      var dato_oa = $("#const_OA_" + posicion).val();
+      //var dato_oa = $("#const_OA_" + posicion).val();
       var dato_mn = $("#const_MN_" + posicion).val();
       var dato_k = $("#constante_" + posicion).val();
       var dato_ensayo = $("#Ensayo").val();
       var dato_modelo = $("#ModeloDatos").val();
+
+      if(dato_modelo == "Schlumberger"){
+        var dato_oa = $("#const_OA_" + posicion).val();
+      }
+      if(dato_modelo == "Wenner"){
+        var dato_oa = dato_mn * 3/2;
+      }
 
       if(dato_k != "0" & dato_ensayo != "" ){
         //alert('Eliminar datos. oa:' + dato_oa + ' mn:' + dato_mn  + ' k:' + dato_k + ' Ensayo: ' +dato_ensayo );
