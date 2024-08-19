@@ -411,16 +411,17 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
     return $data;
 }
 
-function Formatear_Data_Para_Graficar($datos) {
+function Formatear_Data_Para_Graficar($datos,$modelo) {
 
   $datos_num = count($datos);
   
   $stringdata = '{"data":[';
-  
+
   for ($i=0; $i < $datos_num ; $i++) {
     $stringdata .= '{';
     $stringdata .= '"x":';
-    $stringdata .= $datos[$i]['OA'];
+    if($modelo == "Schlumberger"){$stringdata .= $datos[$i]['OA'];}
+    if($modelo == "Wenner"){$stringdata .= $datos[$i]['MN'];}
     $stringdata .= ',';
     $stringdata .= '"y":';
     $stringdata .= $datos[$i]['resistividad'];
@@ -597,7 +598,7 @@ if(isset($_POST['Ajustar'])){
   ////////////////////////////////////////////////////////////////////////////////////
   $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
   $data_raw = $database['data_raw'];
-  $stringdata = Formatear_Data_Para_Graficar($data_raw);
+  $stringdata = Formatear_Data_Para_Graficar($data_raw,$modelo);
   $data_proc = $database['data_proc'];
   $output = Calcular_Ajuste($data_proc, $nlayers, $rho0, $thick0, $checkR, $checkP);
 
@@ -650,7 +651,9 @@ if(isset($_POST['Data_Ensayo'])){
 
   $database = Pull_Data_From_DataBase($ensayo, $nlayers, $modelo);
   $data_raw = $database['data_raw'];
-  $stringdata = Formatear_Data_Para_Graficar($data_raw);
+  $stringdata = Formatear_Data_Para_Graficar($data_raw,$modelo);
+  
+  
 
   $data['status'] = true;
   $data['dato'] = $stringdata;
