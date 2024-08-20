@@ -11,8 +11,7 @@ include '../conectionDB.php';
 
 $const_mn = array(1,2,5,10,20,50,100,200);
 $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,130,160,200,250,320,400,500,650,800,1000,1000,1000);
-
-//$array_oa = array('1' => 1.3,'2' => 1.6,'3' => 2,'4' => 2.5,'5' => 3.2,'6' => 4,'7' => 5,'8' => 6.5,'9' => 8,'10' => 10, );
+$const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,55,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200);
 
 ?>
 
@@ -198,8 +197,13 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                               <table table class="table m-b-none" ui-jp="footable" data-filter="#filter" data-page-size="5">
                                 <thead>
                                   <tr>
+                                  <?php if($modelo == "Wenner"){ ?>
+                                    <th style="width:10px;">a (m)</th>
+                                    <th style="width:10px;">MN (m)</th>
+                                  <?php }else{?>
                                     <th style="width:10px;">OA (m)</th>
                                     <th style="width:10px;">MN (m)</th>
+                                  <?php }?>
                                     <th style="width:10px;">k</th>
                                     <th style="width:10%;">V (mV)</th>
                                     <th style="width:15%;">I (mA)</th>
@@ -211,7 +215,8 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                 <tbody>
                                     <tr>
                                           <td>
-                                             <select class="form-control c-select" id="const_OA_0" name="const_OA_0" <?php echo "onchange='change_MN(0)'"; ?> style="width:75px"  class="required">
+                                            <?php if($modelo == "Schlumberger"){ ?>
+                                             <select class="form-control c-select" id="const_OA_0" name="const_OA_0" <?php echo "onchange='change_OA(0)'"; ?> style="width:75px"  class="required">
                                                <option value="0">OA</option>
                                                 <?php for ($o=0; $o < count($const_oa) ; $o++) { ?>
 
@@ -223,9 +228,25 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 
                                                 <?php } ?>
                                              </select>
+                                             <?php } ?>
+                                             <?php if($modelo == "Wenner"){ ?>
+                                                    <select class="form-control c-select" id="const_a_0" name="const_a_0" <?php echo "onchange='change_a(0)'"; ?> style="width:75px"  class="required">
+                                                       <option value="0">a</option>
+                                                        <?php for ($o=0; $o < count($const_a) ; $o++) { ?>
+
+                                                        <option value="<?php echo $const_a[$o]?>"
+                                                          href=""
+                                                        >
+                                                          <?php echo $const_a[$o] ?>
+                                                        </option>
+
+                                                        <?php } ?>
+                                                    </select>
+                                             <?php } ?>
                                           </td>
                                           <td>
-                                              <select class="form-control c-select" id="const_MN_0" name="const_MN_0" <?php echo "onchange='change_MN(0)'"; ?> style="width:75px"  class="required">
+                                              <?php if($modelo == "Schlumberger"){ ?>
+                                              <select class="form-control c-select" id="const_MN_0" name="const_MN_0" <?php echo "onchange='change_MN(0)'"; ?> style="width:75px"  class="required" <?php if($_SESSION['modelo'] == 'Wenner'){echo "disabled";} ?>>
                                                 <optio value="0">MN</option>
                                                 <?php for ($j=0; $j < count($const_mn) ; $j++) { ?>
 
@@ -237,6 +258,13 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 
                                                 <?php } ?>
                                               </select>
+                                              <?php } ?>
+                                              <?php if($modelo == "Wenner"){ ?>
+                                              <input class="form-control" align="center" type="text" style="width: 85px;margin: 0px 0px"
+                                                     value="<?php if($db_mn !=""){echo $db_mn;}else{echo "0";} ?>"
+                                                     id = "<?php echo 'const_MN_0' ?>">
+                                              <?php } ?>
+                                              
                                           </td>
                                           <td>
                                             <input class="form-control" align="center" type="text" style="width: 85px;margin: 0px 0px"
@@ -299,22 +327,40 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
                                             }
                                            ?>
                                           <td>
-                                             <select class="form-control c-select" id="const_OA_<?php echo $i+1; ?>" name="const_OA_<?php echo $i+1; ?>" <?php echo "onchange='change_MN($i+1)'"; ?> style="width:75px"  class="required">
-                                               <option value="0">OA</option>
-                                                <?php for ($o=0; $o < count($const_oa) ; $o++) { ?>
+                                              <?php if($modelo == "Schlumberger"){ ?>
+                                                    <select class="form-control c-select" id="const_OA_<?php echo $i+1; ?>" name="const_OA_<?php echo $i+1; ?>" <?php echo "onchange='change_OA($i+1)'"; ?> style="width:75px"  class="required">
+                                                      <option value="0">OA</option>
+                                                        <?php for ($o=0; $o < count($const_oa) ; $o++) { ?>
 
-                                                   <option value="<?php echo $const_oa[$o]?>"
-                                                     href=""
-                                                     <?php if($db_oa != "" && $db_oa == $const_oa[$o] ){echo "selected='selected'";} ?>
-                                                   >
-                                                     <?php echo $const_oa[$o] ?>
-                                                   </option>
+                                                          <option value="<?php echo $const_oa[$o]?>"
+                                                            href=""
+                                                            <?php if($db_oa != "" && $db_oa == $const_oa[$o] ){echo "selected='selected'";} ?>
+                                                          >
+                                                            <?php echo $const_oa[$o] ?>
+                                                          </option>
 
-                                                <?php } ?>
-                                             </select>
+                                                        <?php } ?>
+                                                    </select>
+                                             <?php } ?>
+                                             <?php if($modelo == "Wenner"){ ?>
+                                                    <select class="form-control c-select" id="const_a_<?php echo $i+1; ?>" name="const_a_<?php echo $i+1; ?>" onchange="change_a(<?php echo  $i+1; ?>)" style="width:75px"  class="required">
+                                                        <option value="0">a</option>
+                                                        <?php for ($o=0; $o < count($const_a) ; $o++) { ?>
+
+                                                        <option value="<?php echo $const_a[$o]?>"
+                                                          href=""
+                                                          <?php if($db_mn != "" && $db_mn == $const_a[$o] ){echo "selected='selected'";} ?>
+                                                        >
+                                                          <?php echo $const_a[$o] ?>
+                                                        </option>
+
+                                                      <?php } ?>
+                                                  </select>
+                                             <?php } ?>
                                           </td>
                                           <td>
-                                              <select class="form-control c-select" id="const_MN_<?php echo $i+1; ?>" name="const_MN_<?php echo $i+1; ?>" <?php echo "onchange='change_MN($i+1)'"; ?> style="width:75px"  class="required">
+                                              <?php if($modelo == "Schlumberger"){ ?>
+                                              <select class="form-control c-select" id="const_MN_<?php echo $i+1; ?>" name="const_MN_<?php echo $i+1; ?>" <?php echo "onchange='change_MN($i+1)'"; ?> style="width:75px"  class="required" <?php if($_SESSION['modelo'] == 'Wenner'){echo "disabled";} ?> >
                                                 <optio value="0">MN</option>
                                                 <?php for ($j=0; $j < count($const_mn) ; $j++) { ?>
 
@@ -327,6 +373,12 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 
                                                 <?php } ?>
                                               </select>
+                                              <?php } ?>
+                                              <?php if($modelo == "Wenner"){ ?>
+                                              <input class="form-control" align="center" type="text" style="width: 85px;margin: 0px 0px"
+                                                     value="<?php if($db_mn !=""){echo $db_mn;}else{echo "0";} ?>"
+                                                     id = "<?php echo 'const_MN_',$i+1 ?>" disabled>
+                                              <?php } ?>
                                           </td>
                                           <td>
                                             <input class="form-control" align="center" type="text" style="width: 85px;margin: 0px 0px"
