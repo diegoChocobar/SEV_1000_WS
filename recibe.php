@@ -365,9 +365,9 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
   include 'conectionDB.php';
   $data = array();
   $fecha_actual = date("d-m-Y");
-  $stringdata = "OA;MN;V;I;R"."\n";
+  //$stringinicial = "id,trabajo,modelo,tension,corriente,OA,MN,K,resistividad,fecha"."\n";
 
-  $file_name ='archivos/SEV_' . $Nombre_Ensayo .'_' . $Modelo_Datos . '_' . $fecha_actual . '.txt';
+  $file_name ='archivos/SEV_' . $Nombre_Ensayo .'_' . $Modelo_Datos . '_' . $fecha_actual . '.csv';
 
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Datos."' ORDER BY `OA` ASC ");
     $datos = $result->fetch_all(MYSQLI_ASSOC);
@@ -383,7 +383,23 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
         if($f){
           fputs($f,$stringdata);
           for ($i=0; $i < $datos_num ; $i++) {
-            $stringdata = $datos[$i]['OA'] . ";" .$datos[$i]['MN'] . ";" . $datos[$i]['tension'] . ";" . $datos[$i]['corriente'] . ";". $datos[$i]['resistividad'] . "\n";
+            //$stringdata = $datos[$i]['id'] . "," . $datos[$i]['trabajo'] . "," . $datos[$i]['modelo'] . "," . $datos[$i]['tension'] . "," . $datos[$i]['corriente'] .",". $datos[$i]['OA'] . "," . $datos[$i]['MN'] .",". $datos[$i]['resistividad'] .",". $datos[$i]['fecha'] . "\n";
+            // Envolver cada valor en comillas y construir la cadena
+            $id_value = 'NULL';
+            // Envolver cada valor en comillas y construir la cadena
+            $stringdata = $id_value . ',' . implode(",", array_map(function($value) {
+                return '"' . $value . '"';
+            }, [
+                $datos[$i]['trabajo'],
+                $datos[$i]['modelo'],
+                $datos[$i]['tension'],
+                $datos[$i]['corriente'],
+                $datos[$i]['OA'],
+                $datos[$i]['MN'],
+                $datos[$i]['K'],
+                $datos[$i]['resistividad'],
+                $datos[$i]['fecha']
+            ])) . "\n";
             fputs($f,$stringdata);
           }
           fclose($f);
@@ -491,7 +507,7 @@ function Define_Python_Commands($keyword) {
     $command = escapeshellcmd("ver");
     $output = shell_exec($command);
     if (strpos($output, "Microsoft") !== false) {
-      $python_interp = "C:\\Users\\cdcel\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
+      $python_interp = "C:\\Users\\sev10\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe";
       $package_path = "C:\\xampp\\htdocs\\SEV_1000_WS";
       if ($keyword == "init_values") {
         $python_file = $package_path."\\html\\python\\compute_init_layers_backend.py";

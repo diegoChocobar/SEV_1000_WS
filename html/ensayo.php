@@ -78,54 +78,50 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
 
                     <div class="col-sm-12">
                         <div class="row">
-                          <div class="col-sm-1" align="left">
+
+                          <div class="m-b" align="left">
                             <button id="buttonV" name="buttonV" class="md-btn md-fab m-b-sm success" onclick="Check_V();">
                               <i class="fa  fa-refresh"></i>
                               V
                             </button>
-                          </div>
-                          <div class="col-sm-1" align="left">
                             <button id="buttonI" name="buttonI" class="md-btn md-fab m-b-sm success" onclick="Check_I();">
                               <i class="fa  fa-refresh"> </i>
                               I
                             </button>
-                          </div>
-
-                          <div class="col-sm-1" align="left">
                             <button id="buttonH" name="buttonH" class="md-btn md-fab m-b-sm danger" onclick="Hold();">
                               <i class="fa  fa-sign-in"> </i>
                               H
-                            </button>
-                          </div>
-                          <div class="col-sm-2" align="left">
-                            <button id="buttonD" name="buttonD" class="md-btn md-fab m-b-sm danger" onclick="Disparo();">
+                            </button><button id="buttonD" name="buttonD" class="md-btn md-fab m-b-sm danger" onclick="Disparo();">
                               <i class="fa fa-bolt"> </i>
                               D
                             </button>
                           </div>
 
-                          <div class="col-sm-2">
-                                <select class="form-control c-select" id="ModeloEnsayo" name="modelo de ensayo" class="required">
-                                    <option value="" >Tipo de Modelo</option>
-                                    <option value="Schlumberger" >Schlumberger</option>
-                                    <option value="Wenner" >Wenner</option>
-                                    <option value="D-D" >Dipolo Dipolo</option>
-                                  
-                                </select>
-                           </div>
-
-                          <div class="col-sm-3" align="left">
-                            <input id="NuevoEnsayo" value="" class="form-control" align="center" type="text" placeholder="Nombre de ensayo" style="width: 245px;margin: 0px 0px">
+                          <div class="col-sm-1">
                           </div>
 
-                          <div class="col-sm-1" align="left">
+                          
+                          <div class="m-b">
+                            <select class="form-control c-select" id="ModeloEnsayo" name="modelo de ensayo" class="required">
+                                <option value="" >Tipo de Modelo</option>
+                                <option value="Schlumberger" >Schlumberger</option>
+                                <option value="Wenner" >Wenner</option>
+                                <option value="D-D" >Dipolo Dipolo</option>
+                            </select>
+                          </div>
+                          <div class="m-b">
+                            <input id="NuevoEnsayo" value="" class="form-control" align="center" type="text" placeholder="Nombre de ensayo" style="width: 185px;margin: 0px 0px">
+                          </div>
+
+                          <div class="m-b">
                             <button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Nuevo Ensayo" align="center"
                                            onclick="Nuevo_Ensayo()">
                                   <i class="material-icons md-24"></i><i class="material-icons md-24"></i>
                             </button>
-                          </div>
-
-                          <div class="col-sm-1" align="left">
+                            <button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Importar Datos" align="center" data-toggle="modal"
+                                             data-target="#modal-import">
+                                    <i class="material-icons md-24"></i><i class="material-icons md-24"></i>
+                                  </button>
                             <button  class="btn btn-icon btn-social rounded btn-social-colored pink" title="Eliminar" align="center"
                                      onclick="Eliminar_Ensayo()">
                                 <i class="material-icons md-24"></i><i class="material-icons md-24"></i>
@@ -205,8 +201,8 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                     <th style="width:10px;">MN (m)</th>
                                   <?php }?>
                                     <th style="width:10px;">k</th>
-                                    <th style="width:10%;">V (mV)</th>
-                                    <th style="width:15%;">I (mA)</th>
+                                    <th style="width:10%;">I (mA)</th>
+                                    <th style="width:15%;">V (mV)</th>
                                     <th style="width:15%;">R</th>
                                     <th style="width:10%;">Calc</th>
                                     <th style="width:10%;">Delet</th>
@@ -272,12 +268,12 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                             id = "<?php echo 'constante_0' ?>" disabled>
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
-                                            value="<?php echo "0"; ?>"
-                                            id = "<?php echo 'tension_0' ?>">
-                                          </td>
-                                          <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
                                             value=<?php echo "0"; ?>"
                                             id = "<?php echo 'corriente_0' ?>">
+                                          </td>
+                                          <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
+                                            value="<?php echo "0"; ?>"
+                                            id = "<?php echo 'tension_0' ?>">
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 80px"
                                             value=<?php echo "0"; ?>"
@@ -313,8 +309,8 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                               $db_oa = $datos[$i]['OA'];
                                               $db_mn = $datos[$i]['MN'];
                                               $db_k = $datos[$i]['K'];
-                                              $db_v = $datos[$i]['tension'];
                                               $db_i = $datos[$i]['corriente'];
+                                              $db_v = $datos[$i]['tension'];
                                               $db_r = $datos[$i]['resistividad'];
                                             }else{
                                               $colocar_dato="FALSE";
@@ -386,12 +382,12 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                             id = "<?php echo 'constante_',$i+1 ?>" disabled>
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
-                                            value="<?php if($db_v !=""){echo $db_v;}else{echo "0";} ?>"
-                                            id = "<?php echo 'tension_',$i+1 ?>">
-                                          </td>
-                                          <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
                                             value="<?php if($db_i !=""){echo $db_i;}else{echo "0";} ?>"
                                             id = "<?php echo 'corriente_',$i+1 ?>">
+                                          </td>
+                                          <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
+                                            value="<?php if($db_v !=""){echo $db_v;}else{echo "0";} ?>"
+                                            id = "<?php echo 'tension_',$i+1 ?>">
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 80px"
                                             value="<?php if($db_r !=""){echo $db_r;}else{echo "0";} ?>"
@@ -426,15 +422,45 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                         </div>
                       </div>
                     </div>
-
                   </div>
-
 
                 	<div style="width:100%">
                 		<canvas id="canvas"></canvas>
                 	</div>
 
               </div>
+
+                      <!-- MODAL Import Datos-->
+                      <div id="modal-import" class="modal fade" data-backdrop="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">Importar Ensayo</h4>
+                            </div>
+                            <div class="modal-body">
+                              <h6>Seleccionar archivo a importar:</h6>
+                              
+                            </div>
+                            <input class="form-control" name="file-input" id="file-input" type="file" accept=".csv" max-size="8M" required />
+
+
+                            <div class="row">
+                              <div class="col-sm-4">
+                                  <button type='button' id="guardar_ot" name="guardar_ot" class="btn green-500 btn-block p-x-md light-green" onclick="GuardarOT();">Guardar</button>
+                              </div>
+                              <div class="col-sm-4">
+                                  <button type='button' id="salir_ot" name="salir_ot" class="btn red btn-block p-x-md pink" data-dismiss="modal">Salir</button>
+                              </div>
+                            </div>
+                            <br>
+
+                          </div><!-- /.modal-content -->
+                        </div>
+                      </div>
+                      <!-- FIN MODAL Import--> 
+
+
+
           </div>
             <!-- ############ END SECCION CENTRAL-->
 

@@ -871,11 +871,13 @@ function Hold(){
   if (claseH.includes("md-btn md-fab m-b-sm danger")) {
     $('#buttonH').removeClass('md-btn md-fab m-b-sm danger');
     $('#buttonH').addClass('md-btn md-fab m-b-sm success');
+    socket.send("SEV_C/SEV_V/Hold/ON");
     socket.send("SEV_C/SEV_I/Hold/ON");
   }
   if (claseH.includes("md-btn md-fab m-b-sm success")) {
     $('#buttonH').removeClass('md-btn md-fab m-b-sm success');
     $('#buttonH').addClass('md-btn md-fab m-b-sm danger');
+    socket.send("SEV_C/SEV_V/Hold/OFF");
     socket.send("SEV_C/SEV_I/Hold/OFF");
   }
 
