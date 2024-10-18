@@ -446,10 +446,10 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
 
                             <div class="row">
                               <div class="col-sm-4">
-                                  <button type='button' id="guardar_ot" name="guardar_ot" class="btn green-500 btn-block p-x-md light-green" onclick="GuardarOT();">Guardar</button>
+                                  <button type='button' id="importar_datos" name="importar_datos" class="btn green-500 btn-block p-x-md light-green" onclick="ImportarDatos();">Guardar</button>
                               </div>
                               <div class="col-sm-4">
-                                  <button type='button' id="salir_ot" name="salir_ot" class="btn red btn-block p-x-md pink" data-dismiss="modal">Salir</button>
+                                  <button type='button' id="salir_importar" name="salir_importar" class="btn red btn-block p-x-md pink" data-dismiss="modal">Salir</button>
                               </div>
                             </div>
                             <br>

@@ -677,4 +677,186 @@ if(isset($_POST['Data_Ensayo'])){
 
 }
 
+if( isset($_POST['Subir_Archivo']) ) {
+  $data = array();
+  $data['status']=false;
+  $data['data'] = "";
+  $data['error'] = "Error al subir archivo.\n";
+  $data['files'] = "";
+  $data['files_cont'] = 0;
+  $data['error_cont'] = 0;
+  $maxFileSize = (double)(8 * 1024 * 1024); // 8 MB en bytes
+
+  if($_FILES['archivo']['error'] === UPLOAD_ERR_OK){
+    $fileName = $_FILES['archivo']['name'];
+    $fileType = $_FILES['archivo']['type'];
+    $fileError= $_FILES['archivo']['error'];
+    $fileMaxSize = (double)$_FILES['archivo']['size'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+    $extension = $fileExtension;
+
+    $allowedfileExtensions = array('csv', 'xlsx');
+
+    if (in_array($fileExtension, $allowedfileExtensions)) {
+
+      $data['status'] = true;
+      $data['data'] = "Archivo subido de forma correcta\n";
+  
+      // Ruta temporal del archivo cargado
+      $tmpFilePath = $_FILES['archivo']['tmp_name'];
+      
+      if ($fileExtension === 'csv') {
+          $file = fopen($tmpFilePath, 'r');
+          $csvDataArray = array();
+          
+          // Leer cada línea del archivo CSV
+          while (($row = fgetcsv($file, 1000, ",")) !== FALSE) {
+              if (count($row) > 1) {
+                  $csvDataArray[] = $row;
+              }
+          }
+          fclose($file);
+  
+          // Añadir el array CSV al array de respuesta
+          $data['csv_array'] = $csvDataArray;
+          $insertResult = insertIntoDatabase($csvDataArray, $conn);
+
+            // Actualizar el estado según el resultado de la inserción
+            $data['status'] = $insertResult['status'];
+            $data['data'] .= $insertResult['message'];
+            $data['error'] .= $insertResult['error'];
+
+
+      }
+
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }else{
+      $data['status']=false;
+      $data['error'] .= "Extensión Incorrecta";
+    }
+
+
+  }else{
+    
+    $data['status']=false;
+
+    if ($_FILES['archivo']['error']=="1") {//El fichero subido excede la directiva upload_max_filesize de php.ini.
+      $data['error'] .= "El archivo es más grande de lo permitido (8Mb)";
+    }
+    if ($_FILES['archivo']['error']=="2") {//El fichero subido excede la directiva MAX_FILE_SIZE especificada en el formulario HTML.
+      $data['error'] .= "El archivo es más grande de lo permitido (8Mb)";
+    }
+    if ($_FILES['archivo']['error']=="4") {//No se subió ningún fichero.
+      $data['errror'] .= "No cargo ningun archivo";
+    }
+
+  }
+
+
+  echo json_encode($data, JSON_FORCE_OBJECT);
+
+}
+
+function insertIntoDatabase($csvDataArray, $conn) {
+  // Inicializa la respuesta de estado
+  $data = array();
+  $data['status'] = false;  // Por defecto asumimos que puede fallar
+  $data['message'] = "";  // Mensajes informativos
+  $data['error'] = "Error: ";
+  $errorCount = 0;
+
+  $Nombre_Ensayo = $csvDataArray[0][1]; // Primera fila (índice 0), columna 1 (índice 1)
+  $Modelo_Ensayo = $csvDataArray[0][2];
+
+  if($Nombre_Ensayo != ""){
+    ///*
+    $result = $conn->query("SELECT * FROM `ensayo` WHERE `nombre`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Ensayo."' ");
+    $datos = $result->fetch_all(MYSQLI_ASSOC);
+    $datos_num = count($datos);
+
+    if ($datos_num == 0) {
+      //no exite el ensayo podemos agregar el nuevo ensayo
+      $insert = $conn->query("INSERT INTO `ensayo`(`id`, `nombre`, `modelo`, `fecha`, `status`) VALUES (NULL,'$Nombre_Ensayo','$Modelo_Ensayo',CURRENT_TIMESTAMP,'1')");
+
+      if($insert === TRUE){
+          $data['status'] = true;
+          //$data['detalle'] = $datos_num;
+      }else{
+          $data['status'] = false;
+          $data['error'] .= 'Insert DB Ensayo';
+          $errorCount++;
+      }
+
+    }else{
+
+      $data['status'] = false;
+      $data['error'] .= 'Ensayo ya EXISTE en DB. No podemos agregar';
+      $errorCount++;
+
+
+    }
+    //*/
+  }else {
+    $data['status'] = false;
+    $data['error'] .= 'Error en el nombre de Ensayo';
+    $errorCount++;
+  }
+
+  if( $data['status'] == true ){
+      // Prepara la declaración SQL
+      $stmt = $conn->prepare("INSERT INTO datos (trabajo, modelo, tension, corriente, OA, MN, K, resistividad, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+      // Recorre cada fila del array
+      foreach ($csvDataArray as $index => $row) {
+          //echo "Fila $index tiene " . count($row) . " columnas: ";
+          //print_r($row); // Mostrar el contenido de la fila
+          // Asegúrate de que la cantidad de columnas coincida con la tabla
+          if (count($row) == 10) { // Asumiendo que tienes 9 columnas en tu CSV
+              // Asigna los valores a variables
+              $trabajo = $row[1];  // Cambia el índice si es necesario
+              $modelo = $row[2];   // Cambia el índice si es necesario
+              $tension = (float)$row[3];
+              $corriente = (float)$row[4];
+              $OA = (float)$row[5];
+              $MN = (int)$row[6];
+              $K = (float)$row[7];
+              $resistividad = (float)$row[8];
+                // Verifica y convierte la fecha
+              try {
+                $fechaObj = new DateTime($row[9]);  // Convierte la fecha
+                $fecha = $fechaObj->format('Y-m-d H:i:s');  // Formato MySQL
+              } catch (Exception $e) {
+                  $data['error'] .= "Error en la conversión de fecha en la fila $index: " . $e->getMessage() ."\n";
+                  $errorCount++;
+                  continue;  // Saltar esta fila si la fecha es incorrecta
+              }
+              // Vincula los parámetros
+              $stmt->bind_param("ssddiddds", $trabajo, $modelo, $tension, $corriente, $OA, $MN, $K, $resistividad, $fecha);
+
+              // Ejecuta la declaración
+              if (!$stmt->execute()) {
+                  $data['error'] .= "Error en la inserción de la fila $index: " . $stmt->error . "\n";
+                  $errorCount++;
+              }
+          } else {
+              $data['error'] .= "Error: Fila $index tiene datos incompletos\n";
+              $errorCount++;
+          }
+      }
+      // Cierra la declaración
+      $stmt->close();
+  }
+  // Verifica si hubo errores
+  if ($errorCount == 0) {
+    $data['status'] = true;
+    $data['message'] = "Inserción exitosa de todas filas";
+  }else{
+    $data['status'] = false;
+  }
+
+  return $data;  // Devuelve el array con el estado y mensajes
+
+}
+
 ?>

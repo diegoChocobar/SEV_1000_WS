@@ -888,3 +888,51 @@ function AnalizarDatos(){
   window.open(" http://localhost/SEV_1000_WS/html/grafico_ajuste.php", '_blank'); window.focus();
  
 }
+
+function ImportarDatos(){
+  
+
+  const fileInput = document.getElementById('file-input'); // Obtener el elemento del input de archivo desde el HTML
+  const files = fileInput.files; // Obtener el archivo seleccionado
+  const file_length = Number(fileInput.files.length);
+
+  if(file_length==1){
+        //alert("Vamos a importar los datos..." + file_length);
+
+        var formData = new FormData();
+        formData.append("Subir_Archivo", "true");
+        formData.append("archivo", files[0]);
+
+        ///////////////funcion de  de escucha al php/////////////
+         var obj = new XMLHttpRequest();
+
+         obj.onreadystatechange = function() {
+             if(obj.readyState === 4) {
+               if(obj.status === 200) {
+                   var data = JSON.parse(obj.responseText);
+
+                   if(data.status==true){
+                     alert(data.data);
+                     //console.log('Array CSV:', data.csv_array);
+                     window.location.reload(true);
+                   }else{
+                      alert(data.error);
+                      //window.location.reload(true);
+                   }
+               } else {
+                 alert('Error Code 111: ' +  obj.status);
+                 alert('Error Message 222: ' + obj.statusText);
+               }
+
+             }
+         }
+         obj.open('POST', '../recibe.php',true);
+         obj.send(formData);
+         ////////////////////////////////////////////////////////////////
+  }      
+  else{
+        var mensaje = "Error en la carga. Por Fabor Subir un Archivo ";
+        alert(mensaje);
+  }
+
+}
