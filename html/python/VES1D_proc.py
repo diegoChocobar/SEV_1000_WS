@@ -161,12 +161,12 @@ def process_experimental_data(x, y):
 
     # Get unique x values and their indices
     unique_x, indices = np.unique(x, return_inverse=True)
+    
+    # check if no repeated values, return the same
+    if len(unique_x) == len(x):
+        return x, y
 
     # Calculate mean y values for each unique x
     mean_y = np.bincount(indices, weights=y) / np.bincount(indices)
 
-    # Create new arrays
-    new_x = unique_x
-    new_y = mean_y
-    
-    return new_x, new_y
+    return unique_x, mean_y
