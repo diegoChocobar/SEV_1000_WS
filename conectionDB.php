@@ -5,7 +5,7 @@
 $severname_db = "localhost";
 $database_db = "Datos_SEV";
 $username_db = "root";
-$password_db = "";
+$password_db = "ChDi1088!";
 
 //momento de conectarnos a db
 $conn = mysqli_connect($severname_db,$username_db,$password_db,$database_db);
