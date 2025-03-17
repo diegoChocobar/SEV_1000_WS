@@ -366,7 +366,8 @@ function Exportar_Datos($Nombre_Ensayo,$Modelo_Datos){
   $data = array();
   $fecha_actual = date("d-m-Y");
   //$stringinicial = "id,trabajo,modelo,tension,corriente,OA,MN,K,resistividad,fecha"."\n";
-
+  $stringdata = ""; //icializacion del stringdata, esto debido a que puede dar error en windows
+  
   $file_name ='archivos/SEV_' . $Nombre_Ensayo .'_' . $Modelo_Datos . '_' . $fecha_actual . '.csv';
 
     $result = $conn->query("SELECT * FROM `datos` WHERE `trabajo`='".$Nombre_Ensayo."' AND `modelo`='".$Modelo_Datos."' ORDER BY `OA` ASC ");
