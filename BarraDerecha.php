@@ -14,18 +14,18 @@
       <li class="nav-item dropdown">
         <a class="nav-link p-0 clear" href="#" data-toggle="dropdown">
           <span class="avatar w-32">
-            <img src="http://localhost/SEV_1000_WS/assets/images/a0.jpg" alt="...">
+            <img src="<?php echo $_SESSION['page_position']; ?>assets/images/a0.jpg" alt="...">
             <i class="on b-white bottom"></i>
           </span>
         </a>
         <div class="dropdown-menu dropdown-menu-overlay pull-right">
-          <a class="dropdown-item" href="http://localhost/SEV_1000_WS/dashboard.php">Perfil</a>
-          <a class="dropdown-item" href="http://localhost/SEV_1000_WS/info.php">Info Equipo</a>
+          <a class="dropdown-item" href="<?php echo $_SESSION['page_position']; ?>dashboard.php">Perfil</a>
+          <a class="dropdown-item" href="<?php echo $_SESSION['page_position']; ?>info.php">Info Equipo</a>
 
           <div class="dropdown-divider"></div>
 
-          <a class="dropdown-item" href="http://localhost/SEV_1000_WS/archivos/SEV_Manual_Usuario.pdf" target="_blank">Ayuda</a>
-          <a class="dropdown-item" href="http://localhost/SEV_1000_WS/login.php">Salir</a>
+          <a class="dropdown-item" href="<?php echo $_SESSION['page_position']; ?>archivos/SEV_Manual_Usuario.pdf" target="_blank">Ayuda</a>
+          <a class="dropdown-item" href="<?php echo $_SESSION['page_position']; ?>login.php">Salir</a>
         </div>
       </li>
       <li class="nav-item hidden-md-up">

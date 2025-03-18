@@ -5,7 +5,7 @@
       <div class="navbar no-radius">
         <!-- brand -->
         <a class="image align-left" href="https://geofisicainstrumentos.com" target="_blank">
-            <img class="cropContainer" src="http://localhost/SEV_1000_WS/img/logo.png" height="75%" width="75%">
+            <img class="cropContainer" src="<?php echo $_SESSION['page_position']; ?>img/logo.png" height="75%" width="75%">
             <br>
             <h7 class="align-center"><strong>CDC ELECTRONICS</strong></h7>
         </a>
@@ -20,7 +20,7 @@
             </li>
 
             <li>
-              <a id="linkPrincipal" href="http://localhost/SEV_1000_WS/dashboard.php" onclick="">
+              <a id="linkPrincipal" href="<?php echo $_SESSION['page_position']; ?>dashboard.php" onclick="">
                 <span class="nav-icon">
                   <i class="fa fa-building-o"></i>
                 </span>
@@ -29,7 +29,7 @@
             </li>
 
             <li>
-              <a id="linkEnsayo" href="http://localhost/SEV_1000_WS/html/ensayo.php" onclick >
+              <a id="linkEnsayo" href="<?php echo $_SESSION['page_position']; ?>html/ensayo.php" onclick >
                 <span class="nav-icon">
                   <i class='material-icons'></i>
                 </span>
@@ -38,7 +38,7 @@
             </li>
 
             <li>
-              <a id="linkManual" href="http://localhost/SEV_1000_WS/archivos/SEV_Manual_Usuario.pdf" target="_blank">
+              <a id="linkManual" href="<?php echo $_SESSION['page_position']; ?>archivos/SEV_Manual_Usuario.pdf" target="_blank">
                 <span class="nav-icon">
                   <i class='fa fa-building-o'></i>
                 </span>
@@ -47,7 +47,7 @@
             </li>
 
             <li>
-              <a id="linkInformacion" href="http://localhost/SEV_1000_WS/info.php" onclick >
+              <a id="linkInformacion" href="<?php echo $_SESSION['page_position']; ?>info.php" onclick >
                 <span class="nav-icon">
                   <i class='material-icons'></i>
                 </span>
@@ -62,9 +62,9 @@
 
       <div class="b-t">
         <div class="nav-fold">
-          <a href="http://localhost/SEV_1000_WS/dashboard.php">
+          <a href="<?php echo $_SESSION['page_position']; ?>dashboard.php">
             <span class="pull-left">
-              <img src="http://localhost/SEV_1000_WS/assets/images/a0.jpg" alt="..." class="w-40 img-circle">
+              <img src="<?php echo $_SESSION['page_position']; ?>assets/images/a0.jpg" alt="..." class="w-40 img-circle">
             </span>
             <span class="clear hidden-folded p-x">
               <span class="block _500"><?php echo $user_login_name ?></span>

@@ -2,7 +2,7 @@
 session_start();
 $_SESSION['logged'] = false;
 
-
+$_SESSION['page_position'] = "";
 
 $msg="";
 $user="";
@@ -14,9 +14,6 @@ $pass_admin = "ChDi1088";
 $user_1 = "SEV";
 $pass_1 = "sondeo";
 
-
-$user_2 = "geoexploar";
-$pass_2 = "sondeo";
 
 if(isset($_POST['user']) && isset($_POST['password'])) {
 
@@ -56,23 +53,23 @@ if(isset($_POST['user']) && isset($_POST['password'])) {
   <!-- for ios 7 style, multi-resolution icon of 152x152 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
-  <link rel="apple-touch-icon" href="http://localhost/SEV_1000_WS/assets/images/logo.png">
+  <link rel="apple-touch-icon" href="assets/images/logo.png">
   <meta name="apple-mobile-web-app-title" content="Flatkit">
   <!-- for Chrome on Android, multi-resolution icon of 196x196 -->
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="shortcut icon" sizes="196x196" href="http://localhost/SEV_1000_WS/assets/images/logo.png">
+  <link rel="shortcut icon" sizes="196x196" href="assets/images/logo.png">
 
   <!-- style -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/animate.css/animate.min.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/glyphicons/glyphicons.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/font-awesome/css/font-awesome.min.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/material-design-icons/material-design-icons.css" type="text/css" />
+  <link rel="stylesheet" href="assets/animate.css/animate.min.css" type="text/css" />
+  <link rel="stylesheet" href="assets/glyphicons/glyphicons.css" type="text/css" />
+  <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="assets/material-design-icons/material-design-icons.css" type="text/css" />
 
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
   <!-- build:css ../assets/styles/app.min.css -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/styles/app.css" type="text/css" />
+  <link rel="stylesheet" href="assets/styles/app.css" type="text/css" />
   <!-- endbuild -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/styles/font.css" type="text/css" />
+  <link rel="stylesheet" href="assets/styles/font.css" type="text/css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -82,8 +79,8 @@ if(isset($_POST['user']) && isset($_POST['password'])) {
     <div class="navbar">
       <div class="pull-center">
         <a class="navbar-brand">
-          <div ui-include="'http://localhost/SEV_1000_WS/assets/images/logo.svg'"></div>
-          <img src="http://localhost/SEV_1000_WS/assets/images/logo.png" alt="." class="hide">
+          <div ui-include="'assets/images/logo.svg'"></div>
+          <img src="assets/images/logo.png" alt="." class="hide">
           <b>Iniciar Sesión</b>
         </a>
       </div>
@@ -124,33 +121,33 @@ if(isset($_POST['user']) && isset($_POST['password'])) {
   </div>
 <!-- build:js scripts/app.html.js -->
 <!-- jQuery -->
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/jquery/dist/jquery.js"></script>
+  <script src="libs/jquery/jquery/dist/jquery.js"></script>
 <!-- Bootstrap -->
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/tether/dist/js/tether.min.js"></script>
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="libs/jquery/tether/dist/js/tether.min.js"></script>
+  <script src="libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
 <!-- core -->
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/underscore/underscore-min.js"></script>
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/jQuery-Storage-API/jquery.storageapi.min.js"></script>
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/PACE/pace.min.js"></script>
+  <script src="libs/jquery/underscore/underscore-min.js"></script>
+  <script src="libs/jquery/jQuery-Storage-API/jquery.storageapi.min.js"></script>
+  <script src="libs/jquery/PACE/pace.min.js"></script>
 
-  <script src="http://localhost/SEV_1000_WS/html/scripts/config.lazyload.js"></script>
+  <script src="html/scripts/config.lazyload.js"></script>
 
-  <script src="http://localhost/SEV_1000_WS/html/scripts/palette.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-load.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-jp.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-include.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-device.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-form.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-nav.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-screenfull.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-scroll-to.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ui-toggle-class.js"></script>
+  <script src="html/scripts/palette.js"></script>
+  <script src="html/scripts/ui-load.js"></script>
+  <script src="html/scripts/ui-jp.js"></script>
+  <script src="html/scripts/ui-include.js"></script>
+  <script src="html/scripts/ui-device.js"></script>
+  <script src="html/scripts/ui-form.js"></script>
+  <script src="html/scripts/ui-nav.js"></script>
+  <script src="html/scripts/ui-screenfull.js"></script>
+  <script src="html/scripts/ui-scroll-to.js"></script>
+  <script src="html/scripts/ui-toggle-class.js"></script>
 
-  <script src="http://localhost/SEV_1000_WS/html/scripts/app.js"></script>
+  <script src="html/scripts/app.js"></script>
 
   <!-- ajax -->
-  <script src="http://localhost/SEV_1000_WS/libs/jquery/jquery-pjax/jquery.pjax.js"></script>
-  <script src="http://localhost/SEV_1000_WS/html/scripts/ajax.js"></script>
+  <script src="libs/jquery/jquery-pjax/jquery.pjax.js"></script>
+  <script src="html/scripts/ajax.js"></script>
 
 
 <!-- endbuild -->

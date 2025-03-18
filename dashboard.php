@@ -1,5 +1,6 @@
 <?php
 session_start();
+$_SESSION['page_position'] = "";
 
 include 'checklogin.php';
 
@@ -18,27 +19,27 @@ include 'checklogin.php';
   <!-- for ios 7 style, multi-resolution icon of 152x152 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
-  <link rel="apple-touch-icon" href="http://localhost/SEV_1000_WS/assets/images/logo.png">
+  <link rel="apple-touch-icon" href="<?php echo $_SESSION['page_position']; ?>assets/images/logo.png">
   <meta name="apple-mobile-web-app-title" content="Flatkit">
   <!-- for Chrome on Android, multi-resolution icon of 196x196 -->
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="shortcut icon" sizes="150x50" href="http://localhost/SEV_1000_WS/assets/images/logo.png">
+  <link rel="shortcut icon" sizes="150x50" href="<?php echo $_SESSION['page_position']; ?>assets/images/logo.png">
 
   <!-- style -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/animate.css/animate.min.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/glyphicons/glyphicons.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/font-awesome/css/font-awesome.min.css" type="text/css" />
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/material-design-icons/material-design-icons.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/animate.css/animate.min.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/glyphicons/glyphicons.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/font-awesome/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/material-design-icons/material-design-icons.css" type="text/css" />
 
   <!--link href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet"-->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
 
   <!-- build:css assets/styles/app.min.css -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/styles/app.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/styles/app.css" type="text/css" />
   <!-- endbuild -->
-  <link rel="stylesheet" href="http://localhost/SEV_1000_WS/assets/styles/font.css" type="text/css" />
+  <link rel="stylesheet" href="<?php echo $_SESSION['page_position']; ?>assets/styles/font.css" type="text/css" />
 
-  <link rel="stylesheet" type="text/css" href="http://localhost/SEV_1000_WS/libs/jquery/parsleyjs/dist/parsley.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $_SESSION['page_position']; ?>libs/jquery/parsleyjs/dist/parsley.css">
 
   <link href="prettify.css" rel="stylesheet">
 
@@ -65,7 +66,7 @@ include 'checklogin.php';
                     <div class="box-header b-b" align="center">
                       <div class="form-group">
                         <a class="image align-left" href="https://geofisicainstrumentos.com" target="_blank">
-                            <img class="cropContainer" src="http://localhost/SEV_1000_WS/img/logo.png" alt="Collage de imagenes tecnológicas" title="cdcelectronics empresa">
+                            <img class="cropContainer" src="<?php echo $_SESSION['page_position']; ?>img/logo.png" alt="Collage de imagenes tecnológicas" title="cdcelectronics empresa">
                         </a>
                       </div>
                       <div class="form-group">
@@ -76,7 +77,7 @@ include 'checklogin.php';
                         <h2 class="txt-white bold text-shadow align-center">Sondeo Electrico Vertical -  Esquema</h2>
                       </div>
                       <div class="image aling-center">
-                        <img class="img-responsive" src="http://localhost/SEV_1000_WS/img/sondeo_electrico_vertical.jpg" title="CDC ELECTRONICS - SEV">
+                        <img class="img-responsive" src="<?php echo $_SESSION['page_position']; ?>img/sondeo_electrico_vertical.jpg" title="CDC ELECTRONICS - SEV">
                       </div>
                         <br>
                       <div class="form-group">
@@ -99,45 +100,45 @@ include 'checklogin.php';
 <!-- build:js scripts/app.html.js -->
 
 <!-- jQuery -->
-<script src="http://localhost/SEV_1000_WS/libs/jquery/jquery/dist/jquery.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery/dist/jquery.js"></script>
 <!-- Bootstrap -->
-<script src="http://localhost/SEV_1000_WS/libs/jquery/tether/dist/js/tether.min.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/tether/dist/js/tether.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/bootstrap/dist/js/bootstrap.js"></script>
 <!-- core -->
-<script src="http://localhost/SEV_1000_WS/libs/jquery/underscore/underscore-min.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/jQuery-Storage-API/jquery.storageapi.min.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/PACE/pace.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/underscore/underscore-min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jQuery-Storage-API/jquery.storageapi.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/PACE/pace.min.js"></script>
 
-<script src="http://localhost/SEV_1000_WS/libs/jquery/jquery.sparkline/dist/jquery.sparkline.retina.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/datatables/media/js/jquery.dataTables.min.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/plugins/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/parsleyjs/dist/parsley.min.js"></script>
-<script src="http://localhost/SEV_1000_WS/libs/jquery/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery.sparkline/dist/jquery.sparkline.retina.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/plugins/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/parsleyjs/dist/parsley.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
 
-<script src="http://localhost/SEV_1000_WS/html/scripts/config.lazyload.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/config.lazyload.js"></script>
 
-<script src="http://localhost/SEV_1000_WS/html/scripts/palette.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-load.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-jp.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-include.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-device.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-form.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-nav.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-screenfull.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-scroll-to.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ui-toggle-class.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/palette.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-load.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-jp.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-include.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-device.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-form.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-nav.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-screenfull.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-scroll-to.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ui-toggle-class.js"></script>
 
-<script src="http://localhost/SEV_1000_WS/html/scripts/app.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/app.js"></script>
 
 <!-- ajax -->
-<script src="http://localhost/SEV_1000_WS/libs/jquery/jquery-pjax/jquery.pjax.js"></script>
-<script src="http://localhost/SEV_1000_WS/html/scripts/ajax.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery-pjax/jquery.pjax.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ajax.js"></script>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script src="http://localhost/SEV_1000/libs/bootstrap/js/bootstrap.min.js"></script>
-<script src="jquery.bootstrap.wizard.js"></script>
-<script src="prettify.js"></script>
+<!--script src="http://code.jquery.com/jquery-latest.js"></script-->
+<!--script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script-->
+<script src="<?php echo $_SESSION['page_position']; ?>libs/bootstrap/js/bootstrap.min.js"></script>
+<!--script src="jquery.bootstrap.wizard.js"></script-->
+<!--script src="prettify.js"></script-->
 
 
 <?php $tiempo = time(); ?>
