@@ -245,7 +245,7 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                           <td>
                                               <?php if($modelo == "Schlumberger"){ ?>
                                               <select class="form-control c-select" id="const_MN_0" name="const_MN_0" <?php echo "onchange='change_MN(0)'"; ?> style="width:75px"  class="required" <?php if($_SESSION['modelo'] == 'Wenner'){echo "disabled";} ?>>
-                                                <optio value="0">MN</option>
+                                                <option value="0">MN</option>
                                                 <?php for ($j=0; $j < count($const_mn) ; $j++) { ?>
 
                                                     <option value="<?php echo $const_mn[$j]?>"
@@ -359,7 +359,7 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                           <td>
                                               <?php if($modelo == "Schlumberger"){ ?>
                                               <select class="form-control c-select" id="const_MN_<?php echo $i+1; ?>" name="const_MN_<?php echo $i+1; ?>" <?php echo "onchange='change_MN($i+1)'"; ?> style="width:75px"  class="required" <?php if($_SESSION['modelo'] == 'Wenner'){echo "disabled";} ?> >
-                                                <optio value="0">MN</option>
+                                                <option value="0">MN</option>
                                                 <?php for ($j=0; $j < count($const_mn) ; $j++) { ?>
 
                                                     <option value="<?php echo $const_mn[$j]?>"
