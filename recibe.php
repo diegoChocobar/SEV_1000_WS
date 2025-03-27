@@ -488,10 +488,24 @@ function Define_Python_Commands($keyword) {
   try {
     $command = escapeshellcmd("uname");
     $output = shell_exec($command);
+    // print_r("I'm running in $output");
     if (strpos($output, "Linux") !== false) {
-      $username = getenv("SUDO_USER");
-      $python_interp = "/home/".$username."/anaconda3/bin/python";
-      $package_path = "/opt/lampp/htdocs/SEV_1000_WS";
+      $raspberry = true;
+      $model = shell_exec("grep 'Model' /proc/cpuinfo");
+      # if it is a raspberry use the system's python 
+      // install required packages as:
+      // sudo apt install python3-numpy python3-pandas python3-scipy
+      if (strpos($model, "Raspberry") == true) {
+        // print_r($model);
+        $python_interp = "python3";
+        $package_path = "/var/www/html/SEV_1000_WS";
+      }
+      else {
+        $username = getenv("SUDO_USER");
+        $python_interp = "/home/".$username."/anaconda3/bin/python";
+        $package_path = "/opt/lampp/htdocs/SEV_1000_WS";
+      }
+
       if ($keyword == "init_values") {
         $python_file = $package_path."/html/python/compute_init_layers_backend.py";
       }
@@ -531,8 +545,8 @@ function Calcular_Valores_Iniciales($ensayo, $nlayers, $modelo){
   $data_proc = $database['data_proc'];
   $arguments = escapeshellarg(json_encode($data_proc));
   $shellcomand = Define_Python_Commands("init_values");
+  $output = shell_exec($shellcomand." ".$arguments);
 
-  $output = shell_exec($shellcomand.$arguments);
   if (strpos($output, "failed python") !== false) {
     return "python failed: " . $output;
   };

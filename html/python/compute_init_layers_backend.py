@@ -60,7 +60,6 @@ try:
             "thick0": list(thick0),
             "rho0": list(rho0)
         }
-        print(json.dumps(ini_data))
     else:
         rho0 = VES1D_misc.initial_rho(nlayers, df['R'])
         thick0 = VES1D_misc.initial_thick(nlayers, df['R'], df['OA'])
@@ -70,7 +69,8 @@ try:
             "thick0": list(thick0),
             "rho0": list(rho0)
         }
-        print(json.dumps(ini_data))
+
+    print(json.dumps(ini_data))
 
 # compute initial data based on given nlayers
 except:

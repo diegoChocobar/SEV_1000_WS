@@ -29,6 +29,7 @@ function ValoresIniciales() { // calcular los valores iniciales del ajuste con p
           var data = JSON.parse(objData_ini.responseText);
         } catch (err) {
           // error handling
+          console.log("error getting data from backend")
           console.log(objData_ini.responseText);          
         }
 
