@@ -90,6 +90,7 @@ def vary_all_parameters(data):
     return rho, thick
 
 def vary_resistivity(data):
+    global thick0
     nlayers, rho0, thick0, x, y = get_parameters(data)
     
     # define fit function by wrapping general-fit-function
@@ -117,6 +118,7 @@ def vary_resistivity(data):
     return rho, thick
 
 def vary_thickness(data):
+    global rho0
     nlayers, rho0, thick0, x, y = get_parameters(data)
 
     # define fit function by wrapping general-fit-function
@@ -132,7 +134,7 @@ def vary_thickness(data):
     f = apparent_resistivity_with_fixed_rho
 
     # definir espacio de hiperparámetros (nlayers - 1) y valores iniciales 
-    bounds_thick = (tuple([0 for i in range(nlayers - 1)]), tuple([np.inf for i in range(nlayers - 1)]))
+    bounds_thick = (tuple([0] * (nlayers - 1)), tuple([np.inf] * (nlayers - 1)))
 
     try:
         thick, pcov = curve_fit(f, x, y, p0=thick0, bounds=bounds_thick)
