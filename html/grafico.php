@@ -5,7 +5,7 @@ $modelo = $_SESSION['modelo'];
 
 $_SESSION['page_position'] = "../";
 
-include '../checklogin.php';
+//include '../checklogin.php';
 include '../conectionDB.php';
 
  ?>

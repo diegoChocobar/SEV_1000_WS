@@ -3,7 +3,7 @@ session_start();
 
 $_SESSION['page_position'] = "";
 
-include 'checklogin.php';
+//include 'checklogin.php';
 
 ?>
 
