@@ -358,8 +358,7 @@ $const_oa = array(1.3,1.6,2,2.5,3.2,4,5,6.5,8,10,13,16,20,25,32,40,50,65,80,100,
 <script src="http://localhost/SEV_1000/libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 <script src="http://localhost/SEV_1000/html/scripts/ajax.js"></script>
 
-<!--script src="http://code.jquery.com/jquery-latest.js"></script-->
-<!--script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script-->
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery-latest.js"></script>
 <script src="http://localhost/SEV_1000/libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="../jquery.bootstrap.wizard.js"></script>
 <script src="../prettify.js"></script>

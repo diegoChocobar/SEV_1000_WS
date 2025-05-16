@@ -9,3 +9,9 @@ Version 1.1 raspberry pi5
     Tareas Realizadas:
     * Se acomodaron los links para que puedan acceder desde afuera.
     * Se eliminaron los login de tal manera que no se soliciten
+
+Version 1.2 raspberry pi5
+    Tareas Realizadas:
+    * Se corrigio el tema de que no se podia acceder a las paginas desde la barra lateral izquierda, cuando el panel izquierdo no estaba desplegado (esto sucedia en tablet y telefono con pantallas pequeñas).
+    * Se volvio a incluir el tema de los links segun en que pagina estemos y dejamos de usar "localhost" o una "ip-local" para acceder a determinados lugares.
+    ***Se resolvio el tema del redireccionamiento de paginas en barra lateral izquierda

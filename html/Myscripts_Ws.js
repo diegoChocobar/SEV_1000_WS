@@ -724,7 +724,7 @@ function ExportarDatos(){
                  //alert('Exportacion exitosa: ' + data['detalle']);
 
                  //window.location.reload(true);
-                 var link = "http://10.42.0.1/SEV_1000_WS/"+data['file'];
+                 var link = "../"+data['file'];
                  window.open(link, '_blank'); window.focus();
 
                }else{
@@ -885,7 +885,7 @@ function Hold(){
 
 function AnalizarDatos(){
   //alert("entramos a analizar datos:");
-  window.open(" http://10.42.0.1/SEV_1000_WS/html/grafico_ajuste.php", '_blank'); window.focus();
+  window.open("grafico_ajuste.php", '_blank'); window.focus();
  
 }
 

@@ -145,8 +145,7 @@
 <script src="http://localhost/cdcelectronics/libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 <script src="http://localhost/cdcelectronics/html/scripts/ajax.js"></script>
 
-<!--script src="http://code.jquery.com/jquery-latest.js"></script-->
-<!--script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script-->
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery-latest.js"></script>
 <script src="http://localhost/cdcelectronics/libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="jquery.bootstrap.wizard.js"></script>
 <script src="prettify.js"></script>

@@ -201,56 +201,6 @@ function Graficar(dat, ensayo) {
   });
 }
 
-function ExportarDatos() {
-
-  var Ensayo = $("#Ensayo").val();
-
-  if (Ensayo != "") {
-    //alert("Cargando nuevo ensayo.." + Nuevo_Ensayo);
-    /////Mandar consulta al servidor para cargar nuevo ensayo/////////////////////
-    var formData = new FormData();
-    formData.append("Exportar_Datos", "TRUE");
-    formData.append("Nombre_Ensayo", Ensayo);
-
-    ///////////////funcion de  de escucha al php/////////////
-    var objNewEnsayo = new XMLHttpRequest();
-
-    objNewEnsayo.onreadystatechange = function () {
-      if (objNewEnsayo.readyState === 4) {
-        if (objNewEnsayo.status === 200) {
-          //alert(objNewEnsayo.responseText);
-          var data = JSON.parse(objNewEnsayo.responseText);
-
-          if (data['status'] == "TRUE") {
-            alert('Exportacion exitosa: ' + data['detalle']);
-
-            //window.location.reload(true);
-            var link = "http://localhost/SEV_1000_WS/" + data['file'];
-            //console.log("link");
-            window.open(link, '_blank'); window.focus();
-
-          } else {
-            alert('Error exportar: ' + data['error']);
-          }
-
-
-        } else {
-          alert('Error Code 111: ' + objNewEnsayo.status);
-          alert('Error Message 222: ' + objNewEnsayo.statusText);
-        }
-      }
-    }
-    ////////////////////////////////////////////////////////////////
-
-    objNewEnsayo.open('POST', '../recibe.php', true);
-    objNewEnsayo.send(formData);
-
-  } else {
-    alert("No se eligio un Ensayo para Exportar datos");
-  }
-
-}
-
 function Ajustar(rho0,thick0) {
 
   var Ensayo = $("#Ensayo").val();

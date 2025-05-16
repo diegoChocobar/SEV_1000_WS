@@ -134,8 +134,7 @@ $_SESSION['page_position'] = "";
 <script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 <script src="<?php echo $_SESSION['page_position']; ?>html/scripts/ajax.js"></script>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="<?php echo $_SESSION['page_position']; ?>libs/jquery/jquery-latest.js"></script>
 <script src="<?php echo $_SESSION['page_position']; ?>libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="jquery.bootstrap.wizard.js"></script>
 <script src="prettify.js"></script>
@@ -143,8 +142,11 @@ $_SESSION['page_position'] = "";
 
 <?php $tiempo = time(); ?>
 
-<script type="text/javascript" src="linkPage.js?v=<?php echo $tiempo ?>"></script>
+<script>
+   var page_position = "<?php echo $_SESSION['page_position']; ?>";
+</script>
 
+<script type="text/javascript" src="linkPage.js?v=<?php echo $tiempo ?>"></script>
 
 <!-- endbuild -->
 </body>
