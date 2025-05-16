@@ -20,7 +20,7 @@
             </li>
 
             <li>
-              <a id="linkPrincipal" href="<?php echo $_SESSION['page_position']; ?>dashboard.php" onclick="">
+              <a id="linkPrincipal" href="http://10.42.0.1/SEV_1000_WS/dashboard.php" onclick="">
                 <span class="nav-icon">
                   <i class="fa fa-building-o"></i>
                 </span>
@@ -29,7 +29,7 @@
             </li>
 
             <li>
-              <a id="linkEnsayo" href="<?php echo $_SESSION['page_position']; ?>html/ensayo.php" onclick >
+              <a id="linkEnsayo" href="http://10.42.0.1/SEV_1000_WS/html/ensayo.php" onclick >
                 <span class="nav-icon">
                   <i class='material-icons'></i>
                 </span>
@@ -38,7 +38,7 @@
             </li>
 
             <li>
-              <a id="linkManual" href="<?php echo $_SESSION['page_position']; ?>archivos/SEV_Manual_Usuario.pdf" target="_blank">
+              <a id="linkManual" href="http://10.42.0.1/SEV_1000_WS/archivos/SEV_Manual_Usuario.pdf" target="_blank">
                 <span class="nav-icon">
                   <i class='fa fa-building-o'></i>
                 </span>
@@ -47,7 +47,7 @@
             </li>
 
             <li>
-              <a id="linkInformacion" href="<?php echo $_SESSION['page_position']; ?>info.php" onclick >
+              <a id="linkInformacion" href="http://10.42.0.1/SEV_1000_WS/info.php" onclick >
                 <span class="nav-icon">
                   <i class='material-icons'></i>
                 </span>
@@ -62,9 +62,9 @@
 
       <div class="b-t">
         <div class="nav-fold">
-          <a href="<?php echo $_SESSION['page_position']; ?>dashboard.php">
+          <a href="http://10.42.0.1/SEV_1000_WS/dashboard.php">
             <span class="pull-left">
-              <img src="<?php echo $_SESSION['page_position']; ?>assets/images/a0.jpg" alt="..." class="w-40 img-circle">
+              <img src="http://10.42.0.1/SEV_1000_WS/assets/images/a0.jpg" alt="..." class="w-40 img-circle">
             </span>
             <span class="clear hidden-folded p-x">
               <span class="block _500"><?php echo $user_login_name ?></span>
