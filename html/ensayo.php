@@ -514,8 +514,8 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
 <script src="http://localhost/SEV_1000_WS/libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 <script src="http://localhost/SEV_1000_WS/html/scripts/ajax.js"></script>
 
-<!--script src="http://code.jquery.com/jquery-latest.js"></script-->
-<!--script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script-->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://localhost/SEV_1000_WS/libs/bootstrap/js/bootstrap.min.js"></script>
 <script src="../jquery.bootstrap.wizard.js"></script>
 <script src="../prettify.js"></script>
