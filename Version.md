@@ -15,3 +15,7 @@ Version 1.2 raspberry pi5
     * Se corrigio el tema de que no se podia acceder a las paginas desde la barra lateral izquierda, cuando el panel izquierdo no estaba desplegado (esto sucedia en tablet y telefono con pantallas pequeñas).
     * Se volvio a incluir el tema de los links segun en que pagina estemos y dejamos de usar "localhost" o una "ip-local" para acceder a determinados lugares.
     ***Se resolvio el tema del redireccionamiento de paginas en barra lateral izquierda
+
+Version 1.23 Raspberry pi5
+    Tareas Realizadas:
+    * Volvimos a la version antes de tratar de ignorar los cambios que realizemos en conectionDB.php por gitignore

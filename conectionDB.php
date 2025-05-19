@@ -3,8 +3,8 @@
 
 //momento de conectarnos a db
 $severname_db = "localhost";
-$database_db = "Datos_SEV";
-$username_db = "root";
+$database_db = "Datos_Sev";
+$username_db = "diego";
 $password_db = "ChDi1088!";
 
 //momento de conectarnos a db
