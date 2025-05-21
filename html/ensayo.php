@@ -73,8 +73,8 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
         ?>
           <!-- SECCION CENTRAL -->
           <div ui-view class="app-body" id="view">
-              <div class="padding">
-                  <div class="box">
+              <div class="padding" style="padding-left: 1px; padding-right: 1px;">
+                  <div class="box" style="width: 105%;">
                     
                     <br>
 
@@ -521,15 +521,88 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
 <script src="<?php echo $_SESSION['page_position']; ?>jquery.bootstrap.wizard.js"></script>
 <script src="<?php echo $_SESSION['page_position']; ?>prettify.js"></script>
 
+<!-- mqtt -->
+ <script src="../mqtt.min.js"></script>
 
 <?php $tiempo = time(); ?>
 
-<script>
-   var page_position = "<?php echo $_SESSION['page_position']; ?>";
-</script>
-
 <script type="text/javascript" src="../linkPage.js?v=<?php echo $tiempo ?>"></script>
 <script type="text/javascript" src="Myscripts_Ws.js?v=<?php echo $tiempo ?>"></script>
+
+<script>
+   var page_position = "<?php echo $_SESSION['page_position']; ?>";
+
+   
+/*
+*******************************************************************************
+*******************    CONEXION SETUP MQTT   **********************************
+*******************************************************************************
+*/
+      //Esta parte esta funcionado para conexion por mqtt (demora mucho)
+      var options = {
+        connectTimeout: 2000,
+        // Authentication
+        clientId: '<?php echo "web_" . rand(1,999) ; ?>',
+        //username: '<?php echo "SEV1000_WS" ; ?>',
+        //password: '',
+
+        keepalive: 60, //tiempo de mensaje interno hacia el brouker para avisar que estamos conectados
+        clean: true,   //iniciamos en una session limpia (es una session no percistente)
+      }
+
+
+      // WebSocket connect url
+      var WebSocket_URL = 'ws://10.42.0.1:8093/mqtt'
+
+      //var client = mqtt.connect(WebSocket_URL, options)
+      var client = mqtt.connect(WebSocket_URL, options)
+
+
+
+      client.on('connect', () => {//original
+
+        console.log('Conexion exito con brouker')
+        top_topic = 'SEV1000_WS'+'/#';
+
+        client.subscribe(top_topic, { qos: 0 }, (error) => {
+          if (!error) {
+            console.log('Suscripción exitosa topics ->'+top_topic);
+            //alert ('Suscripción exitosa topics ->'+top_topic);
+          }else{
+            console.log('Suscripción fallida!')
+            //alert ('Suscripción fallida topics ->'+top_topic);
+          }
+        })
+
+
+      })
+
+      client.on('error', (error) => {
+        console.log('Connect Error:', error)
+      })
+/*
+*******************************************************************************
+*******************************************************************************
+*/
+
+/*
+*******************************************************************************
+*********************     MENSAJE MQTT   **************************************
+*******************************************************************************
+*/
+client.on('message', (topic, message) => {
+
+  console.log('Mensaje recibido: ',topic, ' -> ', message.toString())
+
+})
+/*
+*******************************************************************************
+*******************************************************************************
+*/
+                                      
+
+</script>
+
 
 
 <!-- endbuild -->

@@ -442,16 +442,7 @@ function Delet_Ensayo(Ensayo,Modelo){
 }
 
 window.onload = function() {
-
-    /////conection WebSocket/////////////////////////////////
-    //var socket = new WebSocket('ws://' + location.hostname + ':80/', ['arduino']);
-    socket = new WebSocket('ws://' + '192.168.1.1' + ':80/ws');
-
-    socket.onopen = function(e) {
-      //alert("Conexión establecida con equipo SEV");
-      console.log("Conexión establecida con equipo SEV");
-    };
-
+/*
     socket.onmessage = function(event) {
       var data = event.data;
       let arr_data = data.split('/');
@@ -564,21 +555,7 @@ window.onload = function() {
 
     };
 
-    socket.onclose = function(event) {
-      if (event.wasClean) {
-        alert(`[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`);
-      } else {
-        // ej. El proceso del servidor se detuvo o la red está caída
-        // event.code es usualmente 1006 en este caso
-        alert('[close] La conexión se cayó');
-      }
-    };
-
-    socket.onerror = function(error) {
-      //alert(`[error] ${error.message}`);
-      console.log(`[error] ${error.message}`);
-    };
-    ////////////////////////////////////////////////////////////////////////////////
+    *////////////////////////////////////////////////////////////////////////////////
 
     /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
     var ensayo = $("#Ensayo").val();
@@ -662,9 +639,12 @@ function Graficar(dat){
             type: 'logarithmic',
 
             ticks: {
+
+              max: 1000, // <-- Ajustá este valor al máximo que querés
+              min: 0,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
-                if (remain === 1 || remain === 2 || remain === 5) {
+                if (remain === 1) {
                   return tick.toString() + ' m';
                 }
                 return '';
@@ -679,9 +659,11 @@ function Graficar(dat){
             type: 'logarithmic',
 
             ticks: {
+              max: 1000, // <-- Ajustá este valor al máximo que querés
+              min: 1,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
-                if (remain === 1 || remain === 2 || remain === 5) {
+                if (remain === 1) {
                   return tick.toString() + ' ';
                 }
                 return '';

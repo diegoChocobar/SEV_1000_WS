@@ -1,13 +1,13 @@
 <!-- BARRA IZQUIERDA -->
-<div id="aside" class="app-aside modal nav-dropdown">
+<div id="aside" class="app-aside modal nav-dropdown" style="width: 150px;">
     <!-- fluid app aside -->
     <div class="left navside light dk" data-layout="column">
       <div class="navbar no-radius">
         <!-- brand -->
-        <a class="image align-left" href="https://geofisicainstrumentos.com" target="_blank">
-            <img class="cropContainer" src="<?php echo $_SESSION['page_position']; ?>img/logo.png" height="75%" width="75%">
+        <a class="image align-left" href="https://cdcelectronics.com" target="_blank">
+            <img class="cropContainer" src="<?php echo $_SESSION['page_position']; ?>img/logo.png" height="110%" width="110%">
             <br>
-            <h7 class="align-center"><strong>CDC ELECTRONICS</strong></h7>
+            
         </a>
         <!-- / brand -->
       </div>
@@ -51,7 +51,7 @@
                 <span class="nav-icon">
                   <i class='material-icons'></i>
                 </span>
-                <span class="nav-text">Especificaciones Técnicas</span>
+                <span class="nav-text">Datos </span>
               </a>
             </li>
 
@@ -59,20 +59,6 @@
         </nav>
       </div>
       <!--  Exit Menu desplegable izquierdo -->
-
-      <div class="b-t">
-        <div class="nav-fold">
-          <a href="<?php echo $_SESSION['page_position']; ?>dashboard.php">
-            <span class="pull-left">
-              <img src="<?php echo $_SESSION['page_position']; ?>assets/images/a0.jpg" alt="..." class="w-40 img-circle">
-            </span>
-            <span class="clear hidden-folded p-x">
-              <span class="block _500"><?php echo $user_login_name ?></span>
-              <small class="block text-muted"><i class="fa fa-circle text-success m-r-sm"></i>online</small>
-            </span>
-          </a>
-        </div>
-      </div>
 
     </div>
   </div>

@@ -19,3 +19,21 @@ Version 1.2 raspberry pi5
 Version 1.23 Raspberry pi5
     Tareas Realizadas:
     * Volvimos a la version antes de tratar de ignorar los cambios que realizemos en conectionDB.php por gitignore
+
+
+Version 1.24 Raspberry pi5
+    Tareas Realizadas:
+    * Ee dieron privilegios 777 a todos los archivos del proyecto.
+    * BarraIzquierda.php:
+        * Se modifico la dimension para que entre en tablet
+        * Se elimino la parte baja donde se mostraba una foto del usuario
+    * Se agrego el archivo mqtt.min.js para manejar la conexion mqtt
+    * Myscripts_Ws.js:
+        * Se elimino la conexion websocket
+        * Se moficaron las propiedades de los ejes del grafico, ahora el logaritmo esta en proporcion
+    * ensayo.php
+        * Se modifico las dimensiones del box principal para que se visualice mejor en la tablet
+        * Se elimino lo referente a websocket
+        * Se agrego configuracion y conexion a mqtt.
+
+    
