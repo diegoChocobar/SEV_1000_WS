@@ -807,8 +807,11 @@ function Check_V(){
       $('#buttonV').addClass('md-btn md-fab m-b-sm danger');
   }
 
+  client.publish('SEV_C/SEV_V/Check/?', 'Status', (error) => {
+     console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_V/Check/?', 'Status')
+  })
   alert("Enviamos Check_V");
-  socket.send("SEV_C/SEV_V/Check/?");
+  //socket.send("SEV_C/SEV_V/Check/?");
 }
 
 function Check_I(){
@@ -819,10 +822,11 @@ function Check_I(){
       $('#buttonI').addClass('md-btn md-fab m-b-sm danger');
   }
 
+  client.publish('SEV_C/SEV_I/Check/?', 'Status', (error) => {
+     console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_V/Check/?', 'Status')
+  })
   alert("Enviamos Check_I");
-
-  //socket.send("SEV_I/SEV_C/Check/?");
-  socket.send("SEV_C/SEV_I/Check/?");
+  //socket.send("SEV_C/SEV_I/Check/?");
 }
 
 function Disparo(){
@@ -833,12 +837,18 @@ function Disparo(){
   if (claseD.includes("md-btn md-fab m-b-sm danger")) {
       $('#buttonD').removeClass('md-btn md-fab m-b-sm danger');
       $('#buttonD').addClass('md-btn md-fab m-b-sm success');
-      socket.send("SEV_C/SEV_I/Disparo/ON");
+      client.publish('SEV_C/SEV_I/Disparo/ON', 'ON', (error) => {
+        console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_I/Disparo/ON', 'ON')
+      })
+      //socket.send("SEV_C/SEV_I/Disparo/ON");
   }
   if (claseD.includes("md-btn md-fab m-b-sm success")) {
     $('#buttonD').removeClass('md-btn md-fab m-b-sm success');
     $('#buttonD').addClass('md-btn md-fab m-b-sm danger');
-    socket.send("SEV_C/SEV_I/Disparo/OFF");
+    client.publish('SEV_C/SEV_I/Disparo/OFF', 'ON', (error) => {
+        console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_I/Disparo/OFF', 'OFF')
+    })
+    //socket.send("SEV_C/SEV_I/Disparo/OFF");
   }
 
   
@@ -853,14 +863,20 @@ function Hold(){
   if (claseH.includes("md-btn md-fab m-b-sm danger")) {
     $('#buttonH').removeClass('md-btn md-fab m-b-sm danger');
     $('#buttonH').addClass('md-btn md-fab m-b-sm success');
-    socket.send("SEV_C/SEV_V/Hold/ON");
-    socket.send("SEV_C/SEV_I/Hold/ON");
+    client.publish('SEV_C/SEV_X/Hold/ON', 'ON', (error) => {
+        console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_X/Hold/ON', 'ON')
+    })
+    //socket.send("SEV_C/SEV_V/Hold/ON");
+    //socket.send("SEV_C/SEV_I/Hold/ON");
   }
   if (claseH.includes("md-btn md-fab m-b-sm success")) {
     $('#buttonH').removeClass('md-btn md-fab m-b-sm success');
     $('#buttonH').addClass('md-btn md-fab m-b-sm danger');
-    socket.send("SEV_C/SEV_V/Hold/OFF");
-    socket.send("SEV_C/SEV_I/Hold/OFF");
+    client.publish('SEV_C/SEV_X/Hold/OFF', 'OFF', (error) => {
+        console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_X/Hold/OFF', 'OFF')
+    })
+    //socket.send("SEV_C/SEV_V/Hold/OFF");
+    //socket.send("SEV_C/SEV_I/Hold/OFF");
   }
 
 }

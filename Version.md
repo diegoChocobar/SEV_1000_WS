@@ -35,5 +35,6 @@ Version 1.24 Raspberry pi5
         * Se modifico las dimensiones del box principal para que se visualice mejor en la tablet
         * Se elimino lo referente a websocket
         * Se agrego configuracion y conexion a mqtt.
+        * Se agrego logica de conection mqtt
 
     
