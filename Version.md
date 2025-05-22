@@ -43,5 +43,8 @@ Version 1.25 Raspberry pi5
         * Se modifico las indicaciones para la instalacion de python y sus componentes para que funciones raspberry pi5
     * Myscripts_Ws.js:
         * Se modifico para que el eje logaritmico "y" se visualicen los valores multiplos de 1 2 y 5
+    * Ajunste.js
+        * Se arreglaron las escalas y visualizacion de los ejes del grafico
+        * Al hacer cambio de capas se omitio un cartel alert
 
     

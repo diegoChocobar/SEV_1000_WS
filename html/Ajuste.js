@@ -166,6 +166,8 @@ function Graficar(dat, ensayo) {
           type: 'logarithmic',
 
           ticks: {
+              max: 1000, // <-- Ajustá este valor al máximo que querés
+              min: 0.8,     // (opcional) valor mínimo
             userCallback: function (tick) {
               var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
               if (remain === 1 || remain === 2 || remain === 5) {
@@ -183,6 +185,8 @@ function Graficar(dat, ensayo) {
           type: 'logarithmic',
 
           ticks: {
+              max: 1000, // <-- Ajustá este valor al máximo que querés
+              min: 1,     // (opcional) valor mínimo
             userCallback: function (tick) {
               var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
               if (remain === 1 || remain === 2 || remain === 5) {
@@ -380,7 +384,7 @@ function CambiaCapas() {
         }
 
         if (data['status'] == "TRUE") {
-          alert('CambioCapas Exitoso: ' + data['detalle']);
+          //alert('CambioCapas Exitoso: ' + data['detalle']);
 
           var results = data["resultados"];
           var results_arr = JSON.parse(results);
