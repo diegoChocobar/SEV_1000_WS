@@ -663,7 +663,7 @@ function Graficar(dat){
               min: 1,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
-                if (remain === 1) {
+                if (remain === 1 || remain === 2 || remain === 5) {
                   return tick.toString() + ' ';
                 }
                 return '';

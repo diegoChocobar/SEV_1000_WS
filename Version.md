@@ -36,5 +36,12 @@ Version 1.24 Raspberry pi5
         * Se elimino lo referente a websocket
         * Se agrego configuracion y conexion a mqtt.
         * Se agrego logica de conection mqtt
+    
+Version 1.25 Raspberry pi5
+    Tareas Realizadas:
+    * READMY.md:
+        * Se modifico las indicaciones para la instalacion de python y sus componentes para que funciones raspberry pi5
+    * Myscripts_Ws.js:
+        * Se modifico para que el eje logaritmico "y" se visualicen los valores multiplos de 1 2 y 5
 
     

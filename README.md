@@ -27,21 +27,21 @@ Pagina WEB que controla el equipo de SEV
       > pip install numpy pandas scipy
       ```
 
-2. En sistema operativo Linux:
-   - Se recomienda el uso de Anaconda para instalar Python. Para más detalles de instación de Anaconda, ver su [sitio web](https://docs.anaconda.com/anaconda/install/).
-   - Para confirmar que PIP ha sido instalado correctamente, activar el environment ``base``
+2. En sistema operativo Linux con Raspberry:
+   - Para confirmar que PIP ha sido instalado correctamente, hacer
       ```console
-      (base) $ conda activate
+      $ which pip
+      ```
+     Si no hay respuesta, instalarlo:
+      ```console
+      $ sudo apt install python3-pip
       ```
 
-     y escribir en consola.
+   - Para el uso correcto de este código, instalar los siguientes paquetes numpy, pandas, y scipy:
       ```console
-      (base) $ pip --version
-      ```
-
-   - Para el uso correcto de este código, instalar los siguientes paquetes numpy, pandas, y scipy. En la consola (asegurarse que el environment ``base`` haya sido activado) de comandos tipear:
-      ```console
-      (base) $ pip install numpy pandas scipy
+      $ sudo apt install python3-numpy
+      $ sudo apt install python3-pandas
+      $ sudo apt install python3-scipy
       ```
 
 ## Configurar path a ejecutable de Python
@@ -77,5 +77,5 @@ Este código requiere configurar manualmente el path al ejecutable de Python ins
   472      $output = shell_exec($command);
   473      if (strpos($output, "Linux") !== false) {
   474        $username = getenv("SUDO_USER");
-  475        $python_interp = "/home/".$username."/anaconda3/bin/python";
+  475        $python_interp = "python3";
   ```
