@@ -823,7 +823,7 @@ function Check_I(){
   }
 
   client.publish('SEV_C/SEV_I/Check/?', 'Status', (error) => {
-     console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_V/Check/?', 'Status')
+     console.log(error || 'Mensaje enviado!!!>', 'SEV_C/SEV_I/Check/?', 'Status')
   })
   alert("Enviamos Check_I");
   //socket.send("SEV_C/SEV_I/Check/?");

@@ -47,4 +47,9 @@ Version 1.25 Raspberry pi5
         * Se arreglaron las escalas y visualizacion de los ejes del grafico
         * Al hacer cambio de capas se omitio un cartel alert
 
-    
+Version 1.26 Raspberry pi5
+    Tareas Realizadas:
+    * ensayo.php:
+        * Se establecio comunicacion mqtt y envio y recepcion de los mensajes
+
+  

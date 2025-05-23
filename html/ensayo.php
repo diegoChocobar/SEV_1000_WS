@@ -562,11 +562,22 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
       client.on('connect', () => {//original
 
         console.log('Conexion exito con brouker')
-        top_topic = 'SEV1000_WS'+'/#';
+        top_topic = 'SEV_V'+'/#';
 
         client.subscribe(top_topic, { qos: 0 }, (error) => {
           if (!error) {
             console.log('Suscripción exitosa topics ->'+top_topic);
+            //alert ('Suscripción exitosa topics ->'+top_topic);
+          }else{
+            console.log('Suscripción fallida!')
+            //alert ('Suscripción fallida topics ->'+top_topic);
+          }
+        })
+        top_topic_i = 'SEV_I'+'/#';
+
+        client.subscribe(top_topic_i, { qos: 0 }, (error) => {
+          if (!error) {
+            console.log('Suscripción exitosa topics ->'+top_topic_i);
             //alert ('Suscripción exitosa topics ->'+top_topic);
           }else{
             console.log('Suscripción fallida!')
@@ -592,7 +603,165 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
 */
 client.on('message', (topic, message) => {
 
-  console.log('Mensaje recibido: ',topic, ' -> ', message.toString())
+  console.log('Mensaje recibido: ',topic, ' -> ', message.toString());
+  //var topic = event.topic;
+  let arr_topic = topic.split('/');
+  var dispositivo_emisor = arr_topic[0];
+  var dispositivo_receptor = arr_topic[1];
+  var Function_1 = arr_topic[2];
+  var Function_2 = arr_topic[3];
+  var calcular = 0;
+  var value_data = message;
+  //console.log(`Datos recibidos del servidor: ${event.data}`);
+  console.log(`Datos recibidos. Emisor: ` + dispositivo_emisor + ` Receptor: ` + dispositivo_receptor + ` Function_1: `+ Function_1 + ` Function_2: ` + Function_2);
+  
+  var claseH = $('#buttonH').attr('class');
+
+
+      if(dispositivo_emisor == "SEV_I"){
+        if(Function_1 == "Ping"){
+          var claseI = $('#buttonI').attr('class');
+          if (claseI.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonI').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonI').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(Function_1 == "Check"){
+          var claseI = $('#buttonI').attr('class');
+          if (claseI.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonI').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonI').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(Function_1 == "Hold"){
+          if(message == "ON"){
+              if (claseH.includes("md-btn md-fab m-b-sm danger")) {
+                $('#buttonH').removeClass('md-btn md-fab m-b-sm danger');
+                $('#buttonH').addClass('md-btn md-fab m-b-sm success');
+                
+              }
+          }         
+          if(message == "OFF"){
+              if (claseH.includes("md-btn md-fab m-b-sm success")) {
+                $('#buttonH').removeClass('md-btn md-fab m-b-sm success');
+                $('#buttonH').addClass('md-btn md-fab m-b-sm danger');
+                
+              }
+          }
+        }
+        if(Function_2 == "Valor"){
+          
+          ///debemos enviar al back el dato de la corriente para la almacene en la db puente/////Mandar consulta al servidor para actualiza dato de tension en db puente/////////////////////
+            var formData = new FormData();
+            formData.append("Corriente_ESPWS", "TRUE");
+            formData.append("value", value_data);
+            ///////////////funcion de  de escucha al php/////////////
+             var objCorriente = new XMLHttpRequest();
+    
+             objCorriente.onreadystatechange = function() {
+                 if(objCorriente.readyState === 4) {
+                   if(objCorriente.status === 200) {
+                     //alert(objNewEnsayo.responseText);
+                     var data = JSON.parse(objCorriente.responseText);
+    
+                     if(data['status'] == "TRUE"){
+                       //alert('Carga de Corriente en dbPuente Extoda: ' + data['status']);
+                       calcular =data['calcular'];
+                       console.log(`Actualiza Corriente: ` + value_data + ' Calcular:'+ calcular);
+                       $("#corriente_0").val(value_data);
+                       //$("#resistividad_0").val(value_data);
+                       CalcularR(0,calcular);
+                     }else{
+                       alert('Error actualizar Corriente en dbPuente: ' + data['error']);
+                     }
+    
+    
+                   } else {
+                     alert('Error Code 111: ' +  objCorriente.status);
+                     alert('Error Message 222: ' + objCorriente.statusText);
+                   }
+                 }
+             }
+             ////////////////////////////////////////////////////////////////
+    
+             objCorriente.open('POST', '../recibe.php',true);
+             objCorriente.send(formData);
+        }
+
+
+      }
+
+
+      if(dispositivo_emisor == "SEV_V"){
+        if(Function_1 == "Ping"){
+          var claseV = $('#buttonV').attr('class');
+          if (claseV.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonV').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonV').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(Function_1 == "Check"){
+          var claseV = $('#buttonV').attr('class');
+          if (claseV.includes("md-btn md-fab m-b-sm danger")) {
+              $('#buttonV').removeClass('md-btn md-fab m-b-sm danger');
+              $('#buttonV').addClass('md-btn md-fab m-b-sm success');
+          }
+        }
+        if(Function_1 == "Hold"){
+          if(message == "ON"){
+              if (claseH.includes("md-btn md-fab m-b-sm danger")) {
+                $('#buttonH').removeClass('md-btn md-fab m-b-sm danger');
+                $('#buttonH').addClass('md-btn md-fab m-b-sm success');
+                
+              }
+          }         
+          if(message == "OFF"){
+              if (claseH.includes("md-btn md-fab m-b-sm success")) {
+                $('#buttonH').removeClass('md-btn md-fab m-b-sm success');
+                $('#buttonH').addClass('md-btn md-fab m-b-sm danger');
+                
+              }
+          }
+        }
+        if(Function_2 == "Valor"){
+          /////Mandar consulta al servidor para actualiza dato de tension en db puente/////////////////////
+            var formData = new FormData();
+            formData.append("Tension_ESPWS", "TRUE");
+            formData.append("value", value_data);
+            ///////////////funcion de  de escucha al php/////////////
+             var objTension = new XMLHttpRequest();
+    
+             objTension.onreadystatechange = function() {
+                 if(objTension.readyState === 4) {
+                   if(objTension.status === 200) {
+                     //alert(objTension.responseText);
+                     var data = JSON.parse(objTension.responseText);
+    
+                     if(data['status'] == "TRUE"){
+                       //alert('Carga de Tension en dbPuente Extoda: ' + data['status']);
+                       calcular = data["calcular"];
+                       console.log(`Actualiza Tension: ` + value_data + ' Calcular:'+ calcular);
+                       $("#tension_0").val(value_data);
+                       CalcularR(0,calcular);
+                     }else{
+                       alert('Error actualizar Tension dbPuente: ' + data['error']);
+                     }
+    
+    
+                   } else {
+                     alert('Error Code 111: ' +  objTension.status);
+                     alert('Error Message 222: ' + objTension.statusText);
+                   }
+                 }
+             }
+             ////////////////////////////////////////////////////////////////
+    
+             objTension.open('POST', '../recibe.php',true);
+             objTension.send(formData);
+        }
+
+
+      }
 
 })
 /*
