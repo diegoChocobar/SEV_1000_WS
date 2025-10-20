@@ -641,10 +641,10 @@ function Graficar(dat){
             ticks: {
 
               max: 1000, // <-- Ajustá este valor al máximo que querés
-              min: 0,     // (opcional) valor mínimo
+              min: 0.8,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
-                if (remain === 1) {
+                if (remain === 1 || remain === 2 || remain === 5) {
                   return tick.toString() + ' m';
                 }
                 return '';
@@ -660,7 +660,7 @@ function Graficar(dat){
 
             ticks: {
               max: 1000, // <-- Ajustá este valor al máximo que querés
-              min: 1,     // (opcional) valor mínimo
+              min: 0.8,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
                 if (remain === 1 || remain === 2 || remain === 5) {

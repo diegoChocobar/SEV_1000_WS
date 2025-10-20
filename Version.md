@@ -52,4 +52,14 @@ Version 1.26 Raspberry pi5
     * ensayo.php:
         * Se establecio comunicacion mqtt y envio y recepcion de los mensajes
 
+Version 1.27 Raspberry pi5  20-10-25
+    Tareas Realizadas:
+        * SEV_Manual_Usuario.php: 
+            - Se actualizo el manual de usuario a una version mas reciente
+        * Ajustes.php, GraficScript.js, Myscripts_Ws.js:
+            - Se mejoro la manera en que se visualizan los ejes del grafico.
+        * linkPage.js:
+            - Se corrigio el link en el que se visualiza el manual, ahora se tiene en cuenta la posicion.
+
+
   

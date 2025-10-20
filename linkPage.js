@@ -29,7 +29,7 @@ $(document).ready(function() {
 
        //location.reload();
        //window.location = "http://localhost/SEV_1000_WS/archivos/SEV_Prueba_04-04-2022.txt";
-       var link = "archivos/SEV_Manual_Usuario.pdf";
+       var link = page_position+"archivos/SEV_Manual_Usuario.pdf";
        window.open(link, '_blank'); window.focus();
        return false;
 
