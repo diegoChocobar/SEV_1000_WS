@@ -557,6 +557,8 @@ window.onload = function() {
 
     *////////////////////////////////////////////////////////////////////////////////
 
+    $('.table').footable(); // inicializa si aún no lo hizo
+
     /////Solicitar al servidor Data Json para cargar al grafico/////////////////////
     var ensayo = $("#Ensayo").val();
     var Modelo_Datos = $("#ModeloDatos").val();

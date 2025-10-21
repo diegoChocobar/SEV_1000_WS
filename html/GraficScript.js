@@ -83,7 +83,7 @@ function Graficar(dat,ensayo){
             type: 'logarithmic',
 
             ticks: {
-              max: 1000, // <-- Ajustá este valor al máximo que querés
+              //max: 1000, // <-- Ajustá este valor al máximo que querés
               min: 0.8,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));
@@ -102,7 +102,7 @@ function Graficar(dat,ensayo){
             type: 'logarithmic',
 
             ticks: {
-              max: 1000, // <-- Ajustá este valor al máximo que querés
+              //max: 1000, // <-- Ajustá este valor al máximo que querés
               min: 0.8,     // (opcional) valor mínimo
               userCallback: function(tick) {
                 var remain = tick / (Math.pow(10, Math.floor(Chart.helpers.log10(tick))));

@@ -192,7 +192,7 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                             </div>
                           </div>
                             <div class="table-responsive">
-                              <table table class="table m-b-none" ui-jp="footable" data-filter="#filter" data-page-size="5">
+                              <table class="table m-b-none" ui-jp="footable" data-filter="#filter" data-page-size="5">
                                 <thead>
                                   <tr>
                                   <?php if($modelo == "Wenner"){ ?>
@@ -270,7 +270,7 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                             id = "<?php echo 'constante_0' ?>" disabled>
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
-                                            value=<?php echo "0"; ?>"
+                                            value="<?php echo "0"; ?>"
                                             id = "<?php echo 'corriente_0' ?>">
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
@@ -278,7 +278,7 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                             id = "<?php echo 'tension_0' ?>">
                                           </td>
                                           <td><input class="form-control" align="center" type="number" step="0.01" style="width: 80px"
-                                            value=<?php echo "0"; ?>"
+                                            value="<?php echo "0"; ?>"
                                             id = "<?php echo 'resistividad_0' ?>" disabled>
                                           </td>
                                           <td><button  class="btn btn-icon btn-social rounded btn-social-colored light-green" title="Calcular Resistividad" align="center"

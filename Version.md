@@ -61,5 +61,13 @@ Version 1.27 Raspberry pi5  20-10-25
         * linkPage.js:
             - Se corrigio el link en el que se visualiza el manual, ahora se tiene en cuenta la posicion.
 
+Version 1.28 Raspberry pi5  21-10-25
+    Tareas Realizadas:
+        * ensayo.php: 
+            - Se corrigio para que la tabla sea responsiva.
+        * Myscripts_Ws.js:
+            - Se agrego linea para que la tabla inicialice con el formato de paginas de 5 filas
+        * Ajuste.js, GraficScript.js:
+            - Se eliminaron los maximos en el eje Y del grafico, para que el mismo busque solo su limite
 
   
