@@ -98,6 +98,7 @@ client.on('message', (topic, message) => {
             let desvio = data.desvio_standar;$("#Desvio_I").val(desvio);
             let valor = data.valor;$("#corriente").val(valor);
             let Iteraciones = data.Iteraciones;$("#Iteraciones_I").val(Iteraciones);
+            let nmedidas = data.nmedidas;$("#nmedidas_I").val(nmedidas);
             let Escala = data.Escala;$("#Escala_I").val(Escala);
             let Confianza = data.Confianza;$("#Confianza_I").val(Confianza);
             let ADS_Frec = data.ADS_Frec;$("#ADS_Frec_I").val(ADS_Frec);
@@ -118,6 +119,7 @@ client.on('message', (topic, message) => {
             let desvio = data.desvio_standar;$("#Desvio_V").val(desvio);
             let valor = data.valor;$("#tension").val(valor);
             let Iteraciones = data.Iteraciones;$("#Iteraciones_V").val(Iteraciones);
+            let nmedidas = data.nmedidas;$("#nmedidas_V").val(nmedidas);
             let Escala = data.Escala;$("#Escala_V").val(Escala);
             let Confianza = data.Confianza;$("#Confianza_V").val(Confianza);
             let ADS_Frec = data.ADS_Frec;$("#ADS_Frec_V").val(ADS_Frec);
@@ -142,11 +144,13 @@ function Config_I(){
   var Iteraciones_I = $("#Iteraciones_Config_I").val();
   var ADS_Frec_I = $("#ADS_Frec_Config_I").val();
   var Confianza_I = $("#Confianza_Config_I").val();
+  var Escala_I = $("#Escala_Config_I").val();
 
     // 🔹 Armo el objeto con los valores
   var data_valores = {
       Iteraciones: parseInt(Iteraciones_I),
       Frecuencia_ADS: parseInt(ADS_Frec_I),
+      Escala: parseInt(Escala_I),
       Confianza: parseFloat(Confianza_I)
   };
     // 🔹 Convertir a JSON antes de enviar
@@ -176,6 +180,7 @@ function Config_I(){
         alert("Enviamos Configuración I" +
               "\nIteraciones: " + Iteraciones_I +
               "\nFrec. ADS: " + ADS_Frec_I +
+              "\nEscala: " + Escala_I +
               "\nConfianza: " + Confianza_I
         );
   }
@@ -190,11 +195,13 @@ function Config_V(){
   var Iteraciones_V = $("#Iteraciones_Config_V").val();
   var ADS_Frec_V = $("#ADS_Frec_Config_V").val();
   var Confianza_V = $("#Confianza_Config_V").val();
+  var Escala_V = $("#Escala_Config_V").val();
 
     // 🔹 Armo el objeto con los valores
   var data_valores = {
       Iteraciones: parseInt(Iteraciones_V),
       Frecuencia_ADS: parseInt(ADS_Frec_V),
+      Escala: parseInt(Escala_V),
       Confianza: parseFloat(Confianza_V)
   };
     // 🔹 Convertir a JSON antes de enviar
@@ -220,12 +227,14 @@ function Config_V(){
         client.publish('SEV_C/SEV_V/Config/Values', mensaje, (error) => {
           console.log(error || 'Mensaje enviado!!! >', 'SEV_C/SEV_V/Config/Values', data_valores);
         });
-
+        //*
         alert("Enviamos Configuración V" +
-              "\nIteraciones: " + Iteraciones_I +
-              "\nFrec. ADS: " + ADS_Frec_I +
-              "\nConfianza: " + Confianza_I
+              "\nIteraciones: " + Iteraciones_V +
+              "\nFrec. ADS: " + ADS_Frec_V +
+              "\nEscala: " + Escala_V +
+              "\nConfianza: " + Confianza_V
         );
+        //*/
   }
 
 

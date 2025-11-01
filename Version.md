@@ -72,3 +72,8 @@ Version 1.28 Raspberry pi5  21-10-25
 
 Version 1.30 Raspberry pi5  31-10-25
     En esta version trabajamos especificamente en crear un pagina config.php que se encargue la de la configuracion de parametros (Frec_ADS, Interaciones, Confianza de medida), tabien se agrego la visualizacion de las medidas que arrojan el equipo de corriente y tension.
+
+Version 1.31 Raspberry pi5  3-11-25
+    En esta version trabajamos:
+        Agregamos la configuracion/visualizacion de la escala de tension y corriente.
+        Agregamos la visualizacion del numero de medidas tenidas en cuenta para el calculo final, tanto en corriente como en tension

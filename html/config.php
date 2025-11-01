@@ -112,6 +112,16 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                 <input class="form-control text-center" type="text" style="width: 100px;" value="Confianza" disabled>
                             </div>
                             
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+                                      <select class="form-control c-select" id="Escala_Config_V" name="Escala_Config_V" class="required" style="width: 100px;">
+                                          <option value="20">20</option>
+                                          <option value="200">200</option>
+                                          <option value="1000">1000</option>
+                                          <option value="2000">2000</option>
+                                      </select>
+                                      <input class="form-control text-center" type="text" style="width: 100px;" value="Escala V" disabled>
+                              </div>
+                                                          
                           </div>
                           <!-- FIN CONFIGURACION TENSION -->
 
@@ -143,7 +153,16 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                           value="<?php echo '1.0'; ?>" id="<?php echo 'Confianza_Config_I'; ?>">
                                   <input class="form-control text-center" type="text" style="width: 100px;" value="Confianza" disabled>
                               </div>
-                              
+
+                              <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+                                      <select class="form-control c-select" id="Escala_Config_I" name="Escala_Config_I" class="required" style="width: 100px;">
+                                          <option value="250">250</option>
+                                          <option value="1000">1000</option>
+                                          <option value="2000">2000</option>
+                                      </select>
+                                      <input class="form-control text-center" type="text" style="width: 100px;" value="Escala I" disabled>
+                              </div>
+                                                            
                             </div>
                           <!--FIN CONFIGURACION CORRIENTE -->
                         </div>
@@ -189,6 +208,11 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                 <input class="form-control text-center" type="text" style="width: 100px;" value="Iteraciones" disabled>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+                                <input class="form-control text-center" type="number" step="1" style="width: 100px;"
+                                        value="10" id="nmedidas_V" disabled>
+                                <input class="form-control text-center" type="text" style="width: 100px;" value="N medidas" disabled>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
                                     <select class="form-control c-select" id="ADS_Frec_V" name="ADS_Frec_V" class="required" style="width: 100px;" disabled>
                                         <option value="8">8</option>
                                         <option value="16">16</option>
@@ -230,14 +254,14 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                 <input class="form-control text-center" type="text" style="width: 100px;" value="P mA" disabled>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
-                                <input class="form-control text-center" type="number" step="1" style="width: 100px;" disabled
-                                        value="<?php echo '0'; ?>" id="<?php echo 'Escala_I'; ?>">
-                                <input class="form-control text-center" type="text" style="width: 100px;" value="Escala mA" disabled>
-                            </div>
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
                                 <input class="form-control" align="center" type="number" step="0.01" style="width: 100px"
                                             value="<?php echo "0"; ?>" id = "<?php echo 'Desvio_I'; ?>" disabled>
                                 <input class="form-control text-center" type="text" style="width: 100px;" value="d mA" disabled>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+                                <input class="form-control text-center" type="number" step="1" style="width: 100px;" disabled
+                                        value="<?php echo '0'; ?>" id="<?php echo 'Escala_I'; ?>">
+                                <input class="form-control text-center" type="text" style="width: 100px;" value="Escala mA" disabled>
                             </div>
                             <br>
 
@@ -245,6 +269,11 @@ $const_a = array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,
                                 <input class="form-control text-center" type="number" step="1" style="width: 100px;"
                                         value="<?php echo '10'; ?>" id="<?php echo 'Iteraciones_I'; ?>" disabled>
                                 <input class="form-control text-center" type="text" style="width: 100px;" value="Iteraciones" disabled>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
+                                <input class="form-control text-center" type="number" step="1" style="width: 100px;"
+                                        value="7" id="nmedidas_I" disabled>
+                                <input class="form-control text-center" type="text" style="width: 100px;" value="N medidas" disabled>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 10px;">
                                     <select class="form-control c-select" id="ADS_Frec_I" name="ADS_Frec_I" class="required" style="width: 100px;" disabled>
